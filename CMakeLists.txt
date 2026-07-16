@@ -12,7 +12,7 @@ endif()
 project ("Infinite2D-demo")
 
 # Add source to this project's executable.
-add_executable (Infinite2D-demo "Infinite2D-demo.cpp"     "Chunk.h" "LevelDesigner.h" "Game.h" "Behaviour.h" "PlayerMovement.h" "Player.h" "CameraMovement.cpp" "CameraMovement.h" "Point.h")
+add_executable (Infinite2D-demo "Infinite2D-demo.cpp"     "Chunk.h" "LevelDesigner.h" "Game.h" "Behaviour.h" "PlayerMovement.h" "Player.h" "CameraMovement.cpp" "CameraMovement.h" "Point.h" "DoublyLinkList.h")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -20,6 +20,10 @@ target_include_directories(Infinite2D-demo PRIVATE
 )
 target_link_directories(Infinite2D-demo PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/raylib/lib"
+)
+
+target_compile_definitions(Infinite2D-demo PRIVATE 
+    SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

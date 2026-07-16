@@ -1,14 +1,15 @@
 #pragma once
 #include"Chunk.h"
 #include"Player.h"
-
+#include<string>
+#include"DoublyLinkList.h"
 
 class LevelDesigner : public Behaviour_Adapter{
 	Player p;
 	
 	int GlobalChunkCounter = 0;
 public:
-	inline static std::vector<Chunk> Array_Chunks;
+	inline static Node* Queue_head = nullptr;
 
 	std::vector< std::vector<Vector2>> GenerateRandomBlocksInChunk(int x, int y) {
 		uint16_t height = 8, width = 4;
@@ -27,39 +28,68 @@ public:
 		return blocks;
 	}
 
-	void ReplaceChunk(bool dir) {
 
-	}
+	void GenerateChunk(Vector2 PlayerPos) {
+		int ClampedPos = int(PlayerPos.x / 200);
+		int x = -400 + (200 * ClampedPos);
+		int y = -800;
 
-	void AddChunk(Chunk& chunk) {
-		Array_Chunks[GlobalChunkCounter] = chunk;
-		GlobalChunkCounter = (GlobalChunkCounter+1)%4;
+		Chunk chunk(x, y, 200, 800, ClampedPos, {}, 0, 0);
 		
+		std::string path = std::string(SOURCE_DIR) + "Chunks/" + "chunk_" + std::to_string(ClampedPos) + ".dat";
+		std::ofstream outFile(path, std::ios::binary);
+		chunk.serialize(outFile);
+
 	}
 
-	void MakeChunks() {
-		int ChunkCounter;
-
-		for (ChunkCounter = 0; ChunkCounter < 4; ChunkCounter++) {
+	void GenerateChunks(Vector2& PlayerPos) {
+		// Generate Chunks and store them in the binary file
+		int ClampedPos = int(PlayerPos.x / 200);
+		for (int ChunkCounter = ClampedPos - 1; ChunkCounter <= ClampedPos + 3; ChunkCounter++) {
 			int x = -400 + (200 * ChunkCounter);
 			int y = -800;
 
 			Chunk chunk(x, y, 200, 800, ChunkCounter, {}, 0,0);
-			AddChunk(chunk);
+			std::string path = std::string(SOURCE_DIR)+"Chunks/" + "chunk_" + std::to_string(ChunkCounter-2) + ".dat";
+			std::ofstream outFile(path, std::ios::binary);
+			chunk.serialize(outFile);
+			outFile.close();	
+			
 		}
 	}
 
+	void FetchChunks(Vector2& PlayerPos) {
+		// Fetch Chunks from the binary file and store them in the Array_Chunks vector
+		int clampedPos = int(PlayerPos.x / 200);
+
+		std::string path = std::string(SOURCE_DIR) + "Chunks/" + "chunk_" + std::to_string(clampedPos) + ".dat";
+
+		std::ifstream in(path, std::ios::binary);
+		if (!in) {
+			std::cerr << "Error opening file for reading." << std::endl;
+			return;
+		}
+		Chunk chunk;
+		chunk.deserialize(in);
+		in.close();
+		
+
+	}
+
 	void DrawChunks() {
-		for (Chunk& chunk: Array_Chunks) {
+
+		Node* tmp = Queue_head;
+		while(tmp != nullptr){
 			//DEBUG Visual Chunks
+			Chunk chunk = tmp->GetData();
 			Vector2& XY = chunk.GetXY();
 			Vector2& WH = chunk.GetWH();
 			
 			DrawRectangleLines(XY.x, XY.y, WH.x, WH.y, WHITE);
-
+			tmp = tmp->next;
 		}
 	}
-
+	/*
 	void RenderBlocks(int id) {
 
 		Chunk& chunk = Array_Chunks[id];
@@ -75,28 +105,33 @@ public:
 		}
 	}
 
+
 	void MoveChunksWithPlayer(Vector2 PlayerPos) {
 		for(int i =0; i<Array_Chunks.size(); i++){
 			Vector2 ChunksPos = Array_Chunks[i].GetBaseXY();
 			Array_Chunks[i].SetXY(PlayerPos.x + ChunksPos.x, ChunksPos.y);
 		}
 	}
+	*/
 
 	void Start() override {
-		MakeChunks();
+		Vector2 CurPos = p.GetPlayerPos();
+		GenerateChunks(CurPos);
 	}
 
 
 	void Update() override {
 		
 		Vector2 CurPos = p.GetPlayerPos();
+
+		GenerateChunk(CurPos);
+		FetchChunks(CurPos);
 		//MoveChunksWithPlayer(CurPos);
 		DrawChunks();
 		
 	}
 	
 	LevelDesigner(Player ply) {
-		Array_Chunks = std::vector<Chunk>(4);
 		p = ply;
 	}
 
