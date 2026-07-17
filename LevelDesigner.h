@@ -2,6 +2,7 @@
 #include"Chunk.h"
 #include"Player.h"
 #include<string>
+#include <filesystem>
 #include"DoublyLinkList.h"
 
 class LevelDesigner : public Behaviour_Adapter{
@@ -9,8 +10,10 @@ class LevelDesigner : public Behaviour_Adapter{
 	
 	int GlobalChunkCounter = 0;
 public:
-	inline static Node* Queue_head = nullptr;
-
+	inline static Chunk Chunks_Array[5];
+	inline static std::string baseChunksPath = std::string(SOURCE_DIR) + "Chunks/";
+	#pragma region OLD_CODE
+	/*
 	std::vector< std::vector<Vector2>> GenerateRandomBlocksInChunk(int x, int y) {
 		uint16_t height = 8, width = 4;
 		std::vector< std::vector<Vector2>> blocks(height, std::vector<Vector2>(width));
@@ -78,18 +81,9 @@ public:
 
 	void DrawChunks() {
 
-		Node* tmp = Queue_head;
-		while(tmp != nullptr){
-			//DEBUG Visual Chunks
-			Chunk chunk = tmp->GetData();
-			Vector2& XY = chunk.GetXY();
-			Vector2& WH = chunk.GetWH();
-			
-			DrawRectangleLines(XY.x, XY.y, WH.x, WH.y, WHITE);
-			tmp = tmp->next;
-		}
+
 	}
-	/*
+	
 	void RenderBlocks(int id) {
 
 		Chunk& chunk = Array_Chunks[id];
@@ -112,11 +106,11 @@ public:
 			Array_Chunks[i].SetXY(PlayerPos.x + ChunksPos.x, ChunksPos.y);
 		}
 	}
-	*/
+	
 
 	void Start() override {
 		Vector2 CurPos = p.GetPlayerPos();
-		GenerateChunks(CurPos);
+//		GenerateChunks(CurPos);
 	}
 
 
@@ -124,15 +118,96 @@ public:
 		
 		Vector2 CurPos = p.GetPlayerPos();
 
-		GenerateChunk(CurPos);
-		FetchChunks(CurPos);
+		//GenerateChunk(CurPos);
+		//FetchChunks(CurPos);
 		//MoveChunksWithPlayer(CurPos);
-		DrawChunks();
+		//DrawChunks();
 		
 	}
 	
 	LevelDesigner(Player ply) {
 		p = ply;
+	}
+	*/
+	
+	#pragma endregion
+	
+	void AddChunk(Chunk& chunk) {
+		
+		if (chunk.Getid() < Chunks_Array[0].Getid()) {
+			for (int i = 4; i >0; i--) {
+				Chunks_Array[i] = Chunks_Array[i-1];
+			}
+			Chunks_Array[0] = chunk;
+		}
+		else if (chunk.Getid() > Chunks_Array[4].Getid()) {
+			for (int i = 0; i > 5; i++) {
+				Chunks_Array[i] = Chunks_Array[i + 1];
+			}
+			Chunks_Array[4] = chunk;
+		}
+	}
+
+	void GenerateChunk(Vector2& PlayerPos) {
+		int x = PlayerPos.x -200;
+		int y = -800;
+		
+		int id = (x / 200);
+		Chunk New_Chunk = Chunk();
+
+		if (!std::filesystem::is_directory(baseChunksPath) ){
+			std::filesystem::create_directory(baseChunksPath);
+		}
+		std::string path = baseChunksPath + "chunk_" + std::to_string(id) + ".dat";
+		if (std::filesystem::exists(path)) {
+			std::ifstream in(path, std::ios::binary);
+			New_Chunk.deserialize(in);
+		}
+		else {
+			std::ofstream outFile(path, std::ios::binary);
+			New_Chunk = Chunk(x, y, 200, 800, id);
+			New_Chunk.serialize(outFile);
+		}
+		std::cout << New_Chunk.Getid() <<std::endl;
+		AddChunk(New_Chunk);
+	}
+
+	void DrawChunks() {
+		for (Chunk& chunk : Chunks_Array) {
+			Vector2 Pos = chunk.GetXY();
+			Vector2 Size = chunk.GetWH();
+			DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
+		}
+	}
+
+	void Start() {
+		Vector2 PlyPos = p.GetPlayerPos();
+		int id = PlyPos.x / 200;
+		for (int i = id - 2; i <= id + 2; i++) {
+			Chunk chunk(PlyPos.x + i * 200, -800, 200, 800, i);
+
+			std::string path = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
+			std::ofstream outFile(path, std::ios::binary);
+			chunk.serialize(outFile);
+			Chunks_Array[i + 2] = chunk;
+
+		}
+
+	}
+	Vector2 PrevPos = Vector2(0,0);
+	void Update() {
+		Vector2 PlyPos = p.GetPlayerPos();
+		Vector2 deltaPos = Vector2Add(Vector2(std::abs(PlyPos.x), std::abs(PlyPos.y)), PrevPos*-1);
+		if (deltaPos.x >0.001f) {
+			GenerateChunk(PlyPos);
+		}
+		
+		DrawChunks();
+		PrevPos = PlyPos;
+	}
+
+	LevelDesigner(Player& ply) {
+		ply = p;
 	}
 
 };
