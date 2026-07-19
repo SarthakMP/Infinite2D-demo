@@ -3,6 +3,7 @@
 #include"Player.h"
 #include<string>
 #include <filesystem>
+#include<math.h>
 #include"DoublyLinkList.h"
 
 class LevelDesigner : public Behaviour_Adapter{
@@ -10,8 +11,11 @@ class LevelDesigner : public Behaviour_Adapter{
 	
 	int GlobalChunkCounter = 0;
 public:
-	inline static Chunk Chunks_Array[5];
+	inline static Chunk ChunksArray[6];
 	inline static std::string baseChunksPath = std::string(SOURCE_DIR) + "Chunks/";
+
+	inline static int ChunksWidth = 400, ChunksHeight=800;
+
 	#pragma region OLD_CODE
 	/*
 	std::vector< std::vector<Vector2>> GenerateRandomBlocksInChunk(int x, int y) {
@@ -131,49 +135,87 @@ public:
 	*/
 	
 	#pragma endregion
-	
-	void AddChunk(Chunk& chunk) {
-		
-		if (chunk.Getid() < Chunks_Array[0].Getid()) {
-			for (int i = 4; i >0; i--) {
-				Chunks_Array[i] = Chunks_Array[i-1];
-			}
-			Chunks_Array[0] = chunk;
-		}
-		else if (chunk.Getid() > Chunks_Array[4].Getid()) {
-			for (int i = 0; i > 5; i++) {
-				Chunks_Array[i] = Chunks_Array[i + 1];
-			}
-			Chunks_Array[4] = chunk;
-		}
+	int m_sign(int Pos) {
+		return (Pos > 0) - (Pos < 0);
 	}
 
-	void GenerateChunk(Vector2& PlayerPos) {
-		int x = PlayerPos.x -200;
-		int y = -800;
+	void AddChunk(Chunk& chunk) {
 		
-		int id = (x / 200);
-		Chunk New_Chunk = Chunk();
+		if (chunk.Getid() < ChunksArray[0].Getid()) { 
+			for (int i = 5; i > 0; i--) {
+				ChunksArray[i] = ChunksArray[i-1];
+			}
+			ChunksArray[0] = chunk;
+		}
+		else if (chunk.Getid() > ChunksArray[5].Getid()) {
+			for (int i = 0; i < 5; i++) {
+				ChunksArray[i] = ChunksArray[i + 1];
+			}
+			ChunksArray[5] = chunk;
+		}
+	}
+	Vector2 PrevPos = Vector2(0, 0);
+	void GenerateChunk(const Vector2& PlayerPos) {
 
-		if (!std::filesystem::is_directory(baseChunksPath) ){
-			std::filesystem::create_directory(baseChunksPath);
+		int delta = PlayerPos.x - PrevPos.x;
+		if (delta == 0) return;
+
+		
+
+		int sign = m_sign(delta);
+
+		int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
+		int y = -ChunksHeight;
+		
+		for (int i = 1; i <= 2; i++) {
+
+			int targetID = CurrentChunkId + (sign * i);
+
+			std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
+			Chunk chunk;
+
+			/* DEBUG
+			std::cout << "Curr Pos: " << PlayerPos.x << " Next First Pos: " << PlayerPos.x + sign * ChunksWidth << " Next Second Pos: " << PlayerPos.x + 2 * sign * ChunksWidth << std::endl;
+			std::cout << "Sign: " << sign << std::endl;
+			*/
+
+			int x = targetID * ChunksWidth;
+
+			
+
+			if (std::filesystem::exists(path)) {
+				std::ifstream in(path, std::ios::binary);
+				if (in.is_open()) {
+					chunk.deserialize(in);
+					in.close();
+					AddChunk(chunk);
+				}
+			}
+			else {
+
+				chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
+				std::ofstream outFile(path, std::ios::binary);
+
+				if (outFile.is_open()) {
+					chunk.serialize(outFile);
+					outFile.close();
+				}
+				else {
+					std::cerr << "Warning: Could not save chunk to disk: " << path << std::endl;
+				}
+
+				AddChunk(chunk);
+			}
+
+
 		}
-		std::string path = baseChunksPath + "chunk_" + std::to_string(id) + ".dat";
-		if (std::filesystem::exists(path)) {
-			std::ifstream in(path, std::ios::binary);
-			New_Chunk.deserialize(in);
-		}
-		else {
-			std::ofstream outFile(path, std::ios::binary);
-			New_Chunk = Chunk(x, y, 200, 800, id);
-			New_Chunk.serialize(outFile);
-		}
-		std::cout << New_Chunk.Getid() <<std::endl;
-		AddChunk(New_Chunk);
+		PrevPos = PlayerPos;
+
+
 	}
 
 	void DrawChunks() {
-		for (Chunk& chunk : Chunks_Array) {
+		for (Chunk& chunk : ChunksArray) {
 			Vector2 Pos = chunk.GetXY();
 			Vector2 Size = chunk.GetWH();
 			DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
@@ -181,27 +223,30 @@ public:
 	}
 
 	void Start() {
-		Vector2 PlyPos = p.GetPlayerPos();
-		int id = PlyPos.x / 200;
-		for (int i = id - 2; i <= id + 2; i++) {
-			Chunk chunk(PlyPos.x + i * 200, -800, 200, 800, i);
+
+
+		if (!std::filesystem::is_directory(baseChunksPath)) {
+			std::filesystem::create_directory(baseChunksPath);
+		}
+
+		int offset = 3;
+		for (int i = -offset; i <= offset; i++) {
 
 			std::string path = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
-			std::ofstream outFile(path, std::ios::binary);
-			chunk.serialize(outFile);
-			Chunks_Array[i + 2] = chunk;
-
+			Chunk NewChunk(i * ChunksWidth, -ChunksHeight, ChunksWidth, ChunksHeight, i);
+			std::ofstream outfile(path, std::ios::binary);
+			NewChunk.serialize(outfile);
+			ChunksArray[i + offset] = NewChunk;
+			outfile.close();
+			
 		}
 
 	}
-	Vector2 PrevPos = Vector2(0,0);
+	
 	void Update() {
 		Vector2 PlyPos = p.GetPlayerPos();
-		Vector2 deltaPos = Vector2Add(Vector2(std::abs(PlyPos.x), std::abs(PlyPos.y)), PrevPos*-1);
-		if (deltaPos.x >0.001f) {
-			GenerateChunk(PlyPos);
-		}
-		
+
+		GenerateChunk(PlyPos);
 		DrawChunks();
 		PrevPos = PlyPos;
 	}

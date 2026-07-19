@@ -108,7 +108,7 @@ public:
 		WH.y = chunk_h;
 		return WH;
 	}
-	unsigned int Getid() {
+	int Getid() {
 		return chunk_id;
 	}
 
