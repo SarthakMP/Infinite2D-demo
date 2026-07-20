@@ -1,5 +1,5 @@
 #pragma once
-#include"Behaviour.h"
+#include"Headers/Behaviour.h"
 #include"raymath.h"
 
 class CameraMovement  {

@@ -12,7 +12,23 @@ endif()
 project ("Infinite2D-demo")
 
 # Add source to this project's executable.
-add_executable (Infinite2D-demo "Infinite2D-demo.cpp" "Chunk.h" "LevelDesigner.h" "Game.h" "Behaviour.h" "PlayerMovement.h" "Player.h" "CameraMovement.cpp" "CameraMovement.h" "Point.h" "DoublyLinkList.h")
+add_executable (Infinite2D-demo 
+"Infinite2D-demo.cpp" 
+"Headers/Chunk.h" 
+"Headers/LevelDesigner.h" 
+"Headers/Game.h" 
+"Headers/Behaviour.h" 
+"Headers/PlayerMovement.h" 
+"Headers/Player.h" 
+"CameraMovement.cpp" 
+"Headers/CameraMovement.h" 
+ 
+"Headers/Physics2D.h" 
+ 
+"Chunk.cpp" 
+"LevelDesigner.cpp"  
+"Game.cpp" 
+"Player.cpp" "Headers/Point.h")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

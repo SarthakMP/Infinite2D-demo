@@ -1,4 +1,4 @@
-#include"CameraMovement.h"
+#include"Headers/CameraMovement.h"
 #include<iostream>
 
 float CameraMovement::GetHorizontalInput()
@@ -64,5 +64,8 @@ Camera2D CameraMovement::MoveCamera() {
 CameraMovement::CameraMovement(Camera2D& cam) {
 	m_Camera = cam;
 }
+\
+CameraMovement::CameraMovement() {
 
+}
 
