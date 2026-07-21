@@ -17,7 +17,7 @@ public:
 
 	inline static void AddChunk(Chunk& chunk);
 
-	inline static void GenerateChunk(const Vector2& PlayerPos);
+	inline static void GenerateChunk(const Point& PlayerPos);
 
 	inline static void DrawChunks();
 

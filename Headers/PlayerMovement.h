@@ -4,14 +4,15 @@
 class PlayerMovement : public Player{
 	Player p;
 
-	void Move(Vector2 in,Vector2 CurPos) {
-		Vector2 nextPos = Vector2Add(in * p.Player_Speed, CurPos) ;
+	void Move(Point in, Point CurPos) {
+		in = in * p.Player_Speed;
+		Point nextPos = Point::PointAdd(in , CurPos) ;
 		p.SetPlayerPos(nextPos);
 	}
 
 	bool isPressed = false;
-	Vector2 GetInput() {
-		Vector2 input = Vector2(0, 0);
+	Point GetInput() {
+		Point input = Point(0, 0);
 		if (IsKeyDown(KEY_D)) {
 			input.x = 1.0f;
 			isPressed = true;
@@ -22,16 +23,23 @@ class PlayerMovement : public Player{
 			isPressed = true;
 			return input;
 		}
+
+		if (IsKeyDown(KEY_SPACE)) {
+			input.y = 1.0f;
+			isPressed = true;
+			return input;
+		}
+
 		isPressed = false;
-		return Vector2(0, 0);
+		return Point(0, 0);
 	}
 
 
 	void Update() override {
 		
-		Vector2 in = GetInput();
+		Point in = GetInput();
 		if (isPressed) {
-			Vector2 CurPos = p.GetPlayerPos();
+			Point CurPos = p.GetPlayerPos();
 			Move(in, CurPos);
 		}
 

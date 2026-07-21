@@ -1,9 +1,9 @@
 #include"Headers/Player.h"
 
-void Player::SetPlayerPos(Vector2 pos) {
+void Player::SetPlayerPos(Point& pos) {
 	Player_Pos = pos;
 }
-Vector2 Player::GetPlayerPos() {
+Point Player::GetPlayerPos() {
 	return Player_Pos;
 }
 void Player::SetPlayerTexture(Texture2D text) {
@@ -16,7 +16,8 @@ void Player::DrawPlayer() {
 }
 
 void Player::Start(){
-	SetPlayerPos(Vector2Zero());
+	Point Zero(0, 0);
+	SetPlayerPos(Zero);
 }
 
 void Player::Update(){

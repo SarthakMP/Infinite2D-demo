@@ -20,8 +20,8 @@ void LevelDesigner::AddChunk(Chunk& chunk) {
 		ChunksArray[5] = chunk;
 	}
 }
-Vector2 PrevPos = Vector2(0, 0);
-void LevelDesigner::GenerateChunk(const Vector2& PlayerPos) {
+Point PrevPos = Point(0, 0);
+void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 
 	int delta = PlayerPos.x - PrevPos.x;
 	if (delta == 0) return;
@@ -110,7 +110,7 @@ void LevelDesigner::Start() {
 }
 
 void LevelDesigner::Update() {
-	Vector2 PlyPos = p.GetPlayerPos();
+	Point PlyPos = p.GetPlayerPos();
 
 	GenerateChunk(PlyPos);
 	DrawChunks();

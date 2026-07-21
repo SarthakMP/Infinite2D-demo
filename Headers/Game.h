@@ -4,13 +4,13 @@
 #pragma once
 #include "raylib.h"
 #include "rlgl.h"
-#include "Behaviour.h"
-#include "CameraMovement.h"
-#include "Point.h"
-#include"Player.h"
-#include"PlayerMovement.h"
-#include"LevelDesigner.h"
-#include"Physics2D.h"
+#include "Headers/Behaviour.h"
+#include "Headers/CameraMovement.h"
+#include "Headers/Point.h"
+#include"Headers/Player.h"
+#include"Headers/PlayerMovement.h"
+#include"Headers/LevelDesigner.h"
+#include"Headers/Physics2D.h"
 
 #include <iostream>
 #include<vector>
