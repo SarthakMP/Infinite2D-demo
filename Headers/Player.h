@@ -11,7 +11,7 @@ public:
 	inline static unsigned int Player_Speed = 5;
 
 	void SetPlayerPos(Vector2 pos);
-	Vector2 GetPlayerPos();
+	static inline Vector2 GetPlayerPos();
 	void SetPlayerTexture(Texture2D text);
 
 	void DrawPlayer();

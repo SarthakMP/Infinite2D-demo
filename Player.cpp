@@ -12,7 +12,7 @@ void Player::SetPlayerTexture(Texture2D text) {
 
 void Player::DrawPlayer() {
 	//DEBUG ONLY
-	DrawRectangle(Player_Pos.x, Player_Pos.y, 100, 100, WHITE);
+	DrawRectangle(Player_Pos.x - 50, Player_Pos.y - 50, 100, 100, WHITE);
 }
 
 void Player::Start(){

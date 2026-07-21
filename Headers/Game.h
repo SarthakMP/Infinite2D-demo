@@ -10,6 +10,7 @@
 #include"Player.h"
 #include"PlayerMovement.h"
 #include"LevelDesigner.h"
+#include"Physics2D.h"
 
 #include <iostream>
 #include<vector>

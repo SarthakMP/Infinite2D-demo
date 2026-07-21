@@ -31,7 +31,7 @@ void LevelDesigner::GenerateChunk(const Vector2& PlayerPos) {
 	int sign = m_sign(delta);
 
 	int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
-	int y = -ChunksHeight;
+	int y = -ChunksHeight - 100;
 
 	for (int i = 1; i <= 2; i++) {
 
@@ -99,7 +99,7 @@ void LevelDesigner::Start() {
 	for (int i = -offset; i <= offset; i++) {
 
 		std::string path = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
-		Chunk NewChunk(i * ChunksWidth, -ChunksHeight, ChunksWidth, ChunksHeight, i);
+		Chunk NewChunk(i * ChunksWidth, -ChunksHeight - 100, ChunksWidth, ChunksHeight, i);
 		std::ofstream outfile(path, std::ios::binary);
 		NewChunk.serialize(outfile);
 		ChunksArray[i + offset] = NewChunk;
