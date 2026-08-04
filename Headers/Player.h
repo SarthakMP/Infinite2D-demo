@@ -6,7 +6,7 @@
 class Player : public Behaviour_Adapter {
 	
 
-	unsigned short hitbox_w = 50, hitbox_h = 100;
+	unsigned short hitbox_w = 50, hitbox_h = 50;
 	
 
 public:
@@ -21,12 +21,13 @@ public:
 	static void SetVelocity(Point& vel);
 	static Point GetVelocity();
 
-	static  BoxCollider2D GetHitBox();
+	static BoxCollider2D GetHitBox();
 
 	void DrawPlayer();
 
 	void Start();
 
 	void Update();
-
+	
+	void Render();
 };

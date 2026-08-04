@@ -4,7 +4,7 @@ void Game::SetCamera(Camera2D& cam) {
 	cam.offset = Vector2(Scr_W / 2, Scr_H / 2);
 	cam.rotation = 0;
 	cam.target = Vector2{ 0,0 };
-	cam.zoom = 1.0f;
+	cam.zoom = 0.1f;
 }
 
 void Game::AddObjects(Behaviour* obj) {
@@ -18,8 +18,6 @@ void Game::InitialBoudningPoints(Point(&Points)[4]) {
 	Points[3] = Point(400, 0);
 
 }
-
-
 void Game::SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos) {
 	//TOP Clamp
 	Points[0].x = CameraPos.x;
@@ -38,6 +36,7 @@ void Game::SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos) {
 	Points[3].y = -CameraPos.y;
 }
 
+
 void Game::run() {
 
 	InitWindow(Scr_W, Scr_H, "worldSpace");
@@ -50,24 +49,22 @@ void Game::run() {
 	PlayerMovement Pm;
 	LevelDesigner Ld(p);
 	Physics2D p2D;
-	
+	CameraMovement Cam = CameraMovement(WorldCam);
 
 	AddObjects(&p);
 	AddObjects(&Pm);
 	AddObjects(&Ld);
 	AddObjects(&p2D);
+	AddObjects(&Cam);
+
+
 	
-
-
-	CameraMovement Cam = CameraMovement(WorldCam);
 
 	for (auto obj : Objects) obj->Start();
 
 	while (!WindowShouldClose()) {
 		BeginDrawing();
 
-		WorldCam = Cam.MoveCamera();
-		SetBoundingPoints(Bounding, WorldCam.target);
 
 		//Top,Bottom,Left,Right Scales for Line so they can extended infinitly where the camera perfers to move to.
 		scl_top = Bounding[0].y;
@@ -78,12 +75,16 @@ void Game::run() {
 
 		BeginMode2D(WorldCam);
 		ClearBackground(BLACK);
-
-
+		
+		
+		
 		rlPushMatrix(); // This locks the coords to local space only allowing objects to be transformed in the local space
 		rlScalef(1, -1, 1);
 		rlEnableBackfaceCulling();
 
+		for (auto obj : Objects) obj->Update();
+
+		SetBoundingPoints(Bounding, WorldCam.target);
 		//DEBUG
 		//DrawCircleLines(Bounding[0].x, Bounding[0].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[1].x, Bounding[1].y, 10, ORANGE);
@@ -95,19 +96,17 @@ void Game::run() {
 		DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
 		DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
 
+		for (auto& obj : Objects) obj->Render();
+
 		//TEST Scene rectangle outside the visible area 
 		//DrawRectangle(500, 500, 100, 100, GREEN);
 		//DrawCircle(-1000, 0, 100, WHITE);
-
-
-
-		for (auto obj : Objects) obj->Update();
-
 		rlDisableBackfaceCulling();
 
 		rlPopMatrix();
 		EndMode2D();
 
+		
 
 		EndDrawing();
 	}

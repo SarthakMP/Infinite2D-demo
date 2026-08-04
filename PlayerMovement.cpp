@@ -23,7 +23,7 @@ void PlayerMovement::Move(Point& PlayerPos)
 		PlayerPos.y += Player::GetVelocity().y;
 	}
 }
-void PlayerMovement::AddCollisions(std::shared_ptr<BoxCollider2D> col) {
+void PlayerMovement::AddCollisions(std::shared_ptr<BoxCollider2D>& col) {
 	Collision.push(col);
 }
 
@@ -36,12 +36,14 @@ void PlayerMovement::Update() {
 
 	while (!temp.empty()) {
 
-		Point Hit;
 
 		BoxCollider2D playerBox = Player::GetHitBox();
+		
+		
 		BoxCollider2D surfaceBox = temp.front()->GetHitBox();
+		DrawRectangle(surfaceBox.Rec.x, surfaceBox.Rec.y, surfaceBox.Rec.width, surfaceBox.Rec.height, RED);
 
-		if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox, Hit)) {
+		if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox)) {
 
 			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
 			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
@@ -76,7 +78,7 @@ void PlayerMovement::Update() {
 }
 
 void PlayerMovement::Render() {
-	Point Ppos = Player::GetPlayerPos();
+	
 }
 
 PlayerMovement::PlayerMovement() {

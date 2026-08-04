@@ -9,14 +9,13 @@
 class Chunk {
 
 	int chunk_id;
-	Point Origin;
 	uint16_t chunk_h, chunk_w;
 	int chunk_x, chunk_y;
 	Vector2 XY,WH;
 
 public:
 
-	static inline std::shared_ptr<BoxCollider2D> HitBox;
+	std::shared_ptr<BoxCollider2D> HitBox;
 
 	void serialize(std::ofstream& out);
 
@@ -37,6 +36,6 @@ public:
 	Chunk();
 	
 
-	Chunk(int c_x, int c_y, int c_w, int c_h, int c_i,Point org);
+	Chunk(int c_x, int c_y, int c_w, int c_h, int c_i);
 
 };

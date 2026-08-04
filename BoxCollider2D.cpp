@@ -15,7 +15,7 @@ const Rectangle BoxCollider2D::GetHitBox() {
 	return Rec;
 }
 
-bool BoxCollider2D::CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B, Point& HitPoint)
+bool BoxCollider2D::CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B)
 {
 
 

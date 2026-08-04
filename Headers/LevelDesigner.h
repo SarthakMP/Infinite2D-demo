@@ -25,6 +25,8 @@ public:
 	
 	void Update();
 
+	void Render();
+
 	LevelDesigner(Player& ply);
 
 };

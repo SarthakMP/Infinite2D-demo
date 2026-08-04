@@ -40,14 +40,7 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 		std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
 		Chunk chunk;
 
-		/* DEBUG
-		std::cout << "Curr Pos: " << PlayerPos.x << " Next First Pos: " << PlayerPos.x + sign * ChunksWidth << " Next Second Pos: " << PlayerPos.x + 2 * sign * ChunksWidth << std::endl;
-		std::cout << "Sign: " << sign << std::endl;
-		*/
-
 		int x = targetID * ChunksWidth;
-
-
 
 		if (std::filesystem::exists(path)) {
 			std::ifstream in(path, std::ios::binary);
@@ -59,7 +52,7 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 		}
 		else {
 			Point origin = Point(ChunksWidth / 2 + x, ChunksHeight/2 + y);
-			chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID, origin);
+			chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
 			std::ofstream outFile(path, std::ios::binary);
 
 			if (outFile.is_open()) {
@@ -71,6 +64,7 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 			}
 
 			AddChunk(chunk);
+			
 		}
 
 
@@ -102,10 +96,7 @@ void LevelDesigner::Start() {
 		int x = i * ChunksWidth;
 		int y = -ChunksHeight - 100;
 
-		Point Origin = Point(ChunksWidth / 2 + x, ChunksHeight / 2 + y);
-		Chunk NewChunk(x,y, ChunksWidth, ChunksHeight, i, Origin);
-
-
+		Chunk NewChunk(x,y, ChunksWidth, ChunksHeight, i);
 		PlayerMovement::AddCollisions(NewChunk.HitBox);
 
 		std::ofstream outfile(path, std::ios::binary);
@@ -121,8 +112,12 @@ void LevelDesigner::Update() {
 	Point PlyPos = p.GetPlayerPos();
 
 	GenerateChunk(PlyPos);
-	DrawChunks();
+
 	PrevPos = PlyPos;
+}
+
+void LevelDesigner::Render() {
+	DrawChunks();
 }
 
 LevelDesigner::LevelDesigner(Player& ply) {

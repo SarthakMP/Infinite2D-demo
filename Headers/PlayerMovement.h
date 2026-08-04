@@ -13,7 +13,7 @@ class PlayerMovement : public Behaviour_Adapter {
 	static inline float PlayerSpeed = 5;
 public:
 	static inline std::queue<std::shared_ptr<BoxCollider2D>> Collision;
-	static inline void AddCollisions(std::shared_ptr<BoxCollider2D> col);
+	static void AddCollisions(std::shared_ptr<BoxCollider2D>& col);
 
 	void Move(Point& PlayerPos);
 

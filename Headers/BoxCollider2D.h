@@ -14,7 +14,7 @@ public:
 
 	const Rectangle GetHitBox();
 
-	static bool CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B, Point& HitPoint);
+	static bool CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B);
 	static bool CheckRayCollision(BoxCollider2D HB_A, BoxCollider2D HB_B, Raycast2D& rayhit);
 
 	BoxCollider2D();

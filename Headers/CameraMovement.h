@@ -1,21 +1,20 @@
 #pragma once
 #include"Headers/Behaviour.h"
-#include"raymath.h"
+#include"Headers/Point.h"
 
-class CameraMovement  {
+class CameraMovement : public Behaviour_Adapter {
 public:
 
 	inline static int Hdir,Vdir;
 
-	inline static  Camera2D m_Camera;
-	inline static bool isHorizontalPressed = false, isVerticalPressed=false;
+	inline static Camera2D* m_Camera = nullptr;
 	inline static float CameraSpeed = 5.0f;
-	static float GetHorizontalInput();
-	static float GetVerticalInput();
-	static void MoveCameraTo(Vector2 To);
-	static Camera2D MoveCamera();
 
-	CameraMovement();
+
+	static void MoveCamera();
+
 	CameraMovement(Camera2D& Camera);
+
+	void Update();
 
 };

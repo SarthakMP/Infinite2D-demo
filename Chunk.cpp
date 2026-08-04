@@ -9,8 +9,7 @@ void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&chunk_x), sizeof(chunk_x));
 	out.write(reinterpret_cast<const char*>(&chunk_y), sizeof(chunk_y));
 
-	
-	out.write(reinterpret_cast<const char*>(&Origin), sizeof(Origin));
+
 	/*
 	size_t outer_size = blocks.size();
 	out.write(reinterpret_cast<const char*>(&outer_size), sizeof(outer_size));
@@ -37,8 +36,7 @@ void Chunk::deserialize(std::ifstream& in) {
 	in.read(reinterpret_cast<char*>(&chunk_x), sizeof(chunk_x));
 	in.read(reinterpret_cast<char*>(&chunk_y), sizeof(chunk_y));
 
-	
-	in.read(reinterpret_cast<char*>(&Origin), sizeof(Origin));
+
 	
 	/*
 	size_t outer_size = 0;
@@ -94,19 +92,24 @@ Chunk::Chunk() {
 
 
 	chunk_id = 0;
-	Origin = Point(0, 0);
+
+	HitBox = std::make_shared<BoxCollider2D>();
 }
 
-Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i, Point org) :
-	chunk_x(c_x), chunk_y(c_y), chunk_w(c_w), chunk_h(c_h), chunk_id(c_i), Origin(org) {
+Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
+	chunk_x(c_x), chunk_y(c_y), chunk_w(c_w), chunk_h(c_h), chunk_id(c_i) {
 	WH = { 0,0 };
 	XY = { 0,0 };
 
-	Origin.x = chunk_x;
-	Origin.y = chunk_y;
+	HitBox = std::make_shared<BoxCollider2D>();
 
-	Rec.width = chunk_w;
-	Rec.height = chunk_h;
+	HitBox->Rec.x = chunk_x;
+	HitBox->Rec.y = chunk_y;
 
+	HitBox->Rec.width = chunk_w;
+	HitBox->Rec.height = chunk_h;
+
+	HitBox->Origin.x = HitBox->Rec.x + chunk_w * 0.5f;
+	HitBox->Origin.y = HitBox->Rec.y + chunk_h * 0.5f;
 
 }
