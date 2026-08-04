@@ -102,11 +102,11 @@ Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i, Point org) :
 	WH = { 0,0 };
 	XY = { 0,0 };
 
-	HitBox.Origin.x = chunk_x;
-	HitBox.Origin.y = chunk_y;
+	Origin.x = chunk_x;
+	Origin.y = chunk_y;
 
-	HitBox.Rec.width = chunk_w;
-	HitBox.Rec.height = chunk_h;
+	Rec.width = chunk_w;
+	Rec.height = chunk_h;
 
 
 }

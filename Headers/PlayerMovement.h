@@ -2,7 +2,7 @@
 #include"Behaviour.h"
 #include"Point.h"
 #include"Player.h"
-#include"Collision2D.h"
+#include"BoxCollider2D.h"
 
 #include"Ray2D.h"
 
@@ -12,8 +12,8 @@
 class PlayerMovement : public Behaviour_Adapter {
 	static inline float PlayerSpeed = 5;
 public:
-	std::queue<std::shared_ptr<Collision2D>> Collision;
-	void AddCollisions(std::shared_ptr<Collision2D> col);
+	static inline std::queue<std::shared_ptr<BoxCollider2D>> Collision;
+	static inline void AddCollisions(std::shared_ptr<BoxCollider2D> col);
 
 	void Move(Point& PlayerPos);
 

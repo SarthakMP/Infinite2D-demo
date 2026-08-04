@@ -5,6 +5,7 @@
 #include <cstdint>
 #include"Point.h"
 #include"BoxCollider2D.h"
+
 class Chunk {
 
 	int chunk_id;
@@ -15,7 +16,7 @@ class Chunk {
 
 public:
 
-	static inline BoxCollider2D HitBox;
+	static inline std::shared_ptr<BoxCollider2D> HitBox;
 
 	void serialize(std::ofstream& out);
 
@@ -23,7 +24,6 @@ public:
 
 public:
 
-	std::vector< std::vector<Vector2>>& GetBlocks();
 	
 	void SetXY(float in_x, float in_y);
 

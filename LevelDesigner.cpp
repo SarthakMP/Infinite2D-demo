@@ -104,9 +104,9 @@ void LevelDesigner::Start() {
 
 		Point Origin = Point(ChunksWidth / 2 + x, ChunksHeight / 2 + y);
 		Chunk NewChunk(x,y, ChunksWidth, ChunksHeight, i, Origin);
-		BoxCollider2D Col(NewChunk.HitBox);
 
-		//PlayerMovement::AddCollisions();
+
+		PlayerMovement::AddCollisions(NewChunk.HitBox);
 
 		std::ofstream outfile(path, std::ios::binary);
 		NewChunk.serialize(outfile);

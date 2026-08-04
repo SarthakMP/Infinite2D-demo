@@ -23,7 +23,7 @@ void PlayerMovement::Move(Point& PlayerPos)
 		PlayerPos.y += Player::GetVelocity().y;
 	}
 }
-void PlayerMovement::AddCollisions(std::shared_ptr<Collision2D> col) {
+void PlayerMovement::AddCollisions(std::shared_ptr<BoxCollider2D> col) {
 	Collision.push(col);
 }
 
@@ -32,7 +32,7 @@ void PlayerMovement::Update() {
 	Move(Ppos);
 	Player::SetPlayerPos(Ppos);
 
-	std::queue < std::shared_ptr<Collision2D>> temp = Collision;
+	std::queue < std::shared_ptr<BoxCollider2D>> temp = Collision;
 
 	while (!temp.empty()) {
 
@@ -41,7 +41,7 @@ void PlayerMovement::Update() {
 		BoxCollider2D playerBox = Player::GetHitBox();
 		BoxCollider2D surfaceBox = temp.front()->GetHitBox();
 
-		if (Collision2D::CheckBoxCollision(playerBox, surfaceBox, Hit)) {
+		if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox, Hit)) {
 
 			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
 			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
@@ -77,19 +77,6 @@ void PlayerMovement::Update() {
 
 void PlayerMovement::Render() {
 	Point Ppos = Player::GetPlayerPos();
-	/*
-	std::queue < std::shared_ptr<Collision2D>> temp = Collision;
-	while (!temp.empty()) {
-
-		Point Surface_Origin = temp.front()->GetHitBoxOrigin();
-		//DrawCircle(Surface_Origin.x, Surface_Origin.y, 10, GREEN);
-
-		Ray2D Ray(Surface_Origin, Ppos + 50, GREEN);
-		Ray.DrawRay2D();
-
-		temp.pop();
-	}
-	*/
 }
 
 PlayerMovement::PlayerMovement() {
