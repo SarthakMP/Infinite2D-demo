@@ -1,19 +1,27 @@
 #pragma once
 #include"Behaviour.h"
 #include"Point.h"
+#include"BoxCollider2D.h"
 #include<iostream>
 class Player : public Behaviour_Adapter {
 	
-	Texture2D Player_texture;
+
 	unsigned short hitbox_w = 50, hitbox_h = 100;
 	
+
 public:
+	inline static BoxCollider2D HitBox;
 	inline static Point Player_Pos = Point(0,0);
+	inline static Point Player_Vel = Point(0, 0);
 	inline static unsigned int Player_Speed = 5;
 
 	static void SetPlayerPos(Point& pos);
 	static Point GetPlayerPos();
-	void SetPlayerTexture(Texture2D text);
+
+	static void SetVelocity(Point& vel);
+	static Point GetVelocity();
+
+	static  BoxCollider2D GetHitBox();
 
 	void DrawPlayer();
 

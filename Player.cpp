@@ -6,8 +6,19 @@ void Player::SetPlayerPos(Point& pos) {
 Point Player::GetPlayerPos() {
 	return Player_Pos;
 }
-void Player::SetPlayerTexture(Texture2D text) {
-	Player_texture = text;
+void Player::SetVelocity(Point& vel)
+{
+	Player_Vel = vel;
+}
+
+Point Player::GetVelocity()
+{
+	return Player_Vel;
+}
+
+BoxCollider2D Player::GetHitBox()
+{
+	return HitBox;
 }
 
 void Player::DrawPlayer() {

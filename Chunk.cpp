@@ -9,12 +9,8 @@ void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&chunk_x), sizeof(chunk_x));
 	out.write(reinterpret_cast<const char*>(&chunk_y), sizeof(chunk_y));
 
-	out.write(reinterpret_cast<const char*>(&base_x), sizeof(base_x));
-	out.write(reinterpret_cast<const char*>(&base_y), sizeof(base_y));
-
-	out.write(reinterpret_cast<const char*>(&size_y), sizeof(size_y));
-	out.write(reinterpret_cast<const char*>(&size_x), sizeof(size_x));
-
+	
+	out.write(reinterpret_cast<const char*>(&Origin), sizeof(Origin));
 	/*
 	size_t outer_size = blocks.size();
 	out.write(reinterpret_cast<const char*>(&outer_size), sizeof(outer_size));
@@ -31,6 +27,8 @@ void Chunk::serialize(std::ofstream& out) {
 
 void Chunk::deserialize(std::ifstream& in) {
 
+	
+
 	in.read(reinterpret_cast<char*>(&chunk_id), sizeof(chunk_id));
 
 	in.read(reinterpret_cast<char*>(&chunk_h), sizeof(chunk_h));
@@ -39,12 +37,9 @@ void Chunk::deserialize(std::ifstream& in) {
 	in.read(reinterpret_cast<char*>(&chunk_x), sizeof(chunk_x));
 	in.read(reinterpret_cast<char*>(&chunk_y), sizeof(chunk_y));
 
-	in.read(reinterpret_cast<char*>(&base_x), sizeof(base_x));
-	in.read(reinterpret_cast<char*>(&base_y), sizeof(base_y));
-
-	in.read(reinterpret_cast<char*>(&size_y), sizeof(size_y));
-	in.read(reinterpret_cast<char*>(&size_x), sizeof(size_x));
-
+	
+	in.read(reinterpret_cast<char*>(&Origin), sizeof(Origin));
+	
 	/*
 	size_t outer_size = 0;
 	in.read(reinterpret_cast<char*>(&outer_size), sizeof(outer_size));
@@ -62,9 +57,6 @@ void Chunk::deserialize(std::ifstream& in) {
 
 }
 
-std::vector< std::vector<Vector2>>& Chunk::GetBlocks() {
-	return blocks;
-}
 
 void Chunk::SetXY(float in_x, float in_y) {
 	chunk_x = in_x;
@@ -72,8 +64,8 @@ void Chunk::SetXY(float in_x, float in_y) {
 }
 
 Vector2& Chunk::GetBaseXY() {
-	XY.x = base_x;
-	XY.y = base_y;
+	XY.x = chunk_x;
+	XY.y = chunk_y;
 	return XY;
 }
 
@@ -92,9 +84,6 @@ int Chunk::Getid() {
 }
 
 Chunk::Chunk() {
-	base_x = 0;
-	base_y = 0;
-
 	XY = { 0,0 };
 	chunk_y = 0;
 	chunk_x = 0;
@@ -104,21 +93,20 @@ Chunk::Chunk() {
 	chunk_h = 0;
 
 
-	blocks = {};
-	size_y = 0;
-	size_x = 0;
-
 	chunk_id = 0;
+	Origin = Point(0, 0);
 }
 
-Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i, std::vector<std::vector<Vector2>> b, int b_x, int b_y) :
-	base_x(c_x), base_y(c_y), chunk_w(c_w), chunk_h(c_h), chunk_id(c_i), blocks(b), size_x(b_x), size_y(b_y) {
-	chunk_x = base_x;
-	chunk_y = base_y;
-}
+Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i, Point org) :
+	chunk_x(c_x), chunk_y(c_y), chunk_w(c_w), chunk_h(c_h), chunk_id(c_i), Origin(org) {
+	WH = { 0,0 };
+	XY = { 0,0 };
 
-Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
-	base_x(c_x), base_y(c_y), chunk_w(c_w), chunk_h(c_h), chunk_id(c_i) {
-	chunk_x = base_x;
-	chunk_y = base_y;
+	HitBox.Origin.x = chunk_x;
+	HitBox.Origin.y = chunk_y;
+
+	HitBox.Rec.width = chunk_w;
+	HitBox.Rec.height = chunk_h;
+
+
 }

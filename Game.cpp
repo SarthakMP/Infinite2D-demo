@@ -4,7 +4,7 @@ void Game::SetCamera(Camera2D& cam) {
 	cam.offset = Vector2(Scr_W / 2, Scr_H / 2);
 	cam.rotation = 0;
 	cam.target = Vector2{ 0,0 };
-	cam.zoom = 0.1f;
+	cam.zoom = 1.0f;
 }
 
 void Game::AddObjects(Behaviour* obj) {
@@ -47,14 +47,17 @@ void Game::run() {
 	InitialBoudningPoints(Bounding);
 
 	Player p;
-	PlayerMovement Pm(p);
+	PlayerMovement Pm;
 	LevelDesigner Ld(p);
 	Physics2D p2D;
+	
 
 	AddObjects(&p);
 	AddObjects(&Pm);
 	AddObjects(&Ld);
 	AddObjects(&p2D);
+	
+
 
 	CameraMovement Cam = CameraMovement(WorldCam);
 

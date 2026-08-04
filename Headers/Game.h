@@ -11,7 +11,7 @@
 #include"Headers/PlayerMovement.h"
 #include"Headers/LevelDesigner.h"
 #include"Headers/Physics2D.h"
-
+#include"Headers/Collision2D.h"
 #include <iostream>
 #include<vector>
 

@@ -1,41 +1,88 @@
 #pragma once
-#include"raylib.h"
+#include"Behaviour.h"
 #include<iostream>
-
-class Point
-{
+class Point {
 public:
-	int x = 0, y=0;
+	float x, y;
 
-public:
-	Point() {
-		x = 0;
-		y = 0;
-	}
-	Point(Vector2 pos) : x(pos.x), y(pos.y) {}
-	Point(int in_x, int in_y) :x(in_x), y(in_y) {}
-	~Point() {}
+	Point() : x(0), y(0) {}
 
-	static Point PointAdd(Point& a, Point& b) {
-		return Point(a.x + b.x, a.y + b.y);
+	Point(float in_x, float in_y) : x(in_x), y(in_y) {}
+
+	Point(const Vector2& vec) : x(vec.x), y(vec.y) {}
+
+	static inline float Magnitude(Point A, Point B) {
+		return std::hypot(B.x - A.x, B.y - A.y);
 	}
 
-	static Point PointZero() {
-		return Point(0, 0);
+
+	static inline float Dot(Point A, Point B) {
+		return (A.x * B.x + A.y * B.y);
 	}
 
-	friend inline std::ostream& operator<<(std::ostream& os, const Point& p);
-	friend inline Point operator*(const Point& p, const float q);
+	static inline float sign(float a) {
+		return a > 0 ? 1 : a < 0 ? -1 : 0;
+	}
 
-private:
+	Point operator-() const {
+		return Point(-x, -y);
+	}
 
+	friend std::ostream& operator<<(std::ostream& os, const Point& p);
+	friend const Point operator+(Point A, Point B);
+	friend const Point operator-(Point A, Point B);
+	friend const Point operator*(Point A, Point B);
+
+	friend const Point operator+(Point A, float B);
+	friend const Point operator-(Point A, float B);
+	friend const Point operator*(Point A, float B);
+	friend const Point operator/(Point A, float B);
+	friend const Point operator+=(Point A, float B);
+	friend const Point operator-=(Point A, float B);
 };
 
-Point operator*(const Point& p, const float q) {
-	return Point(p.x * q, p.y * q);
-}
-
-std::ostream& operator<<(std::ostream& os, const Point& p) {
+static inline std::ostream& operator<<(std::ostream& os, const Point& p) {
 	os << "(" << p.x << "," << p.y << ")" << "\n";
 	return os;
+}
+
+static inline const  Point operator+(Point A, Point B) {
+	return Point(A.x + B.x, A.y + B.y);
+}
+static inline const  Point operator-(Point A, Point B) {
+	return Point(A.x - B.x, A.y - B.y);
+}
+static inline  const Point operator*(Point A, Point B) {
+	return Point(A.x * B.x, A.y * B.y);
+}
+
+
+static inline const  Point operator+(Point A, float B) {
+	return Point(A.x + B, A.y + B);
+}
+
+static inline const  Point operator-(Point A, float B) {
+	return Point(A.x - B, A.y - B);
+}
+
+static inline const  Point operator-(float B, Point A) {
+	return Point(B - A.x, B - A.y);
+}
+
+static inline const  Point operator*(Point A, float B) {
+	return Point(A.x * B, A.y * B);
+}
+
+static inline const Point operator/(Point A, float B) {
+	return Point(A.x / B, A.y / B);
+}
+
+static inline const Point operator+=(Point A, float B)
+{
+	return Point(A.x + B, A.y + B);
+}
+
+static inline const Point operator-=(Point A, float B)
+{
+	return Point(A.x - B, A.y - B);
 }

@@ -7,8 +7,8 @@ void Physics2D::AddGravity(Point& Pos)
 
 void Physics2D::Update() {
 	Point PlayerPos = Player::GetPlayerPos();
-	std::cout << PlayerPos << std::endl;
-	AddGravity(PlayerPos);
+	//std::cout << PlayerPos << std::endl;
+	//AddGravity(PlayerPos);
 	Player::SetPlayerPos(PlayerPos);
 
 }

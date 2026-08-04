@@ -28,7 +28,7 @@ add_executable (Infinite2D-demo
 "Chunk.cpp" 
 "LevelDesigner.cpp"  
 "Game.cpp" 
-"Player.cpp" "Headers/Point.h" "Physics2D.cpp")
+"Player.cpp" "Headers/Point.h" "Physics2D.cpp" "Headers/Collision2D.h"  "BoxCollider2D.cpp" "Headers/BoxCollider2D.h" "Headers/Ray2D.h" "Headers/Raycast2D.h" "Ray2D.cpp" "PlayerMovement.cpp")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

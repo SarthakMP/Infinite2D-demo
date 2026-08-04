@@ -1,5 +1,5 @@
 #include"Headers/LevelDesigner.h"
-
+#include"Headers/PlayerMovement.h"
 
 static int m_sign(int Pos) {
 	return (Pos > 0) - (Pos < 0);
@@ -58,8 +58,8 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 			}
 		}
 		else {
-
-			chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
+			Point origin = Point(ChunksWidth / 2 + x, ChunksHeight/2 + y);
+			chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID, origin);
 			std::ofstream outFile(path, std::ios::binary);
 
 			if (outFile.is_open()) {
@@ -99,7 +99,15 @@ void LevelDesigner::Start() {
 	for (int i = -offset; i <= offset; i++) {
 
 		std::string path = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
-		Chunk NewChunk(i * ChunksWidth, -ChunksHeight - 100, ChunksWidth, ChunksHeight, i);
+		int x = i * ChunksWidth;
+		int y = -ChunksHeight - 100;
+
+		Point Origin = Point(ChunksWidth / 2 + x, ChunksHeight / 2 + y);
+		Chunk NewChunk(x,y, ChunksWidth, ChunksHeight, i, Origin);
+		BoxCollider2D Col(NewChunk.HitBox);
+
+		//PlayerMovement::AddCollisions();
+
 		std::ofstream outfile(path, std::ios::binary);
 		NewChunk.serialize(outfile);
 		ChunksArray[i + offset] = NewChunk;

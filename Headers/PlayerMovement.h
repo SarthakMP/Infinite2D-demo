@@ -1,53 +1,24 @@
 #pragma once
+#include"Behaviour.h"
+#include"Point.h"
 #include"Player.h"
-#include<iostream>
-class PlayerMovement : public Player{
-	Player p;
+#include"Collision2D.h"
 
-	void Move(Point in, Point CurPos) {
-		in = in * p.Player_Speed;
-		Point nextPos = Point::PointAdd(in , CurPos) ;
-		p.SetPlayerPos(nextPos);
-	}
+#include"Ray2D.h"
 
-	bool isPressed = false;
-	Point GetInput() {
-		Point input = Point(0, 0);
-		if (IsKeyDown(KEY_D)) {
-			input.x = 1.0f;
-			isPressed = true;
-			return input;
-		}
-		if (IsKeyDown(KEY_A)) {
-			input.x = -1.0f;
-			isPressed = true;
-			return input;
-		}
+#include<queue>
+#include <memory>
 
-		if (IsKeyDown(KEY_SPACE)) {
-			input.y = 1.0f;
-			isPressed = true;
-			return input;
-		}
-
-		isPressed = false;
-		return Point(0, 0);
-	}
-
-
-	void Update() override {
-		
-		Point in = GetInput();
-		if (isPressed) {
-			Point CurPos = p.GetPlayerPos();
-			Move(in, CurPos);
-		}
-
-	}
-
+class PlayerMovement : public Behaviour_Adapter {
+	static inline float PlayerSpeed = 5;
 public:
-	PlayerMovement(Player& ply) {
-		p = ply;
-	}
+	std::queue<std::shared_ptr<Collision2D>> Collision;
+	void AddCollisions(std::shared_ptr<Collision2D> col);
+
+	void Move(Point& PlayerPos);
+
+	void Update();
+	void Render();
+	PlayerMovement();
 
 };
