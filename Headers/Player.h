@@ -3,10 +3,11 @@
 #include"Point.h"
 #include"BoxCollider2D.h"
 #include<iostream>
+
 class Player : public Behaviour_Adapter {
 	
 
-	unsigned short hitbox_w = 50, hitbox_h = 50;
+	unsigned short hitbox_w = 100, hitbox_h = 100;
 	
 
 public:
@@ -18,7 +19,8 @@ public:
 	static void SetPlayerPos(Point& pos);
 	static Point GetPlayerPos();
 
-	static void SetVelocity(Point& vel);
+	static void SetVelocity(const Point& vel);
+	static void SetVelocity(float x_in,float y_in);
 	static Point GetVelocity();
 
 	static BoxCollider2D GetHitBox();

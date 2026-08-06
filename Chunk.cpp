@@ -9,19 +9,17 @@ void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&chunk_x), sizeof(chunk_x));
 	out.write(reinterpret_cast<const char*>(&chunk_y), sizeof(chunk_y));
 
-
-	/*
-	size_t outer_size = blocks.size();
-	out.write(reinterpret_cast<const char*>(&outer_size), sizeof(outer_size));
-
-	for (const auto& row : blocks) {
-		size_t inner_size = row.size();
-		out.write(reinterpret_cast<const char*>(&inner_size), sizeof(inner_size));
-		if (inner_size > 0) {
-			out.write(reinterpret_cast<const char*>(row.data()), inner_size * sizeof(Vector2));
-		}
+	if (HitBox) {
+		out.write(reinterpret_cast<const char*>(HitBox.get()), sizeof(BoxCollider2D));
 	}
-	*/
+	
+	size_t count = (Blocks) ? Blocks->size() : 0;
+	out.write(reinterpret_cast<const char*>(&count), sizeof(count));
+
+	if (count > 0) {
+		out.write(reinterpret_cast<const char*>(Blocks->data()), count * sizeof(BoxCollider2D));
+	}
+	
 }
 
 void Chunk::deserialize(std::ifstream& in) {
@@ -36,22 +34,23 @@ void Chunk::deserialize(std::ifstream& in) {
 	in.read(reinterpret_cast<char*>(&chunk_x), sizeof(chunk_x));
 	in.read(reinterpret_cast<char*>(&chunk_y), sizeof(chunk_y));
 
-
-	
-	/*
-	size_t outer_size = 0;
-	in.read(reinterpret_cast<char*>(&outer_size), sizeof(outer_size));
-	blocks.resize(outer_size);
-
-	for (size_t i = 0; i < outer_size; ++i) {
-		size_t inner_size;
-		in.read(reinterpret_cast<char*>(&inner_size), sizeof(inner_size));
-		blocks[i].resize(inner_size);
-		if (inner_size > 0) {
-			in.read(reinterpret_cast<char*>(blocks[i].data()), inner_size * sizeof(Vector2));
-		}
+	if (HitBox) {
+		in.read(reinterpret_cast<char*>(HitBox.get()), sizeof(BoxCollider2D));
 	}
-	*/
+	
+
+	if (!Blocks) {
+		Blocks = std::make_shared<std::vector<BoxCollider2D>>();
+	}
+
+	size_t count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(count));
+	Blocks->resize(count);
+
+	if (count > 0) {
+		in.read(reinterpret_cast<char*>(Blocks->data()), count * sizeof(BoxCollider2D));
+	}
+
 
 }
 
@@ -94,6 +93,7 @@ Chunk::Chunk() {
 	chunk_id = 0;
 
 	HitBox = std::make_shared<BoxCollider2D>();
+	Blocks = std::make_shared<std::vector<BoxCollider2D>>();
 }
 
 Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
@@ -102,6 +102,7 @@ Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
 	XY = { 0,0 };
 
 	HitBox = std::make_shared<BoxCollider2D>();
+	Blocks = std::make_shared<std::vector<BoxCollider2D>>();
 
 	HitBox->Rec.x = chunk_x;
 	HitBox->Rec.y = chunk_y;

@@ -1,24 +1,19 @@
 #pragma once
-#include"Behaviour.h"
 #include"Point.h"
 #include"Player.h"
-#include"BoxCollider2D.h"
+#include"Physics2D.h"
 
-#include"Ray2D.h"
-
-#include<queue>
-#include <memory>
-
-class PlayerMovement : public Behaviour_Adapter {
+class PlayerMovement : public Physics2D {
 	static inline float PlayerSpeed = 5;
 public:
-	static inline std::queue<std::shared_ptr<BoxCollider2D>> Collision;
-	static void AddCollisions(std::shared_ptr<BoxCollider2D>& col);
 
-	void Move(Point& PlayerPos);
+	static void Move(Point& PlayerPos);
 
-	void Update();
-	void Render();
+	void Update() override;
+	void Render() override;
+
+	void OnMouseDown();
+
 	PlayerMovement();
 
 };

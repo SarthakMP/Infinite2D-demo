@@ -56,15 +56,14 @@ bool BoxCollider2D::CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B)
 	float dx = HB_A.Origin.x - HB_B.Origin.x;
 	float dy = HB_A.Origin.y - HB_B.Origin.y;
 
+	if (std::abs(dx) < 0.001f && std::abs(dy) < 0.001f) return true;
+
 	float halfW = (HB_A.Rec.width + HB_B.Rec.width) * 0.5f;
 	float halfH = (HB_A.Rec.height + HB_B.Rec.height) * 0.5f;
-
 
 	if (halfW >= std::abs(dx) && halfH >= std::abs(dy)) {
 		return true;
 	}
-
-
 
 	return false;
 

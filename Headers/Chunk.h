@@ -1,8 +1,7 @@
 #pragma once
-#include <iostream>
 #include <fstream>
 #include <vector>
-#include <cstdint>
+
 #include"Point.h"
 #include"BoxCollider2D.h"
 
@@ -15,7 +14,7 @@ class Chunk {
 
 public:
 
-	std::shared_ptr<BoxCollider2D> HitBox;
+	std::shared_ptr<std::vector<BoxCollider2D>> Blocks;
 
 	void serialize(std::ofstream& out);
 

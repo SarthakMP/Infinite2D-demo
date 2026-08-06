@@ -1,6 +1,5 @@
 #include"Headers/PlayerMovement.h"
-#include<iostream>
-
+#include"Headers/LevelDesigner.h"
 Point m_abs(Point A) {
 	return A.x < 0 || A.y < 0 ? -A : A;
 }
@@ -10,71 +9,61 @@ void PlayerMovement::Move(Point& PlayerPos)
 	int KeyVerticalPressed = IsKeyDown(KEY_W) == true ? 1 : IsKeyDown(KEY_S) == true ? -1 : 0;
 	int KeyHorizontalPressed = IsKeyDown(KEY_D) == true ? 1 : IsKeyDown(KEY_A) == true ? -1 : 0;
 
-	Point Vel = Point(KeyHorizontalPressed * PlayerSpeed, KeyVerticalPressed * PlayerSpeed);
+	float deAcc = 25.0f;
+	float MaxSpeed = 5.0f;
 
+	Point Acc = Point(KeyHorizontalPressed * PlayerSpeed, KeyVerticalPressed * PlayerSpeed);
+	Point Vel = Player::GetVelocity();
 	if (KeyHorizontalPressed != 0) {
-		Player::SetVelocity(Vel);
-		PlayerPos.x += Player::GetVelocity().x;
+		Vel.x += Acc.x * deltatime;
+	}
+	else {
+		if (Vel.x > 0) {
+			Vel.x -= deAcc * deltatime;
+			if (Vel.x < 0) Vel.x = 0;
+		}
+		else if(Vel.x < 0) {
+			Vel.x += deAcc * deltatime;
+			if (Vel.x > 0) Vel.x = 0;
+		}
 	}
 
 	if (KeyVerticalPressed != 0) {
-
-		Player::SetVelocity(Vel);
-		PlayerPos.y += Player::GetVelocity().y;
+		Vel.y += Acc.y * deltatime;
 	}
-}
-void PlayerMovement::AddCollisions(std::shared_ptr<BoxCollider2D>& col) {
-	Collision.push(col);
-}
-
-void PlayerMovement::Update() {
-	Point Ppos = Player::GetPlayerPos();
-	Move(Ppos);
-	Player::SetPlayerPos(Ppos);
-
-	std::queue < std::shared_ptr<BoxCollider2D>> temp = Collision;
-
-	while (!temp.empty()) {
-
-
-		BoxCollider2D playerBox = Player::GetHitBox();
-		
-		
-		BoxCollider2D surfaceBox = temp.front()->GetHitBox();
-		DrawRectangle(surfaceBox.Rec.x, surfaceBox.Rec.y, surfaceBox.Rec.width, surfaceBox.Rec.height, RED);
-
-		if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox)) {
-
-			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
-			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
-
-			float overlapX = (playerBox.Rec.width + surfaceBox.Rec.width) * 0.5f - std::abs(dx);
-			float overlapY = (playerBox.Rec.height + surfaceBox.Rec.height) * 0.5f - std::abs(dy);
-
-			Point new_pos = Ppos;
-			if (overlapX < overlapY) {
-				if (dx > 0) {
-					new_pos -= overlapX;
-				}
-				else {
-					new_pos += overlapX;
-				}
-			}
-			else {
-				if (dy > 0) {
-					new_pos -= overlapY;
-				}
-				else {
-					new_pos += overlapY;
-				}
-			}
-
-			Player::SetPlayerPos(new_pos);
+	else {
+		if (Vel.y > 0) {
+			Vel.y -= deAcc * deltatime;
+			if (Vel.y < 0) Vel.y = 0;
 		}
-
-		temp.pop();
+		else if (Vel.y < 0) {
+			Vel.y += deAcc * deltatime;
+			if (Vel.y > 0) Vel.y = 0;
+		}
 	}
+	Vel.x = std::clamp(Vel.x, -MaxSpeed, MaxSpeed);
+	Vel.y = std::clamp(Vel.y, -MaxSpeed, MaxSpeed);
 
+	Player::SetVelocity(Vel);
+
+	PlayerPos.x += Player::GetVelocity().x;
+	PlayerPos.y += Player::GetVelocity().y;
+}
+
+
+void  PlayerMovement::Update() {
+	Point PlayerPos = Player::GetPlayerPos();
+	Move(PlayerPos);
+	Player::SetPlayerPos(PlayerPos);
+	
+	Physics2D::Update();
+
+	
+}
+
+void PlayerMovement::OnMouseDown() {
+	Point MousePos = GetMousePosition();
+	std::cout << MousePos/100 << std::endl;
 }
 
 void PlayerMovement::Render() {

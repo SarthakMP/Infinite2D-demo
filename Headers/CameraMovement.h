@@ -1,6 +1,7 @@
 #pragma once
 #include"Headers/Behaviour.h"
 #include"Headers/Point.h"
+#include"Headers/Player.h"
 
 class CameraMovement : public Behaviour_Adapter {
 public:

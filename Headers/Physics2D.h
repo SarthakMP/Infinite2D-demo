@@ -1,13 +1,21 @@
 #pragma once
-#include"Headers/Behaviour.h"
 #include"Headers/Point.h"
-class Physics2D : public Behaviour_Adapter {
+#include"Headers/BoxCollider2D.h"
+#include"Headers/Chunk.h"
+#include"Headers/LevelDesigner.h"
+
+#include<queue>
+#include <memory>
+
+class Physics2D : public Behaviour_Adapter{
 public:
+	static inline std::queue<std::shared_ptr<BoxCollider2D>> Collision;
 	inline static float Gravity = -9.81f;
 
 	void AddGravity(Point& Pos);
 
-	void Update();
-	void Start();
+	virtual void Update();
+	
+
 
 };

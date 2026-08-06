@@ -4,11 +4,11 @@ void Game::SetCamera(Camera2D& cam) {
 	cam.offset = Vector2(Scr_W / 2, Scr_H / 2);
 	cam.rotation = 0;
 	cam.target = Vector2{ 0,0 };
-	cam.zoom = 0.1f;
+	cam.zoom = 1.0f;
 }
 
-void Game::AddObjects(Behaviour* obj) {
-	Objects.push_back(obj);
+void Game::AddObjects(std::unique_ptr<Behaviour> obj) {
+	Objects.push_back(std::move(obj));
 }
 
 void Game::InitialBoudningPoints(Point(&Points)[4]) {
@@ -45,24 +45,19 @@ void Game::run() {
 
 	InitialBoudningPoints(Bounding);
 
-	Player p;
-	PlayerMovement Pm;
-	LevelDesigner Ld(p);
-	Physics2D p2D;
-	CameraMovement Cam = CameraMovement(WorldCam);
-
-	AddObjects(&p);
-	AddObjects(&Pm);
-	AddObjects(&Ld);
-	AddObjects(&p2D);
-	AddObjects(&Cam);
+	std::unique_ptr<Player> p = std::make_unique<Player>();
+	AddObjects(std::move(p));
+	AddObjects(std::make_unique<PlayerMovement>());
+	AddObjects(std::make_unique < LevelDesigner>(p));
+	AddObjects(std::make_unique < CameraMovement>(WorldCam));
 
 
-	
-
-	for (auto obj : Objects) obj->Start();
-
+	for (auto& obj : Objects) obj->Start();
+	float lastTime = 0.0f;
 	while (!WindowShouldClose()) {
+
+		Behaviour_Adapter::deltatime = GetFrameTime();
+		
 		BeginDrawing();
 
 
@@ -82,7 +77,7 @@ void Game::run() {
 		rlScalef(1, -1, 1);
 		rlEnableBackfaceCulling();
 
-		for (auto obj : Objects) obj->Update();
+		
 
 		SetBoundingPoints(Bounding, WorldCam.target);
 		//DEBUG
@@ -95,6 +90,13 @@ void Game::run() {
 		DrawCircle(0, 0, 5, WHITE); //Origin
 		DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
 		DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
+
+		if (IsMouseButtonDown(0))
+			for (auto& obj : Objects) obj->OnMouseDown();
+		if (IsMouseButtonUp(0))
+			for (auto& obj : Objects) obj->OnMouseUp();
+
+		for (auto& obj : Objects) obj->Update();
 
 		for (auto& obj : Objects) obj->Render();
 
@@ -109,6 +111,7 @@ void Game::run() {
 		
 
 		EndDrawing();
+
 	}
 
 	CloseWindow();

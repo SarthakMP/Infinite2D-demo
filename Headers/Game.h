@@ -14,6 +14,8 @@
 #include"Headers/Collision2D.h"
 #include <iostream>
 #include<vector>
+#include<memory>
+#include<chrono>
 
 #define COL_TRANSPARENT CLITERAL(Color){0,0,0,0}
 #define COL_OPACITY CLITERAL(Color){255,255,255,80}
@@ -26,7 +28,7 @@ class Game {
 
 	static inline int Scr_W = 800, Scr_H = 800;
 	static inline Camera2D WorldCam;
-	static inline std::vector<Behaviour*> Objects;
+	static inline std::vector<std::unique_ptr<Behaviour>> Objects;
 
 	static inline float scl_top = 0, scl_left = 0, scl_bottom = 0, scl_right = 0;
 	static inline Point Bounding[4];
@@ -34,7 +36,7 @@ class Game {
 public:
 
 	void SetCamera(Camera2D& cam);
-	void AddObjects(Behaviour* obj);
+	void AddObjects(std::unique_ptr<Behaviour> obj);
 	void InitialBoudningPoints(Point(&Points)[4]);
 	void SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos);
 	void run();

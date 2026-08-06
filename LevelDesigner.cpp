@@ -1,5 +1,4 @@
 #include"Headers/LevelDesigner.h"
-#include"Headers/PlayerMovement.h"
 
 static int m_sign(int Pos) {
 	return (Pos > 0) - (Pos < 0);
@@ -26,16 +25,13 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 	int delta = PlayerPos.x - PrevPos.x;
 	if (delta == 0) return;
 
-
-
 	int sign = m_sign(delta);
 
 	int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
 	int y = -ChunksHeight - 100;
 
-	for (int i = 1; i <= 2; i++) {
 
-		int targetID = CurrentChunkId + (sign * i);
+		int targetID = CurrentChunkId + (sign);
 
 		std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
 		Chunk chunk;
@@ -51,7 +47,6 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 			}
 		}
 		else {
-			Point origin = Point(ChunksWidth / 2 + x, ChunksHeight/2 + y);
 			chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
 			std::ofstream outFile(path, std::ios::binary);
 
@@ -62,13 +57,11 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 			else {
 				std::cerr << "Warning: Could not save chunk to disk: " << path << std::endl;
 			}
-
+			GenerateBlocks(chunk, x, y);
 			AddChunk(chunk);
 			
 		}
 
-
-	}
 	PrevPos = PlayerPos;
 
 
@@ -76,20 +69,43 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 
 void LevelDesigner::DrawChunks() {
 	for (Chunk& chunk : ChunksArray) {
-		Vector2 Pos = chunk.GetXY();
-		Vector2 Size = chunk.GetWH();
-		DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
+
+		for (auto& blocks : *chunk.Blocks) {
+			//DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, WHITE);
+			DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
+		}
+		
+		
+		//Vector2 Pos = chunk.GetXY();
+		//Vector2 Size = chunk.GetWH();
+		//DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
+		//DrawRectangle(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
+	}
+}
+float block_h = 100, block_w = 100;
+
+void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
+	int chunk_h = NewChunk.GetWH().y;
+	int chunk_w = NewChunk.GetWH().x;
+	for (size_t r = 0; r < static_cast<int>(std::floor(chunk_h / 100)); r++) {
+		for (size_t c = 0; c < static_cast<int>(std::floor(chunk_w / 100)); c++) {
+			int block_x = x + c * block_w ;
+			int block_y = y + r * block_h ;
+			Rectangle block(block_x, block_y, block_w, block_h);
+			NewChunk.Blocks->push_back(block);
+		}
 	}
 }
 
 void LevelDesigner::Start() {
-
+	p = std::make_unique<Player>();
 
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
 	}
 
 	int offset = 3;
+	
 	for (int i = -offset; i <= offset; i++) {
 
 		std::string path = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
@@ -97,7 +113,9 @@ void LevelDesigner::Start() {
 		int y = -ChunksHeight - 100;
 
 		Chunk NewChunk(x,y, ChunksWidth, ChunksHeight, i);
-		PlayerMovement::AddCollisions(NewChunk.HitBox);
+		
+		GenerateBlocks(NewChunk, x, y);
+
 
 		std::ofstream outfile(path, std::ios::binary);
 		NewChunk.serialize(outfile);
@@ -109,17 +127,14 @@ void LevelDesigner::Start() {
 }
 
 void LevelDesigner::Update() {
-	Point PlyPos = p.GetPlayerPos();
-
+	Point PlyPos = p->GetPlayerPos();
 	GenerateChunk(PlyPos);
-
-	PrevPos = PlyPos;
 }
 
 void LevelDesigner::Render() {
 	DrawChunks();
 }
 
-LevelDesigner::LevelDesigner(Player& ply) {
-	p = ply;
+LevelDesigner::LevelDesigner(std::unique_ptr<Player>& ply) {
+	p = std::move(ply);
 }

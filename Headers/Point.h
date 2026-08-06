@@ -38,7 +38,9 @@ public:
 	friend const Point operator*(Point A, float B);
 	friend const Point operator/(Point A, float B);
 	friend const Point operator+=(Point A, float B);
+	friend const Point operator+=(Point A, Point B);
 	friend const Point operator-=(Point A, float B);
+	friend const Point operator-=(Point A, Point B);
 };
 
 static inline std::ostream& operator<<(std::ostream& os, const Point& p) {
@@ -82,7 +84,16 @@ static inline const Point operator+=(Point A, float B)
 	return Point(A.x + B, A.y + B);
 }
 
+static inline const Point operator+=(Point A, Point B) {
+	return Point(A.x + B.x, A.y + B.x);
+}
+
 static inline const Point operator-=(Point A, float B)
 {
 	return Point(A.x - B, A.y - B);
+}
+
+static inline const Point operator-=(Point A, Point B)
+{
+	return Point(A.x - B.x, A.y - B.x);
 }

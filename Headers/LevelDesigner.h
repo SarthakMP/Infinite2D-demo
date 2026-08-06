@@ -6,9 +6,8 @@
 #include<math.h>
 
 class LevelDesigner : public Behaviour_Adapter{
-	inline static Player p;
+	inline static std::unique_ptr<Player> p;
 	
-	int GlobalChunkCounter = 0;
 public:
 	inline static Chunk ChunksArray[6];
 	inline static std::string baseChunksPath = std::string(SOURCE_DIR) + "Chunks/";
@@ -21,12 +20,14 @@ public:
 
 	inline static void DrawChunks();
 
+	inline static void GenerateBlocks(Chunk& NewChunk, int x, int y);
+
 	void Start();
 	
 	void Update();
 
 	void Render();
 
-	LevelDesigner(Player& ply);
+	LevelDesigner(std::unique_ptr<Player>& ply);
 
 };
