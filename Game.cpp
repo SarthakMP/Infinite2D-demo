@@ -4,7 +4,7 @@ void Game::SetCamera(Camera2D& cam) {
 	cam.offset = Vector2(Scr_W / 2, Scr_H / 2);
 	cam.rotation = 0;
 	cam.target = Vector2{ 0,0 };
-	cam.zoom = 1.0f;
+	cam.zoom = 0.1f;
 }
 
 void Game::AddObjects(std::unique_ptr<Behaviour> obj) {

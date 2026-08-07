@@ -15,7 +15,7 @@ class Chunk {
 public:
 
 	std::shared_ptr<std::vector<BoxCollider2D>> Blocks;
-
+	std::shared_ptr<BoxCollider2D> HitBox;
 	void serialize(std::ofstream& out);
 
 	void deserialize(std::ifstream& in);

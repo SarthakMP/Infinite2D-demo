@@ -69,16 +69,16 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 
 void LevelDesigner::DrawChunks() {
 	for (Chunk& chunk : ChunksArray) {
-
+		/*
 		for (auto& blocks : *chunk.Blocks) {
 			//DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, WHITE);
-			DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
+			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
 		}
+		*/
 		
-		
-		//Vector2 Pos = chunk.GetXY();
-		//Vector2 Size = chunk.GetWH();
-		//DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
+		Vector2 Pos = chunk.GetXY();
+		Vector2 Size = chunk.GetWH();
+		DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
 		//DrawRectangle(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
 	}
 }
