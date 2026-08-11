@@ -14,21 +14,32 @@ project ("Infinite2D-demo")
 # Add source to this project's executable.
 add_executable (Infinite2D-demo 
 "Infinite2D-demo.cpp" 
+
 "Headers/Chunk.h" 
 "Headers/LevelDesigner.h" 
 "Headers/Game.h" 
 "Headers/Behaviour.h" 
 "Headers/PlayerMovement.h" 
 "Headers/Player.h" 
-"CameraMovement.cpp" 
 "Headers/CameraMovement.h" 
- 
+"Headers/BoxCollider2D.h" 
+"Headers/Ray2D.h" 
+"Headers/Raycast2D.h" 
 "Headers/Physics2D.h" 
- 
+"Headers/Collision2D.h"  
+"Headers/Point.h" 
+"Headers/BlockModification.h"
+
+"BlockModification.cpp"
 "Chunk.cpp" 
 "LevelDesigner.cpp"  
 "Game.cpp" 
-"Player.cpp" "Headers/Point.h" "Physics2D.cpp" "Headers/Collision2D.h"  "BoxCollider2D.cpp" "Headers/BoxCollider2D.h" "Headers/Ray2D.h" "Headers/Raycast2D.h" "Ray2D.cpp" "PlayerMovement.cpp")
+"Player.cpp" 
+"Physics2D.cpp" 
+"CameraMovement.cpp" 
+"BoxCollider2D.cpp" 
+"Ray2D.cpp" 
+"PlayerMovement.cpp" )
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

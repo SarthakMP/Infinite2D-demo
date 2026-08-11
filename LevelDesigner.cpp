@@ -69,16 +69,16 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 
 void LevelDesigner::DrawChunks() {
 	for (Chunk& chunk : ChunksArray) {
-		/*
+
 		for (auto& blocks : *chunk.Blocks) {
-			//DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, WHITE);
+			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
 			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
 		}
-		*/
+
 		
 		Vector2 Pos = chunk.GetXY();
 		Vector2 Size = chunk.GetWH();
-		DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, WHITE);
+		DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, GREEN);
 		//DrawRectangle(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
 	}
 }
@@ -91,7 +91,8 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 		for (size_t c = 0; c < static_cast<int>(std::floor(chunk_w / 100)); c++) {
 			int block_x = x + c * block_w ;
 			int block_y = y + r * block_h ;
-			Rectangle block(block_x, block_y, block_w, block_h);
+			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
+			
 			NewChunk.Blocks->push_back(block);
 		}
 	}

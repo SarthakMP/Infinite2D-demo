@@ -9,14 +9,18 @@ class Player : public Behaviour_Adapter {
 
 	unsigned short hitbox_w = 100, hitbox_h = 100;
 	
-
-public:
+	inline static bool isGrounded = false;
 	inline static BoxCollider2D HitBox;
-	inline static Point Player_Pos = Point(0,0);
+	inline static Point Player_Pos = Point(0, 0);
 	inline static Point Player_Vel = Point(0, 0);
 	inline static unsigned int Player_Speed = 5;
 
-	static void SetPlayerPos(Point& pos);
+public:
+
+	static void SetIsGrounded(bool val);
+	static bool GetIsGrounded();
+
+	static void SetPlayerPos(const Point& pos);
 	static Point GetPlayerPos();
 
 	static void SetVelocity(const Point& vel);

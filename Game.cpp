@@ -4,7 +4,7 @@ void Game::SetCamera(Camera2D& cam) {
 	cam.offset = Vector2(Scr_W / 2, Scr_H / 2);
 	cam.rotation = 0;
 	cam.target = Vector2{ 0,0 };
-	cam.zoom = 0.1f;
+	cam.zoom = 1.0f;
 }
 
 void Game::AddObjects(std::unique_ptr<Behaviour> obj) {
@@ -50,7 +50,7 @@ void Game::run() {
 	AddObjects(std::make_unique<PlayerMovement>());
 	AddObjects(std::make_unique < LevelDesigner>(p));
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
-
+	AddObjects(std::make_unique < BlockModifier > ());
 
 	for (auto& obj : Objects) obj->Start();
 	float lastTime = 0.0f;
@@ -59,7 +59,6 @@ void Game::run() {
 		Behaviour_Adapter::deltatime = GetFrameTime();
 		
 		BeginDrawing();
-
 
 		//Top,Bottom,Left,Right Scales for Line so they can extended infinitly where the camera perfers to move to.
 		scl_top = Bounding[0].y;

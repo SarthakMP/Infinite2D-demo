@@ -10,9 +10,7 @@
 class Physics2D : public Behaviour_Adapter{
 public:
 	static inline std::queue<std::shared_ptr<BoxCollider2D>> Collision;
-	inline static float Gravity = -9.81f;
-
-	void AddGravity(Point& Pos);
+	static inline Point Gravity = Point(0,-98.1f);
 
 	virtual void Update();
 	

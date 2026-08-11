@@ -24,7 +24,6 @@ void Chunk::serialize(std::ofstream& out) {
 
 void Chunk::deserialize(std::ifstream& in) {
 
-	
 
 	in.read(reinterpret_cast<char*>(&chunk_id), sizeof(chunk_id));
 
@@ -58,12 +57,6 @@ void Chunk::deserialize(std::ifstream& in) {
 void Chunk::SetXY(float in_x, float in_y) {
 	chunk_x = in_x;
 	chunk_y = in_y;
-}
-
-Vector2& Chunk::GetBaseXY() {
-	XY.x = chunk_x;
-	XY.y = chunk_y;
-	return XY;
 }
 
 Vector2& Chunk::GetXY() {

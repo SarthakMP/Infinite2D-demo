@@ -1,6 +1,16 @@
 #include"Headers/Player.h"
 
-void Player::SetPlayerPos(Point& pos) {
+void Player::SetIsGrounded(bool val)
+{
+	isGrounded = val;
+}
+
+bool Player::GetIsGrounded()
+{
+	return isGrounded;
+}
+
+void Player::SetPlayerPos(const Point& pos) {
 	Player_Pos = pos;
 }
 
@@ -30,34 +40,34 @@ BoxCollider2D Player::GetHitBox()
 
 void Player::DrawPlayer() {
 	//DEBUG ONLY
-	DrawCircle(Player::GetHitBox().Origin.x, Player::GetHitBox().Origin.y, 10, RED);
-	DrawRectangle(Player_Pos.x - 50, Player_Pos.y - 50, 100, 100, WHITE);
-	DrawRectangleLines(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y - 50, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, GREEN);
+	//DrawCircle(Player::GetHitBox().Origin.x, Player::GetHitBox().Origin.y, 10, RED);
+	//DrawRectangleLines(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, GREEN);
+
+	DrawRectangle(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, WHITE);
+
 }
 
 void Player::Start(){
-	Point Zero(0, 0);
+	Point Zero(0, 500);
 	SetPlayerPos(Zero);
 
 	HitBox.Rec.height = hitbox_h;
 	HitBox.Rec.width = hitbox_w;
 	
-	HitBox.Origin.y = Player_Pos.y;
-	HitBox.Origin.x = Player_Pos.x;
+	HitBox.Origin = Player_Pos;
 
-	HitBox.Rec.y = HitBox.Origin.y;
-	HitBox.Rec.x = HitBox.Origin.x - hitbox_w * 0.5f;
+	HitBox.Rec.y = HitBox.Origin.y - (hitbox_h * 0.5f);
+	HitBox.Rec.x = HitBox.Origin.x - (hitbox_w * 0.5f);
 }
 
 void Player::Update(){
-	HitBox.Origin.y = Player_Pos.y;
-	HitBox.Origin.x = Player_Pos.x;
-
-	HitBox.Rec.y = HitBox.Origin.y;
-	HitBox.Rec.x = HitBox.Origin.x - hitbox_w * 0.5f;
-
 	Player_Pos.y += Player_Vel.y * deltatime;
 	Player_Pos.x += Player_Vel.x * deltatime;
+
+	HitBox.Origin = Player_Pos;
+
+	HitBox.Rec.y = Player_Pos.y - (hitbox_h * 0.5f);
+	HitBox.Rec.x = Player_Pos.x - (hitbox_w * 0.5f);
 }
 
 void Player::Render() {

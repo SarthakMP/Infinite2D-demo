@@ -17,57 +17,14 @@ const Rectangle BoxCollider2D::GetHitBox() {
 
 bool BoxCollider2D::CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B)
 {
-
-
-	/* ATTEMPT 1
-	float dx = a.x1 - a.x2;
-	float dy = a.y1 - a.y2;
-
-	float minDistanceX = (HB_A.Rec.width / 2 + HB_B.Rec.width / 2);
-	float minDistanceY = (HB_A.Rec.height / 2 + HB_B.Rec.height / 2);
-
-	float overlapX = minDistanceX - abs(dx);
-	float overlapY = minDistanceY - abs(dy);
-
-	if (overlapX > 0 && overlapY > 0) {
-		if (overlapX < overlapY) {
-			if (dx < 0) {
-				HitPoint.x -= overlapX;
-			}
-			else {
-				HitPoint.x += overlapX;
-			}
-		}
-		else {
-			if (dy < 0) {
-				HitPoint.y -= overlapY;
-			}
-			else {
-				HitPoint.y += overlapY;
-			}
-
-		}
-
-		std::cout << HitPoint << std::endl;
-		return true;
-	}
-	*/
-
 	float dx = HB_A.Origin.x - HB_B.Origin.x;
 	float dy = HB_A.Origin.y - HB_B.Origin.y;
 
-	if (std::abs(dx) > 0.001f && std::abs(dy) > 0.001f) {
 
-		float halfW = (HB_A.Rec.width + HB_B.Rec.width) * 0.5f;
-		float halfH = (HB_A.Rec.height + HB_B.Rec.height) * 0.5f;
+	float halfW = (HB_A.Rec.width + HB_B.Rec.width) * 0.5f;
+	float halfH = (HB_A.Rec.height + HB_B.Rec.height) * 0.5f;
 
-		if (halfW >= std::abs(dx) && halfH >= std::abs(dy)) {
-			return true;
-		}
-	}
-
-	return false;
-
+	return (dx <= halfW) && (dy<= halfH);
 }
 
 bool BoxCollider2D::CheckRayCollision(BoxCollider2D HB_A, BoxCollider2D HB_B, Raycast2D& rayhit)
@@ -118,14 +75,24 @@ BoxCollider2D::BoxCollider2D()
 {
 	Rec = Rectangle(0);
 	Origin = Point(0, 0);
+	clr = Color();
 }
 
 BoxCollider2D::BoxCollider2D(Rectangle rec) {
 	Rec = rec;
 	Origin = Point(Rec.x + Rec.width / 2, Rec.y + Rec.height / 2);
+	clr = Color();
 }
 
-void BoxCollider2D::SetHitBox(Point Org, Point WH, Color clr) {
+BoxCollider2D::BoxCollider2D(Rectangle rec, Color in_clr)
+{
+	Rec = rec;
+	Origin = Point(Rec.x + Rec.width / 2, Rec.y + Rec.height / 2);
+	clr = in_clr;
+	
+}
+
+void BoxCollider2D::SetHitBox(Point Org, Point WH, Color in_clr) {
 
 
 	Rec.width = WH.x;
@@ -135,7 +102,7 @@ void BoxCollider2D::SetHitBox(Point Org, Point WH, Color clr) {
 	Rec.y = Org.y - WH.y / 2;
 
 	Origin = Org;
-	Collision2D::color = clr;
+	clr = in_clr;
 }
 
 const Point BoxCollider2D::GetHitBoxPos()

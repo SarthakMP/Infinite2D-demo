@@ -25,8 +25,6 @@ public:
 	
 	void SetXY(float in_x, float in_y);
 
-	Vector2& GetBaseXY();
-
 	Vector2& GetXY();
 	Vector2& GetWH();
 	

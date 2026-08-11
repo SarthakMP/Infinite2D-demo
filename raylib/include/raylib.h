@@ -83,7 +83,6 @@
 
 #ifndef RAYLIB_H
 #define RAYLIB_H
-
 #include <stdarg.h>     // Required for: va_list - Only used by TraceLogCallback
 #define RAYLIB_VERSION_MAJOR 6
 #define RAYLIB_VERSION_MINOR 0
@@ -248,8 +247,11 @@ typedef struct Color {
     unsigned char g;        // Color green value
     unsigned char b;        // Color blue value
     unsigned char a;        // Color alpha value
-    friend Color operator+ (Color A, Color B);
+    friend Color operator* (Color A, Color B);
+
 } Color;
+
+
 
 inline Color operator*(Color A, Color B) {
     return Color((A.r * B.r) / 255, (A.g * B.g) / 255, (A.b * B.b) / 255, (A.a * B.a) / 255);

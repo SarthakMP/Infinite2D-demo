@@ -7,6 +7,8 @@ public:
 
 	Point() : x(0), y(0) {}
 
+	Point(float a) : x(a), y(a) {}
+
 	Point(float in_x, float in_y) : x(in_x), y(in_y) {}
 
 	Point(const Vector2& vec) : x(vec.x), y(vec.y) {}
