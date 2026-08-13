@@ -3,7 +3,7 @@
 #include"Collision2D.h"
 
 class BoxCollider2D : public Collision2D {
-	bool isActive = false;
+
 public:
 	Rectangle Rec;
 	Point Origin;
@@ -15,8 +15,6 @@ public:
 	const Point GetHitBoxPos();
 	const Point GetHitBoxOrigin();
 
-	const void SetActive(const bool& flag);
-	const bool& GetActive();
 
 	const Rectangle GetHitBox();
 

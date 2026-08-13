@@ -32,8 +32,9 @@ void BlockModifier::OnMouseDown() {
 
 			if ((x < 0 || x>3) || (y < 0 || y>7)) return;
 
-			BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
-			
+			//BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
+			chunk.Blocks->erase(x + 4 * y);
+			chunk.isDirty = true;
 		}
 		
 	}

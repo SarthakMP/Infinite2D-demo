@@ -76,12 +76,14 @@ BoxCollider2D::BoxCollider2D()
 	Rec = Rectangle(0);
 	Origin = Point(0, 0);
 	clr = Color();
+	id = 0;
 }
 
 BoxCollider2D::BoxCollider2D(Rectangle rec) {
 	Rec = rec;
 	Origin = Point(Rec.x + Rec.width / 2, Rec.y + Rec.height / 2);
 	clr = Color();
+	id = 0;
 }
 
 BoxCollider2D::BoxCollider2D(Rectangle rec, Color in_clr)
@@ -89,6 +91,7 @@ BoxCollider2D::BoxCollider2D(Rectangle rec, Color in_clr)
 	Rec = rec;
 	Origin = Point(Rec.x + Rec.width / 2, Rec.y + Rec.height / 2);
 	clr = in_clr;
+	id = 0;
 	
 }
 
@@ -116,12 +119,4 @@ const Point BoxCollider2D::GetHitBoxOrigin()
 	return Point(Origin.x,Origin.y);
 }
 
-const void BoxCollider2D::SetActive(const bool& flag)
-{
-	isActive = flag;
-}
 
-const bool& BoxCollider2D::GetActive()
-{
-	return isActive;
-}

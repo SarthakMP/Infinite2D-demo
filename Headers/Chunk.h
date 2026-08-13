@@ -13,7 +13,7 @@ class Chunk {
 	Vector2 XY,WH;
 
 public:
-
+	bool isDirty = false;
 	std::shared_ptr<std::map<int,BoxCollider2D>> Blocks;
 	std::shared_ptr<BoxCollider2D> HitBox;
 	void serialize(std::ofstream& out);

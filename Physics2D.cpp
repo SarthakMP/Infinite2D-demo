@@ -26,7 +26,6 @@ void  Physics2D::Update() {
 			BoxCollider2D playerBox = Player::GetHitBox();
 			BoxCollider2D blockBox = it->second;
 
-
 			float dx = playerBox.Origin.x - blockBox.Origin.x;
 			float dy = playerBox.Origin.y - blockBox.Origin.y;
 

@@ -17,9 +17,9 @@ void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&count), sizeof(count));
 
 	if (count > 0) {
-		for (size_t i = 0; i < count; ++i) {
-			BoxCollider2D& block = (*Blocks)[i];
-			out.write(reinterpret_cast<const char*>(&block), count * sizeof(BoxCollider2D));
+		for (auto i = Blocks->begin(); i != Blocks->end(); i++) {
+			BoxCollider2D& block = i->second;
+			out.write(reinterpret_cast<const char*>(&block),sizeof(BoxCollider2D));
 		}
 	}
 	
@@ -52,7 +52,6 @@ void Chunk::deserialize(std::ifstream& in) {
 		BoxCollider2D block;
 
 		in.read(reinterpret_cast<char*>(&block), sizeof(BoxCollider2D));
-
 
 		Blocks->emplace(block.id, block);
 	}

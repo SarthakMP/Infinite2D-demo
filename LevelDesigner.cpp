@@ -7,12 +7,33 @@ static int m_sign(int Pos) {
 void LevelDesigner::AddChunk(Chunk& chunk) {
 
 	if (chunk.Getid() < ChunksArray[0].Getid()) {
+		if (ChunksArray[5].isDirty) {
+			std::string path = baseChunksPath + "chunk_" + std::to_string(ChunksArray[5].Getid()) + ".dat";
+			std::ofstream outFile(path, std::ios::binary);
+			
+			ChunksArray[5].serialize(outFile);
+			ChunksArray[5].isDirty = false;
+			
+			outFile.close();
+		}
+
 		for (int i = 5; i > 0; i--) {
 			ChunksArray[i] = ChunksArray[i - 1];
 		}
+
 		ChunksArray[0] = chunk;
 	}
 	else if (chunk.Getid() > ChunksArray[5].Getid()) {
+		if (ChunksArray[0].isDirty) {
+			std::string path = baseChunksPath + "chunk_" + std::to_string(ChunksArray[0].Getid()) + ".dat";
+			std::ofstream outFile(path, std::ios::binary);
+			
+			ChunksArray[0].serialize(outFile);
+			ChunksArray[0].isDirty = false;
+			
+			outFile.close();
+		}
+
 		for (int i = 0; i < 5; i++) {
 			ChunksArray[i] = ChunksArray[i + 1];
 		}
@@ -31,36 +52,36 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 	int y = -ChunksHeight - 100;
 
 
-		int targetID = CurrentChunkId + (sign);
+	int targetID = CurrentChunkId + (sign);
 
-		std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
-		Chunk chunk;
+	std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
+	Chunk chunk;
 
-		int x = targetID * ChunksWidth;
+	int x = targetID * ChunksWidth;
 
-		if (std::filesystem::exists(path)) {
-			std::ifstream in(path, std::ios::binary);
-			if (in.is_open()) {
-				chunk.deserialize(in);
-				in.close();
-				AddChunk(chunk);
-			}
+	if (std::filesystem::exists(path)) {
+		std::ifstream in(path, std::ios::binary);
+		if (in.is_open()) {
+			chunk.deserialize(in);
+			in.close();
+			AddChunk(chunk);
+		}
+	}
+	else {
+		chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
+		std::ofstream outFile(path, std::ios::binary);
+
+		if (outFile.is_open()) {
+			chunk.serialize(outFile);
+			outFile.close();
 		}
 		else {
-			chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
-			std::ofstream outFile(path, std::ios::binary);
-
-			if (outFile.is_open()) {
-				chunk.serialize(outFile);
-				outFile.close();
-			}
-			else {
-				std::cerr << "Warning: Could not save chunk to disk: " << path << std::endl;
-			}
-			GenerateBlocks(chunk, x, y);
-			AddChunk(chunk);
-			
+			std::cerr << "Warning: Could not save chunk to disk: " << path << std::endl;
 		}
+		GenerateBlocks(chunk, x, y);
+		AddChunk(chunk);
+		
+	}
 
 	PrevPos = PlayerPos;
 
@@ -72,23 +93,13 @@ void LevelDesigner::DrawChunks() {
 
 		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
 			BoxCollider2D& blocks = it->second;
-			if (blocks.GetActive() == false) continue;
 			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
-			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
-
 		}
 		/*
-		for (auto& blocks : *chunk.Blocks) {
-			if (blocks.GetActive() == false) continue;
-			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
-			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
-		}
-		*/
-		
 		Vector2 Pos = chunk.GetXY();
 		Vector2 Size = chunk.GetWH();
 		DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, GREEN);
-		//DrawRectangle(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
+		*/
 	}
 }
 float block_h = 100, block_w = 100;
@@ -101,8 +112,8 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 			int block_x = x + c * block_w ;
 			int block_y = y + r * block_h ;
 			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
-			block.SetActive(true);
-			(*NewChunk.Blocks)[r*c] = block;
+			block.id = c + 4 * r;
+			(*NewChunk.Blocks)[block.id] = block;
 		}
 	}
 }
@@ -114,6 +125,7 @@ void LevelDesigner::Start() {
 		std::filesystem::create_directory(baseChunksPath);
 	}
 
+	
 	int offset = 3;
 	
 	for (int i = -offset; i <= offset; i++) {
@@ -126,14 +138,13 @@ void LevelDesigner::Start() {
 		
 		GenerateBlocks(NewChunk, x, y);
 
-
 		std::ofstream outfile(path, std::ios::binary);
 		NewChunk.serialize(outfile);
 		ChunksArray[i + offset] = NewChunk;
 		outfile.close();
 
 	}
-
+	
 }
 
 void LevelDesigner::Update() {
