@@ -17,7 +17,10 @@ void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&count), sizeof(count));
 
 	if (count > 0) {
-		out.write(reinterpret_cast<const char*>(Blocks->data()), count * sizeof(BoxCollider2D));
+		for (size_t i = 0; i < count; ++i) {
+			BoxCollider2D& block = (*Blocks)[i];
+			out.write(reinterpret_cast<const char*>(&block), count * sizeof(BoxCollider2D));
+		}
 	}
 	
 }
@@ -39,15 +42,19 @@ void Chunk::deserialize(std::ifstream& in) {
 	
 
 	if (!Blocks) {
-		Blocks = std::make_shared<std::vector<BoxCollider2D>>();
+		Blocks = std::make_shared<std::map<int,BoxCollider2D>>();
 	}
 
 	size_t count = 0;
 	in.read(reinterpret_cast<char*>(&count), sizeof(count));
-	Blocks->resize(count);
 
-	if (count > 0) {
-		in.read(reinterpret_cast<char*>(Blocks->data()), count * sizeof(BoxCollider2D));
+	for (size_t i = 0; i < count; ++i) {
+		BoxCollider2D block;
+
+		in.read(reinterpret_cast<char*>(&block), sizeof(BoxCollider2D));
+
+
+		Blocks->emplace(block.id, block);
 	}
 
 
@@ -86,7 +93,7 @@ Chunk::Chunk() {
 	chunk_id = 0;
 
 	HitBox = std::make_shared<BoxCollider2D>();
-	Blocks = std::make_shared<std::vector<BoxCollider2D>>();
+	Blocks = std::make_shared<std::map<int,BoxCollider2D>>();
 }
 
 Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
@@ -95,7 +102,7 @@ Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
 	XY = { 0,0 };
 
 	HitBox = std::make_shared<BoxCollider2D>();
-	Blocks = std::make_shared<std::vector<BoxCollider2D>>();
+	Blocks = std::make_shared<std::map<int, BoxCollider2D>>();
 
 	HitBox->Rec.x = chunk_x;
 	HitBox->Rec.y = chunk_y;

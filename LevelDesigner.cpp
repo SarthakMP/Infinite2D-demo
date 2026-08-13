@@ -70,12 +70,20 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 void LevelDesigner::DrawChunks() {
 	for (Chunk& chunk : ChunksArray) {
 
+		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
+			BoxCollider2D& blocks = it->second;
+			if (blocks.GetActive() == false) continue;
+			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
+			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
+
+		}
+		/*
 		for (auto& blocks : *chunk.Blocks) {
 			if (blocks.GetActive() == false) continue;
 			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
 			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
 		}
-
+		*/
 		
 		Vector2 Pos = chunk.GetXY();
 		Vector2 Size = chunk.GetWH();
@@ -94,7 +102,7 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 			int block_y = y + r * block_h ;
 			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
 			block.SetActive(true);
-			NewChunk.Blocks->push_back(block);
+			(*NewChunk.Blocks)[r*c] = block;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include <fstream>
-#include <vector>
+#include <map>
 
 #include"Point.h"
 #include"BoxCollider2D.h"
@@ -14,7 +14,7 @@ class Chunk {
 
 public:
 
-	std::shared_ptr<std::vector<BoxCollider2D>> Blocks;
+	std::shared_ptr<std::map<int,BoxCollider2D>> Blocks;
 	std::shared_ptr<BoxCollider2D> HitBox;
 	void serialize(std::ofstream& out);
 

@@ -33,8 +33,7 @@ void BlockModifier::OnMouseDown() {
 			if ((x < 0 || x>3) || (y < 0 || y>7)) return;
 
 			BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
-			if (block.GetActive() == false) continue;
-			block.SetActive(false);
+			
 		}
 		
 	}

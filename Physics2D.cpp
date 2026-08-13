@@ -20,16 +20,15 @@ void  Physics2D::Update() {
 		if (std::abs(chunk.Getid() - CurrentChunkId) > 1) { continue; }
 		if (!chunk.Blocks) continue;
 
-		for (auto& surfaceBox : *chunk.Blocks) {
+		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
 
 			Point currentPos = Player::GetPlayerPos();
 			BoxCollider2D playerBox = Player::GetHitBox();
-			BoxCollider2D blockBox = surfaceBox.GetHitBox();
+			BoxCollider2D blockBox = it->second;
 
-			if (surfaceBox.GetActive() == false) continue;
 
-			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
-			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
+			float dx = playerBox.Origin.x - blockBox.Origin.x;
+			float dy = playerBox.Origin.y - blockBox.Origin.y;
 
 			float combinedHalfWidth = (playerBox.Rec.width + blockBox.Rec.width) * 0.5f;
 			float combinedHalfHeight = (playerBox.Rec.height + blockBox.Rec.height) * 0.5f;
@@ -37,10 +36,10 @@ void  Physics2D::Update() {
 			if (std::abs(dx) <= combinedHalfWidth + 10.0f  && std::abs(dy) <= combinedHalfHeight + 10.0f) {
 				
 				
-				if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox)) {
+				if (BoxCollider2D::CheckBoxCollision(playerBox, blockBox)) {
 
-					float overlapX = (playerBox.Rec.width + surfaceBox.Rec.width) * 0.5f - std::abs(dx);
-					float overlapY = (playerBox.Rec.height + surfaceBox.Rec.height) * 0.5f - std::abs(dy);
+					float overlapX = (playerBox.Rec.width + blockBox.Rec.width) * 0.5f - std::abs(dx);
+					float overlapY = (playerBox.Rec.height + blockBox.Rec.height) * 0.5f - std::abs(dy);
 
 					if (overlapY <= overlapX || overlapY < SLIGHT_OVERLAP_SLOP) {
 						if (dy > 0) {

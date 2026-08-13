@@ -9,7 +9,7 @@ public:
 	Point Origin;
 	Color clr;
 
-
+	int id;
 
 	void SetHitBox(Point Org, Point WH, Color clr);
 	const Point GetHitBoxPos();
