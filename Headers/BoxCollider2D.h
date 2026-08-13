@@ -15,8 +15,8 @@ public:
 	const Point GetHitBoxPos();
 	const Point GetHitBoxOrigin();
 
-	const void SetActive(bool flag);
-	const bool GetActive();
+	const void SetActive(const bool& flag);
+	const bool& GetActive();
 
 	const Rectangle GetHitBox();
 

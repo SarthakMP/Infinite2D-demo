@@ -71,6 +71,7 @@ void LevelDesigner::DrawChunks() {
 	for (Chunk& chunk : ChunksArray) {
 
 		for (auto& blocks : *chunk.Blocks) {
+			if (blocks.GetActive() == false) continue;
 			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
 			//DrawRectangleLines(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, GREEN);
 		}

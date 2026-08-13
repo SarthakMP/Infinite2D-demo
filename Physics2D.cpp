@@ -22,11 +22,11 @@ void  Physics2D::Update() {
 
 		for (auto& surfaceBox : *chunk.Blocks) {
 
-
-
 			Point currentPos = Player::GetPlayerPos();
 			BoxCollider2D playerBox = Player::GetHitBox();
 			BoxCollider2D blockBox = surfaceBox.GetHitBox();
+
+			if (surfaceBox.GetActive() == false) continue;
 
 			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
 			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
@@ -36,7 +36,7 @@ void  Physics2D::Update() {
 
 			if (std::abs(dx) <= combinedHalfWidth + 10.0f  && std::abs(dy) <= combinedHalfHeight + 10.0f) {
 				
-								
+				
 				if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox)) {
 
 					float overlapX = (playerBox.Rec.width + surfaceBox.Rec.width) * 0.5f - std::abs(dx);
