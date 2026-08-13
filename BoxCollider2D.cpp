@@ -115,3 +115,13 @@ const Point BoxCollider2D::GetHitBoxOrigin()
 {
 	return Point(Origin.x,Origin.y);
 }
+
+const void BoxCollider2D::SetActive(bool flag)
+{
+	isActive = flag;
+}
+
+const bool BoxCollider2D::GetActive()
+{
+	return isActive;
+}

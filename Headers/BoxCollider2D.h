@@ -3,15 +3,20 @@
 #include"Collision2D.h"
 
 class BoxCollider2D : public Collision2D {
-
+	bool isActive = false;
 public:
 	Rectangle Rec;
 	Point Origin;
 	Color clr;
 
+
+
 	void SetHitBox(Point Org, Point WH, Color clr);
 	const Point GetHitBoxPos();
 	const Point GetHitBoxOrigin();
+
+	const void SetActive(bool flag);
+	const bool GetActive();
 
 	const Rectangle GetHitBox();
 

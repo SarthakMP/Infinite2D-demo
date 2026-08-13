@@ -92,7 +92,7 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 			int block_x = x + c * block_w ;
 			int block_y = y + r * block_h ;
 			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
-			
+			block.SetActive(true);
 			NewChunk.Blocks->push_back(block);
 		}
 	}
