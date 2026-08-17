@@ -95,11 +95,7 @@ void LevelDesigner::DrawChunks() {
 			BoxCollider2D& blocks = it->second;
 			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
 		}
-		/*
-		Vector2 Pos = chunk.GetXY();
-		Vector2 Size = chunk.GetWH();
-		DrawRectangleLines(Pos.x, Pos.y, Size.x, Size.y, GREEN);
-		*/
+
 	}
 }
 float block_h = 100, block_w = 100;
@@ -119,30 +115,62 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 }
 
 void LevelDesigner::Start() {
+
+	
 	p = std::make_unique<Player>();
 
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
 	}
 
-	
-	int offset = 3;
-	
-	for (int i = -offset; i <= offset; i++) {
 
-		std::string path = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
-		int x = i * ChunksWidth;
-		int y = -ChunksHeight - 100;
 
-		Chunk NewChunk(x,y, ChunksWidth, ChunksHeight, i);
+	std::string path = Player::basePlayersPath +  "Player_Info.dat";
+	std::ifstream inFile(path, std::ios::binary);
+
+	p->deserialize(inFile);
+
+
+	
+	if (!p->isGameFirstStarted) {
+		int offset = 3;
+
+		for (int i = -offset; i <= offset; i++) {
+
+			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
+			int x = i * ChunksWidth;
+			int y = -ChunksHeight - 100;
+
+			Chunk NewChunk(x, y, ChunksWidth, ChunksHeight, i);
+
+			GenerateBlocks(NewChunk, x, y);
+
+			std::ofstream outfile(Chunkpath, std::ios::binary);
+			NewChunk.serialize(outfile);
+			ChunksArray[i + offset] = NewChunk;
+			outfile.close();
+
+		}
+		p->isGameFirstStarted = true;
+	}
+	else {
+		Point PlayerPos = p->GetPlayerPos();
+		int ChunkId = static_cast<int>(std::floor(PlayerPos.x / ChunksWidth));
+		int offset = 3 ;
 		
-		GenerateBlocks(NewChunk, x, y);
-
-		std::ofstream outfile(path, std::ios::binary);
-		NewChunk.serialize(outfile);
-		ChunksArray[i + offset] = NewChunk;
-		outfile.close();
-
+		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
+			Chunk Chunk;
+			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
+			
+			if (std::filesystem::exists(Chunkpath)) {
+				std::ifstream in(Chunkpath, std::ios::binary);
+				if (in.is_open()) {
+					Chunk.deserialize(in);
+					in.close();
+					ChunksArray[i + offset + ChunkId] = Chunk;
+				}
+			}
+		}
 	}
 	
 }

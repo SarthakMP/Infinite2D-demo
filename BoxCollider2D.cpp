@@ -29,43 +29,6 @@ bool BoxCollider2D::CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B)
 
 bool BoxCollider2D::CheckRayCollision(BoxCollider2D HB_A, BoxCollider2D HB_B, Raycast2D& rayhit)
 {
-	/*
-	Ray2D ray(HB_A.Origin, HB_B.Origin, GREEN);
-	ray.Dir = (ray.To - ray.Origin) / Point::Magnitude(ray.To, ray.Dir);
-
-	float mag = Point::Magnitude(ray.Origin, ray.To);
-
-	ray.DrawRay2D();
-
-	float dy = HB_B.Origin.y - HB_A.Origin.y;
-	float dx = HB_B.Origin.x - HB_A.Origin.x;
-
-	float maxReach = (std::sqrt(HB_A.Rec.width * HB_A.Rec.width + HB_A.Rec.height * HB_A.Rec.height) +
-		std::sqrt(HB_B.Rec.width * HB_B.Rec.width + HB_B.Rec.height * HB_B.Rec.height)) * 0.5f;
-
-	if (mag <= maxReach) {
-
-
-		float halfH = (HB_B.Rec.height * 0.5f);
-		float halfW = (HB_B.Rec.width * 0.5f);
-
-		float x = halfH * (abs(dx) / abs(dy));
-		float y = halfW * (abs(dy) / abs(dx));
-
-		if (abs(dy) / (HB_B.Rec.height) > abs(dx) / (HB_B.Rec.width)) {
-			rayhit.HitPoint.y = (dy < 0) ? HB_B.Origin.y + halfH : HB_B.Origin.y - halfH;
-			rayhit.HitPoint.x = (dx < 0) ? HB_B.Origin.x + x : HB_B.Origin.x - x;
-		}
-		else {
-			rayhit.HitPoint.y = (dy < 0) ? HB_B.Origin.y + y : HB_B.Origin.y - y;
-			rayhit.HitPoint.x = (dx < 0) ? HB_B.Origin.x + halfW : HB_B.Origin.x - halfW;
-		}
-
-		return true;
-	}
-
-
-	*/
 
 	return false;
 

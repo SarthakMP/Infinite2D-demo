@@ -2,21 +2,24 @@
 #include"Behaviour.h"
 #include"Point.h"
 #include"BoxCollider2D.h"
-#include<iostream>
+#include <fstream>
+#include<filesystem>
 
 class Player : public Behaviour_Adapter {
 	
 
-	unsigned short hitbox_w = 100, hitbox_h = 100;
+	inline static Point Player_Pos;
+
+	inline static unsigned short hitbox_w, hitbox_h;
 	
-	inline static bool isGrounded = false;
+	inline static bool isGrounded;
 	inline static BoxCollider2D HitBox;
-	inline static Point Player_Pos = Point(0, 0);
 	inline static Point Player_Vel = Point(0, 0);
 	inline static unsigned int Player_Speed = 5;
 
 public:
-
+	inline static bool isGameFirstStarted;
+	inline static std::string basePlayersPath = std::string(SOURCE_DIR) + "Player/";
 	static void SetIsGrounded(bool val);
 	static bool GetIsGrounded();
 
@@ -27,6 +30,8 @@ public:
 	static void SetVelocity(float x_in,float y_in);
 	static Point GetVelocity();
 
+	static void UpdateHitbox();
+
 	static BoxCollider2D GetHitBox();
 
 	void DrawPlayer();
@@ -36,4 +41,10 @@ public:
 	void Update();
 	
 	void Render();
+
+	static void serialize(std::ofstream& out);
+	static void deserialize(std::ifstream& in);
+
+	Player();
+	~Player();
 };

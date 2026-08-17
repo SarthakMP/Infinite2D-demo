@@ -32,6 +32,14 @@ Point Player::GetVelocity()
 	return Player_Vel;
 }
 
+void Player::UpdateHitbox()
+{
+	HitBox.Origin = Player_Pos;
+
+	HitBox.Rec.y = Player_Pos.y - (hitbox_h * 0.5f);
+	HitBox.Rec.x = Player_Pos.x - (hitbox_w * 0.5f);
+}
+
 
 BoxCollider2D Player::GetHitBox()
 {
@@ -41,13 +49,16 @@ BoxCollider2D Player::GetHitBox()
 void Player::DrawPlayer() {
 	//DEBUG ONLY
 	//DrawCircle(Player::GetHitBox().Origin.x, Player::GetHitBox().Origin.y, 10, RED);
-	//DrawRectangleLines(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, GREEN);
+	DrawRectangleLines(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, GREEN);
 
 	DrawRectangle(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, WHITE);
 
 }
 
 void Player::Start(){
+	hitbox_h = 100;
+	hitbox_w = 100;
+
 	Point Zero(0, 500);
 	SetPlayerPos(Zero);
 
@@ -63,14 +74,42 @@ void Player::Start(){
 void Player::Update(){
 	Player_Pos.y += Player_Vel.y * deltatime;
 	Player_Pos.x += Player_Vel.x * deltatime;
-
-	HitBox.Origin = Player_Pos;
-
-	HitBox.Rec.y = Player_Pos.y - (hitbox_h * 0.5f);
-	HitBox.Rec.x = Player_Pos.x - (hitbox_w * 0.5f);
+	UpdateHitbox();
 }
 
 void Player::Render() {
 	DrawPlayer();
 }
 
+
+
+void Player::serialize(std::ofstream& out) {
+
+	out.write(reinterpret_cast<const char*>(&isGameFirstStarted), sizeof(isGameFirstStarted));
+	out.write(reinterpret_cast<const char*>(&Player_Pos), sizeof(Player_Pos));
+
+}
+
+void Player::deserialize(std::ifstream& in) {
+
+	in.read(reinterpret_cast<char*>(&isGameFirstStarted), sizeof(isGameFirstStarted));
+	in.read(reinterpret_cast<char*>(&Player_Pos), sizeof(Player_Pos));
+
+}
+
+
+Player::Player() {
+	hitbox_h = 100;
+	hitbox_w = 100;
+}
+Player::~Player() {
+	
+	std::string path = basePlayersPath + "Player_Info.dat";
+
+	if (!std::filesystem::is_directory(basePlayersPath)) {
+		std::filesystem::create_directory(basePlayersPath);
+	}
+	std::ofstream outFile(path, std::ios::binary);
+
+	serialize(outFile);
+}

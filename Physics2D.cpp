@@ -1,74 +1,71 @@
 #include"Headers/Physics2D.h"
 #include"Headers/Player.h"
 
-constexpr float SLIGHT_OVERLAP_SLOP = 0.0f;
-
 
 std::shared_ptr<std::vector<BoxCollider2D>> NearBlocks;
+
+int m_sign(float x) {
+	return x >= 0 ? 1 : -1;
+}
+
 void  Physics2D::Update() {
-	
-	Point PlayerPos = Player::GetPlayerPos();
 
-	int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / LevelDesigner::ChunksWidth));
-	
-	float MaxPushLeft=0, MaxPushRight=0, MaxPushUp=0, MaxPushDown = 0;
 
-	bool isGrounded = false;
+#pragma region Attempt-3
 
-	for(auto& chunk : LevelDesigner::ChunksArray){
-		
+	Player::SetIsGrounded(false);
+
+	int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(Player::GetPlayerPos().x) / LevelDesigner::ChunksWidth));
+
+	Point velocity = Player::GetVelocity();
+
+	for (auto& chunk : LevelDesigner::ChunksArray) {
+		BoxCollider2D playerBox = Player::GetHitBox();
+
 		if (std::abs(chunk.Getid() - CurrentChunkId) > 1) { continue; }
 		if (!chunk.Blocks) continue;
 
 		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
+			
+			BoxCollider2D surfaceBox = it->second;
 
-			Point currentPos = Player::GetPlayerPos();
-			BoxCollider2D playerBox = Player::GetHitBox();
-			BoxCollider2D blockBox = it->second;
-
-			float dx = playerBox.Origin.x - blockBox.Origin.x;
-			float dy = playerBox.Origin.y - blockBox.Origin.y;
-
-			float combinedHalfWidth = (playerBox.Rec.width + blockBox.Rec.width) * 0.5f;
-			float combinedHalfHeight = (playerBox.Rec.height + blockBox.Rec.height) * 0.5f;
-
-			if (std::abs(dx) <= combinedHalfWidth + 10.0f  && std::abs(dy) <= combinedHalfHeight + 10.0f) {
+			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
+			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
+			
+			float CombinedHalfHeight = (playerBox.Rec.height + surfaceBox.Rec.height) * 0.5f;
+			float CombinedHalfWidth = (playerBox.Rec.width + surfaceBox.Rec.width) * 0.5f;
+			
+			if (std::abs(dy) < CombinedHalfHeight && std::abs(dx) < CombinedHalfWidth) {
 				
+				DrawLine(playerBox.Origin.x, playerBox.Origin.y, surfaceBox.Origin.x, surfaceBox.Origin.y, RED);
 				
-				if (BoxCollider2D::CheckBoxCollision(playerBox, blockBox)) {
+				if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox)) {
 
-					float overlapX = (playerBox.Rec.width + blockBox.Rec.width) * 0.5f - std::abs(dx);
-					float overlapY = (playerBox.Rec.height + blockBox.Rec.height) * 0.5f - std::abs(dy);
+					float OverlapY = (CombinedHalfHeight - std::abs(dy)) - 0.01f;
+					float OverlapX = (CombinedHalfWidth - std::abs(dx));
 
-					if (overlapY <= overlapX || overlapY < SLIGHT_OVERLAP_SLOP) {
-						if (dy > 0) {
-							currentPos.y += overlapY * 0.51f;
-						}
-						else {
-							currentPos.y -= overlapY * 0.51f;
-						}
-
+					if (OverlapY < OverlapX) {
+						playerBox.Origin.y += (dy>0)? OverlapY : -OverlapY;
+						if (dy > 0) Player::SetIsGrounded(true);
 					}
-					else {
-						if (dx > 0) {
-							currentPos.x += overlapX * 0.51f;
-						}
-						else {
-							currentPos.x -= overlapX * 0.51f;
-						}
-
+					else{
+						playerBox.Origin.x += (dx > 0) ? OverlapX : -OverlapX;
 					}
+					
+					Player::UpdateHitbox();
+					Player::SetPlayerPos(playerBox.Origin);
 				}
-
-				Player::SetIsGrounded(true);
-				Player::SetPlayerPos(currentPos);
 			}
 
+			
 
 		}
 
-			
 	}
 	
 	
+
+#pragma endregion
+
+
 }
