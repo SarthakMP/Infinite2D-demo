@@ -167,7 +167,7 @@ void LevelDesigner::Start() {
 				if (in.is_open()) {
 					Chunk.deserialize(in);
 					in.close();
-					ChunksArray[i + offset + ChunkId] = Chunk;
+					ChunksArray[i + offset - ChunkId] = Chunk;
 				}
 			}
 		}

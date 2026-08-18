@@ -1,9 +1,10 @@
 #pragma once
 #include <fstream>
 #include <map>
-
+#include<filesystem>
 #include"Point.h"
 #include"BoxCollider2D.h"
+
 
 class Chunk {
 
@@ -22,7 +23,7 @@ public:
 
 public:
 
-	
+	void save();
 	void SetXY(float in_x, float in_y);
 
 	Vector2& GetXY();
@@ -31,7 +32,7 @@ public:
 	int Getid();
 
 	Chunk();
-	
+	~Chunk();
 
 	Chunk(int c_x, int c_y, int c_w, int c_h, int c_i);
 

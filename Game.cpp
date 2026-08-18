@@ -52,6 +52,10 @@ void Game::run() {
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
 	AddObjects(std::make_unique < BlockModifier > ());
 
+	std::unique_ptr<Menu> menu = std::make_unique<Menu>();
+	Menu* menuPtr = menu.get();
+	AddObjects(std::move(menu));
+
 	for (auto& obj : Objects) obj->Start();
 	float lastTime = 0.0f;
 	while (!WindowShouldClose()) {
@@ -85,7 +89,11 @@ void Game::run() {
 		//DrawCircleLines(Bounding[2].x, Bounding[2].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[3].x, Bounding[3].y, 10, ORANGE);
 
-		//Axis & Gizmos
+		//Create a Screen for player to start a new world or continue the old one (future: can add mulitple worlds to load)
+
+
+
+		//DEBUG Axis & Gizmos
 		DrawCircle(0, 0, 5, WHITE); //Origin
 		DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
 		DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
@@ -111,6 +119,10 @@ void Game::run() {
 
 		EndDrawing();
 
+	}
+
+	for (auto& chunk : LevelDesigner::ChunksArray) {
+		chunk.save();
 	}
 
 	CloseWindow();

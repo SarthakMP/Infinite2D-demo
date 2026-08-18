@@ -1,4 +1,5 @@
 #include"./Headers/Chunk.h"
+#include"string.h"
 
 void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&chunk_id), sizeof(chunk_id));
@@ -60,6 +61,7 @@ void Chunk::deserialize(std::ifstream& in) {
 }
 
 
+
 void Chunk::SetXY(float in_x, float in_y) {
 	chunk_x = in_x;
 	chunk_y = in_y;
@@ -93,6 +95,24 @@ Chunk::Chunk() {
 
 	HitBox = std::make_shared<BoxCollider2D>();
 	Blocks = std::make_shared<std::map<int,BoxCollider2D>>();
+}
+
+Chunk::~Chunk()
+{
+}
+
+
+void Chunk::save()
+{
+	std::string baseChunksPath = std::string(SOURCE_DIR) + "Chunks/" +"chunk_" + std::to_string(chunk_id) + ".dat";
+
+	if (std::filesystem::exists(baseChunksPath)) {
+		std::ifstream in(baseChunksPath, std::ios::binary);
+		if (in.is_open()) {
+			deserialize(in);
+			in.close();
+		}
+	}
 }
 
 Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :

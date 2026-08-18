@@ -39,7 +39,7 @@ add_executable (Infinite2D-demo
 "CameraMovement.cpp" 
 "BoxCollider2D.cpp" 
 "Ray2D.cpp" 
-"PlayerMovement.cpp" )
+"PlayerMovement.cpp"  "Headers/MenuScreen.h" "MenuScreen.cpp")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}
