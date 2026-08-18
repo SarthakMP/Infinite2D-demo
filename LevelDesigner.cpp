@@ -116,22 +116,17 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 
 void LevelDesigner::Start() {
 
-	
 	p = std::make_unique<Player>();
 
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
 	}
 
-
-
 	std::string path = Player::basePlayersPath +  "Player_Info.dat";
 	std::ifstream inFile(path, std::ios::binary);
 
 	p->deserialize(inFile);
 
-
-	
 	if (!p->isGameFirstStarted) {
 		int offset = 3;
 

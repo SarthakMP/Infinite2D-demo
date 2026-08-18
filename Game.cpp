@@ -45,6 +45,13 @@ void Game::run() {
 
 	InitialBoudningPoints(Bounding);
 
+
+
+	std::unique_ptr<Menu> menu = std::make_unique<Menu>(WorldCam);
+	Menu* menuPtr = menu.get();
+	AddObjects(std::move(menu));
+
+
 	std::unique_ptr<Player> p = std::make_unique<Player>();
 	AddObjects(std::move(p));
 	AddObjects(std::make_unique<PlayerMovement>());
@@ -52,9 +59,6 @@ void Game::run() {
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
 	AddObjects(std::make_unique < BlockModifier > ());
 
-	std::unique_ptr<Menu> menu = std::make_unique<Menu>();
-	Menu* menuPtr = menu.get();
-	AddObjects(std::move(menu));
 
 	for (auto& obj : Objects) obj->Start();
 	float lastTime = 0.0f;
@@ -89,7 +93,7 @@ void Game::run() {
 		//DrawCircleLines(Bounding[2].x, Bounding[2].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[3].x, Bounding[3].y, 10, ORANGE);
 
-		//Create a Screen for player to start a new world or continue the old one (future: can add mulitple worlds to load)
+		//TODO Create a Screen for player to start a new world or continue the old one (future: can add mulitple worlds to load)
 
 
 

@@ -12,25 +12,29 @@ void Menu::InitializeButtons() {
 
 void Menu::DrawButtons()
 {
-	DrawRectangle(ContiuneButton.x, ContiuneButton.y, ContiuneButton.width, ContiuneButton.height, WHITE);
-	DrawRectangle(StartNewButton.x, StartNewButton.y, StartNewButton.width, StartNewButton.height, WHITE);
+	DrawRectangle(ContiuneButton.x + Cam.target.x, ContiuneButton.y + Cam.target.y, ContiuneButton.width, ContiuneButton.height, WHITE);
+	DrawRectangle(StartNewButton.x + Cam.target.x, StartNewButton.y + Cam.target.y, StartNewButton.width, StartNewButton.height, WHITE);
 }
 
-
+int Menu::GetButtonInfo() {
+	return 0;
+}
 
 void Menu::Update(){
 }
 
 void Menu::Start() {
-	InitializeButtons();
+	
 }
 
 void Menu::Render() {
+	InitializeButtons();
+
 
 }
 
-Menu::Menu() {
-
+Menu::Menu(Camera2D& WorldCamera) {
+	Cam = WorldCamera;
 
 }
 

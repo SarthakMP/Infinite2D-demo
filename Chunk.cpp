@@ -107,10 +107,10 @@ void Chunk::save()
 	std::string baseChunksPath = std::string(SOURCE_DIR) + "Chunks/" +"chunk_" + std::to_string(chunk_id) + ".dat";
 
 	if (std::filesystem::exists(baseChunksPath)) {
-		std::ifstream in(baseChunksPath, std::ios::binary);
-		if (in.is_open()) {
-			deserialize(in);
-			in.close();
+		std::ofstream out(baseChunksPath, std::ios::binary);
+		if (out.is_open()) {
+			serialize(out);
+			out.close();
 		}
 	}
 }
