@@ -18,7 +18,7 @@ class Player : public Behaviour_Adapter {
 	inline static unsigned int Player_Speed = 5;
 
 public:
-	inline static bool isGameFirstStarted;
+	inline static bool isGameContinued;
 	inline static std::string basePlayersPath = std::string(SOURCE_DIR) + "Player/";
 	static void SetIsGrounded(bool val);
 	static bool GetIsGrounded();

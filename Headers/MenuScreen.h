@@ -1,13 +1,14 @@
 #pragma once
-#include"Behaviour.h"
+#include"Point.h"
 
 class Menu : public Behaviour_Adapter {
 public:
+	
 	static inline Rectangle ContiuneButton;
 	static inline Rectangle StartNewButton;
 	static inline Camera2D Cam;
 public:
-	static inline int OptionSelected = 0;
+	static inline int OptionSelected = 2;
 	void InitializeButtons();
 	void DrawButtons();
 	int GetButtonInfo();

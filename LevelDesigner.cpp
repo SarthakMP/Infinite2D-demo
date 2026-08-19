@@ -116,8 +116,6 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 
 void LevelDesigner::Start() {
 
-	p = std::make_unique<Player>();
-
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
 	}
@@ -127,7 +125,7 @@ void LevelDesigner::Start() {
 
 	p->deserialize(inFile);
 
-	if (!p->isGameFirstStarted) {
+	if (!p->isGameContinued) {
 		int offset = 3;
 
 		for (int i = -offset; i <= offset; i++) {
@@ -146,7 +144,7 @@ void LevelDesigner::Start() {
 			outfile.close();
 
 		}
-		p->isGameFirstStarted = true;
+		p->isGameContinued = true;
 	}
 	else {
 		Point PlayerPos = p->GetPlayerPos();
@@ -180,5 +178,5 @@ void LevelDesigner::Render() {
 }
 
 LevelDesigner::LevelDesigner(std::unique_ptr<Player>& ply) {
-	p = std::move(ply);
+	p = ply.get();
 }

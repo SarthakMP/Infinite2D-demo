@@ -59,8 +59,8 @@ void Game::run() {
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
 	AddObjects(std::make_unique < BlockModifier > ());
 
-
-	for (auto& obj : Objects) obj->Start();
+	
+	bool isStarted = false;
 	float lastTime = 0.0f;
 	while (!WindowShouldClose()) {
 
@@ -78,8 +78,11 @@ void Game::run() {
 		BeginMode2D(WorldCam);
 		ClearBackground(BLACK);
 		
-		
-		
+		if (menuPtr->OptionSelected != 0) {
+			menuPtr->DrawButtons();
+		}
+
+
 		rlPushMatrix(); // This locks the coords to local space only allowing objects to be transformed in the local space
 		rlScalef(1, -1, 1);
 		rlEnableBackfaceCulling();
@@ -94,26 +97,48 @@ void Game::run() {
 		//DrawCircleLines(Bounding[3].x, Bounding[3].y, 10, ORANGE);
 
 		//TODO Create a Screen for player to start a new world or continue the old one (future: can add mulitple worlds to load)
+		
 
+		if (menuPtr->OptionSelected == 0) {
 
+			//DEBUG Axis & Gizmos
+			DrawCircle(0, 0, 5, WHITE); //Origin
+			DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
+			DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
 
-		//DEBUG Axis & Gizmos
-		DrawCircle(0, 0, 5, WHITE); //Origin
-		DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
-		DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
+			if (isStarted == false) {
+				for (auto& obj : Objects) obj->Start();
+				isStarted = true;
+			}
 
-		if (IsMouseButtonDown(0))
-			for (auto& obj : Objects) obj->OnMouseDown();
-		if (IsMouseButtonUp(0))
-			for (auto& obj : Objects) obj->OnMouseUp();
+			if (IsMouseButtonDown(0))
+				for (auto& obj : Objects) obj->OnMouseDown();
+			if (IsMouseButtonUp(0))
+				for (auto& obj : Objects) obj->OnMouseUp();
 
-		for (auto& obj : Objects) obj->Update();
+			for (auto& obj : Objects) obj->Update();
 
-		for (auto& obj : Objects) obj->Render();
+			for (auto& obj : Objects) obj->Render();
 
-		//TEST Scene rectangle outside the visible area 
-		//DrawRectangle(500, 500, 100, 100, GREEN);
-		//DrawCircle(-1000, 0, 100, WHITE);
+			//TEST Scene rectangle outside the visible area 
+			//DrawRectangle(500, 500, 100, 100, GREEN);
+			//DrawCircle(-1000, 0, 100, WHITE);
+		}
+		else {
+			if (menuPtr->GetButtonInfo() == -1) {
+				if (IsMouseButtonPressed(0)) {
+					menuPtr->OptionSelected = 0;
+					p->isGameContinued = true;
+					
+				}
+			}
+			else if (menuPtr->GetButtonInfo() == 1) {
+				if (IsMouseButtonPressed(0)) {
+					menuPtr->OptionSelected = 0;
+					p->isGameContinued= false;
+				}
+			}
+		}
 		rlDisableBackfaceCulling();
 
 		rlPopMatrix();

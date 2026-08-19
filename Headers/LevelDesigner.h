@@ -6,7 +6,7 @@
 #include<math.h>
 
 class LevelDesigner : public Behaviour_Adapter{
-	inline static std::unique_ptr<Player> p;
+	inline static Player* p;
 	
 public:
 	inline static Chunk ChunksArray[6];

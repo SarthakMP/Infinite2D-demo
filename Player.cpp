@@ -85,14 +85,12 @@ void Player::Render() {
 
 void Player::serialize(std::ofstream& out) {
 
-	out.write(reinterpret_cast<const char*>(&isGameFirstStarted), sizeof(isGameFirstStarted));
 	out.write(reinterpret_cast<const char*>(&Player_Pos), sizeof(Player_Pos));
 
 }
 
 void Player::deserialize(std::ifstream& in) {
 
-	in.read(reinterpret_cast<char*>(&isGameFirstStarted), sizeof(isGameFirstStarted));
 	in.read(reinterpret_cast<char*>(&Player_Pos), sizeof(Player_Pos));
 
 }
