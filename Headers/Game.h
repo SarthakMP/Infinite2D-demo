@@ -22,8 +22,8 @@
 
 #define COL_TRANSPARENT CLITERAL(Color){0,0,0,0}
 #define COL_OPACITY CLITERAL(Color){255,255,255,80}
-#define SOURCE_DIR "E:/Projects/Infinite2D-demo/"
-
+#define SOURCE_DIR "E:/Projects/Infinite2D-demo"
+#define WORLD_DIR "E:/Projects/Infinite2D-demo/Worlds"
 
 
 class Game {

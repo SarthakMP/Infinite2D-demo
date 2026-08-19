@@ -95,13 +95,7 @@ void Player::deserialize(std::ifstream& in) {
 
 }
 
-
-Player::Player() {
-	hitbox_h = 100;
-	hitbox_w = 100;
-}
-Player::~Player() {
-	
+void Player::Save() {
 	std::string path = basePlayersPath + "Player_Info.dat";
 
 	if (!std::filesystem::is_directory(basePlayersPath)) {
@@ -110,4 +104,9 @@ Player::~Player() {
 	std::ofstream outFile(path, std::ios::binary);
 
 	serialize(outFile);
+}
+
+Player::Player() {
+	hitbox_h = 100;
+	hitbox_w = 100;
 }

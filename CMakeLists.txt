@@ -51,6 +51,7 @@ target_link_directories(Infinite2D-demo PRIVATE
 
 target_compile_definitions(Infinite2D-demo PRIVATE 
     SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/"
+    WORLD_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Worlds"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

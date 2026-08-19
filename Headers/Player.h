@@ -19,7 +19,7 @@ class Player : public Behaviour_Adapter {
 
 public:
 	inline static bool isGameContinued;
-	inline static std::string basePlayersPath = std::string(SOURCE_DIR) + "Player/";
+	inline static std::string basePlayersPath = std::string(WORLD_DIR) + "/Player/";
 	static void SetIsGrounded(bool val);
 	static bool GetIsGrounded();
 
@@ -45,6 +45,8 @@ public:
 	static void serialize(std::ofstream& out);
 	static void deserialize(std::ifstream& in);
 
+	void Save();
+
 	Player();
-	~Player();
+
 };

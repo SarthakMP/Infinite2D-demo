@@ -82,12 +82,9 @@ void Game::run() {
 			menuPtr->DrawButtons();
 		}
 
-
 		rlPushMatrix(); // This locks the coords to local space only allowing objects to be transformed in the local space
 		rlScalef(1, -1, 1);
 		rlEnableBackfaceCulling();
-
-		
 
 		SetBoundingPoints(Bounding, WorldCam.target);
 		//DEBUG
@@ -135,6 +132,9 @@ void Game::run() {
 			else if (menuPtr->GetButtonInfo() == 1) {
 				if (IsMouseButtonPressed(0)) {
 					menuPtr->OptionSelected = 0;
+
+
+
 					p->isGameContinued= false;
 				}
 			}
@@ -149,10 +149,13 @@ void Game::run() {
 		EndDrawing();
 
 	}
-
+	p->Save();
 	for (auto& chunk : LevelDesigner::ChunksArray) {
 		chunk.save();
 	}
+
+
+
 
 	CloseWindow();
 }
@@ -160,3 +163,5 @@ void Game::run() {
 Game::Game() {
 	WorldCam = Camera2D();
 }
+
+

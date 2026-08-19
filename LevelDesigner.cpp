@@ -116,14 +116,24 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 
 void LevelDesigner::Start() {
 
+	if (!std::filesystem::is_directory(baseWorldsPath)) {
+		std::filesystem::create_directory(baseWorldsPath);
+	}
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
+	}
+	if (!std::filesystem::is_directory(basePlayersPath)) {
+		std::filesystem::create_directory(basePlayersPath);
 	}
 
 	std::string path = Player::basePlayersPath +  "Player_Info.dat";
 	std::ifstream inFile(path, std::ios::binary);
 
-	p->deserialize(inFile);
+	if (inFile.is_open() && p->isGameContinued) {
+		p->deserialize(inFile);
+		inFile.close();
+	}
+
 
 	if (!p->isGameContinued) {
 		int offset = 3;
@@ -149,7 +159,7 @@ void LevelDesigner::Start() {
 	else {
 		Point PlayerPos = p->GetPlayerPos();
 		int ChunkId = static_cast<int>(std::floor(PlayerPos.x / ChunksWidth));
-		int offset = 3 ;
+		int offset = 3;
 		
 		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
 			Chunk Chunk;

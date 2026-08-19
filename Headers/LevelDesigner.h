@@ -10,7 +10,9 @@ class LevelDesigner : public Behaviour_Adapter{
 	
 public:
 	inline static Chunk ChunksArray[6];
-	inline static std::string baseChunksPath = std::string(SOURCE_DIR) + "Chunks/";
+	inline static std::string baseWorldsPath = std::string(WORLD_DIR);
+	inline static std::string baseChunksPath = baseWorldsPath + "/Chunks/";
+	inline static std::string basePlayersPath = baseWorldsPath +"/Player/";
 
 	inline static int ChunksWidth = 400, ChunksHeight=800;
 
