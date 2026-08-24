@@ -2,8 +2,6 @@
 // or project specific include files.
 
 #pragma once
-#include "raylib.h"
-#include "rlgl.h"
 #include "Headers/Behaviour.h"
 #include "Headers/CameraMovement.h"
 #include "Headers/Point.h"
@@ -13,7 +11,8 @@
 #include"Headers/Physics2D.h"
 #include"Headers/Collision2D.h"
 #include"Headers/BlockModification.h"
-#include"Headers/MenuScreen.h"
+#include"Headers/Screens/HomeScreen.h"
+#include"Headers/Screens/Screen.h"
 
 #include<iostream>
 #include<vector>
@@ -42,6 +41,7 @@ public:
 	void AddObjects(std::unique_ptr<Behaviour> obj);
 	void InitialBoudningPoints(Point(&Points)[4]);
 	void SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos);
+	char KeyParser(int key);
 	void run();
 
 	Game();

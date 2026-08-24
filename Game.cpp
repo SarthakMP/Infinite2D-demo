@@ -36,6 +36,28 @@ void Game::SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos) {
 	Points[3].y = -CameraPos.y;
 }
 
+bool isCapitalized = false;
+int count = 0;
+char Game::KeyParser(int key)
+{
+	if (key == 280) {
+		isCapitalized = count % 2 == 0 ? true : false;
+		count++;
+		std::cout << "CAPTIALIZED: " << isCapitalized << std::endl;
+	}
+	/*
+	if (isCapitalized) {
+		if (key < 'A' || key > 'Z') return '\0';
+		return char(key) + 32;
+	}
+
+	if (key < 'a' || key > 'z') return '\0';
+	*/
+
+	return char(key);
+
+}
+
 
 void Game::run() {
 
@@ -46,11 +68,9 @@ void Game::run() {
 	InitialBoudningPoints(Bounding);
 
 
-
-	std::unique_ptr<Menu> menu = std::make_unique<Menu>(WorldCam);
-	Menu* menuPtr = menu.get();
-	AddObjects(std::move(menu));
-
+	std::unique_ptr < Home> HomeScreen = std::make_unique<Home>(WorldCam);
+	Screen* CurrentScreen = HomeScreen.get();
+	Screen* ParentScreen = nullptr;
 
 	std::unique_ptr<Player> p = std::make_unique<Player>();
 	AddObjects(std::move(p));
@@ -59,15 +79,16 @@ void Game::run() {
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
 	AddObjects(std::make_unique < BlockModifier > ());
 
-	
+	std::string Text = "";
+	bool isWorldLoaded = false;
 	bool isStarted = false;
-	float lastTime = 0.0f;
+	bool isText = false;
+
 	while (!WindowShouldClose()) {
 
 		Behaviour_Adapter::deltatime = GetFrameTime();
 		
 		BeginDrawing();
-
 		//Top,Bottom,Left,Right Scales for Line so they can extended infinitly where the camera perfers to move to.
 		scl_top = Bounding[0].y;
 		scl_bottom = Bounding[2].y;
@@ -77,16 +98,10 @@ void Game::run() {
 
 		BeginMode2D(WorldCam);
 		ClearBackground(BLACK);
+
+		 // This locks the coords to local space only allowing objects to be transformed in the local space
+
 		
-		if (menuPtr->OptionSelected != 0) {
-			menuPtr->DrawButtons();
-		}
-
-		rlPushMatrix(); // This locks the coords to local space only allowing objects to be transformed in the local space
-		rlScalef(1, -1, 1);
-		rlEnableBackfaceCulling();
-
-		SetBoundingPoints(Bounding, WorldCam.target);
 		//DEBUG
 		//DrawCircleLines(Bounding[0].x, Bounding[0].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[1].x, Bounding[1].y, 10, ORANGE);
@@ -94,9 +109,70 @@ void Game::run() {
 		//DrawCircleLines(Bounding[3].x, Bounding[3].y, 10, ORANGE);
 
 		//TODO Create a Screen for player to start a new world or continue the old one (future: can add mulitple worlds to load)
-		
+		if (isText) {
+			int key = GetKeyPressed();
+			if (key >= 'A' && key <= 'Z') {
+				Text += KeyParser(key);
+				
+			}
+			if (key == 259) {
+				if(!Text.empty())
+					Text.pop_back();
+			}
+			std::cout << "TEXT: " << Text << std::endl;
+		}
 
-		if (menuPtr->OptionSelected == 0) {
+		if (!isWorldLoaded) {
+			CurrentScreen->DrawButtons();
+			if (IsMouseButtonPressed(0)) {
+				
+				int NextScreenOption = CurrentScreen->GetButtonInfo();
+				std::cout << "Childern's Size: " << CurrentScreen->Children.size() << std::endl;
+				if (NextScreenOption == -2) {
+					if (ParentScreen == nullptr) CurrentScreen = HomeScreen.get();
+					else CurrentScreen = ParentScreen;
+				}
+
+				if (NextScreenOption >= 0 ) {
+					if (!CurrentScreen->Children.empty()) {
+						CurrentScreen->targetScreen = CurrentScreen->Children[NextScreenOption].get();
+
+						Screen* tmp = CurrentScreen->targetScreen;
+						CurrentScreen->parentScreen = ParentScreen;
+						ParentScreen = std::move(CurrentScreen);
+
+						CurrentScreen = nullptr;
+
+						CurrentScreen = tmp;
+						
+					}
+					else {
+						std::string type = CurrentScreen->GetButtonType();
+						if (type._Equal("_Start")) {
+							isWorldLoaded = true;
+						}
+						else if (type._Equal("_Textbox")) {
+							isText = true;
+						}
+
+
+					}
+
+
+				}
+
+			}
+			
+		}
+		
+		//Start this seq only if the world is loaded
+		if(isWorldLoaded){
+
+			rlPushMatrix();
+			rlScalef(1, -1, 1);
+			
+			rlEnableBackfaceCulling();
+			SetBoundingPoints(Bounding, WorldCam.target);
 
 			//DEBUG Axis & Gizmos
 			DrawCircle(0, 0, 5, WHITE); //Origin
@@ -117,45 +193,19 @@ void Game::run() {
 
 			for (auto& obj : Objects) obj->Render();
 
-			//TEST Scene rectangle outside the visible area 
-			//DrawRectangle(500, 500, 100, 100, GREEN);
-			//DrawCircle(-1000, 0, 100, WHITE);
+			rlDisableBackfaceCulling();
+			rlPopMatrix();
 		}
-		else {
-			if (menuPtr->GetButtonInfo() == -1) {
-				if (IsMouseButtonPressed(0)) {
-					menuPtr->OptionSelected = 0;
-					p->isGameContinued = true;
-					
-				}
-			}
-			else if (menuPtr->GetButtonInfo() == 1) {
-				if (IsMouseButtonPressed(0)) {
-					menuPtr->OptionSelected = 0;
 
-
-
-					p->isGameContinued= false;
-				}
-			}
-		}
-		rlDisableBackfaceCulling();
-
-		rlPopMatrix();
 		EndMode2D();
-
-		
-
 		EndDrawing();
 
 	}
+
 	p->Save();
 	for (auto& chunk : LevelDesigner::ChunksArray) {
 		chunk.save();
 	}
-
-
-
 
 	CloseWindow();
 }
