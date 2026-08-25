@@ -75,9 +75,7 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 			chunk.serialize(outFile);
 			outFile.close();
 		}
-		else {
-			std::cerr << "Warning: Could not save chunk to disk: " << path << std::endl;
-		}
+
 		GenerateBlocks(chunk, x, y);
 		AddChunk(chunk);
 		
@@ -116,29 +114,34 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 
 void LevelDesigner::Start() {
 
-	if (!std::filesystem::is_directory(baseWorldsPath)) {
-		std::filesystem::create_directory(baseWorldsPath);
-	}
+	p->SetWorldName(WorldName);
+
+	baseWorldsPath += WorldName + "/";
+
+	std::filesystem::path worldDir = std::filesystem::path(baseWorldsPath);
+	std::error_code ec;
+	std::filesystem::create_directories(worldDir, ec);
+
+	baseChunksPath = baseWorldsPath + "Chunks/";
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
 	}
-	if (!std::filesystem::is_directory(basePlayersPath)) {
-		std::filesystem::create_directory(basePlayersPath);
-	}
 
-	std::string path = Player::basePlayersPath +  "Player_Info.dat";
+	std::string path = baseWorldsPath + "Player/" + "Player_Info.dat";
 	std::ifstream inFile(path, std::ios::binary);
 
-	if (inFile.is_open() && p->isGameContinued) {
+	if (p->isGameContinued && inFile.is_open()) {
 		p->deserialize(inFile);
 		inFile.close();
 	}
-
+	
 
 	if (!p->isGameContinued) {
+		Point PlayerPos = p->GetPlayerPos();
+		int ChunkId = static_cast<int>(std::floor(PlayerPos.x / ChunksWidth));
 		int offset = 3;
 
-		for (int i = -offset; i <= offset; i++) {
+		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
 
 			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
 			int x = i * ChunksWidth;
@@ -150,7 +153,7 @@ void LevelDesigner::Start() {
 
 			std::ofstream outfile(Chunkpath, std::ios::binary);
 			NewChunk.serialize(outfile);
-			ChunksArray[i + offset] = NewChunk;
+			ChunksArray[i + offset - ChunkId] = NewChunk;
 			outfile.close();
 
 		}
@@ -161,10 +164,9 @@ void LevelDesigner::Start() {
 		int ChunkId = static_cast<int>(std::floor(PlayerPos.x / ChunksWidth));
 		int offset = 3;
 		
-		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
+		for (int i = -(offset - ChunkId); i < offset + ChunkId; i++) {
 			Chunk Chunk;
 			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
-			
 			if (std::filesystem::exists(Chunkpath)) {
 				std::ifstream in(Chunkpath, std::ios::binary);
 				if (in.is_open()) {

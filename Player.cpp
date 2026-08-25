@@ -46,6 +46,11 @@ BoxCollider2D Player::GetHitBox()
 	return HitBox;
 }
 
+void Player::SetWorldName(std::string& WorldName)
+{
+	LocWorldName = WorldName;
+}
+
 void Player::DrawPlayer() {
 	//DEBUG ONLY
 	//DrawCircle(Player::GetHitBox().Origin.x, Player::GetHitBox().Origin.y, 10, RED);
@@ -96,17 +101,36 @@ void Player::deserialize(std::ifstream& in) {
 }
 
 void Player::Save() {
-	std::string path = basePlayersPath + "Player_Info.dat";
 
-	if (!std::filesystem::is_directory(basePlayersPath)) {
-		std::filesystem::create_directory(basePlayersPath);
+	if (basePlayersPath.empty() || LocWorldName.empty()) {
+		return;
+	}
+
+	basePlayersPath = std::string(WORLD_DIR) + '/' + LocWorldName + "/Player/";
+	std::string path = basePlayersPath + "Player_Info.dat";
+	
+	std::error_code ec;
+	std::filesystem::create_directories(basePlayersPath, ec);
+	if (ec) {
+		std::cout << "ERROR: " << ec << std::endl;
+		return;
 	}
 	std::ofstream outFile(path, std::ios::binary);
 
+	if (!outFile.is_open() || !outFile.good()) {
+		return;
+	}
+
 	serialize(outFile);
+
 }
+
+
+
 
 Player::Player() {
 	hitbox_h = 100;
 	hitbox_w = 100;
 }
+
+

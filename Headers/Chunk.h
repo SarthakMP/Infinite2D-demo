@@ -23,7 +23,7 @@ public:
 
 public:
 
-	void save();
+	void save(std::string& worldName);
 	void SetXY(float in_x, float in_y);
 
 	Vector2& GetXY();

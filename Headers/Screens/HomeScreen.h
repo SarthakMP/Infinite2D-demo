@@ -2,7 +2,7 @@
 #include"Headers/Screens/OptionsScreen.h"
 #include"Headers/Screens/StartScreen.h"
 #include"Headers/Screens/ContinueScreen.h"
-class Home : public Screen {
+class Home : public Scree_Adapter {
 public:
 
 	static inline Rectangle ContiuneButton, StartNewButton, OptionsButton;
@@ -18,7 +18,7 @@ public:
 	std::string GetButtonType() override;
 	Screen* GetNextScreen() override;
 
-	Home(Camera2D& in_cam) : Screen(in_cam) {
+	Home(Camera2D& in_cam) : Scree_Adapter(in_cam) {
 		InitializeButtons();
 		InitializeChildern();
 	}

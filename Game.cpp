@@ -40,19 +40,13 @@ bool isCapitalized = false;
 int count = 0;
 char Game::KeyParser(int key)
 {
-	if (key == 280) {
-		isCapitalized = count % 2 == 0 ? true : false;
-		count++;
-		std::cout << "CAPTIALIZED: " << isCapitalized << std::endl;
-	}
-	/*
-	if (isCapitalized) {
-		if (key < 'A' || key > 'Z') return '\0';
-		return char(key) + 32;
-	}
 
-	if (key < 'a' || key > 'z') return '\0';
-	*/
+	if (key >= KEY_KP_0 && key <= KEY_KP_9) {
+		return char(key) - 320 + '0';
+	}
+	if (key >= KEY_A && key <= KEY_Z) {
+		return char(key);
+	}
 
 	return char(key);
 
@@ -73,6 +67,7 @@ void Game::run() {
 	Screen* ParentScreen = nullptr;
 
 	std::unique_ptr<Player> p = std::make_unique<Player>();
+
 	AddObjects(std::move(p));
 	AddObjects(std::make_unique<PlayerMovement>());
 	AddObjects(std::make_unique < LevelDesigner>(p));
@@ -83,13 +78,15 @@ void Game::run() {
 	bool isWorldLoaded = false;
 	bool isStarted = false;
 	bool isText = false;
+	bool isTextLong = false;
 
 	while (!WindowShouldClose()) {
 
 		Behaviour_Adapter::deltatime = GetFrameTime();
 		
 		BeginDrawing();
-		//Top,Bottom,Left,Right Scales for Line so they can extended infinitly where the camera perfers to move to.
+
+		//DEBUG ONLY Top,Bottom,Left,Right Scales for Line so they can extended infinitly where the camera perfers to move to.
 		scl_top = Bounding[0].y;
 		scl_bottom = Bounding[2].y;
 
@@ -99,41 +96,53 @@ void Game::run() {
 		BeginMode2D(WorldCam);
 		ClearBackground(BLACK);
 
-		 // This locks the coords to local space only allowing objects to be transformed in the local space
-
-		
-		//DEBUG
+		 
+		//DEBUG ONLY
 		//DrawCircleLines(Bounding[0].x, Bounding[0].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[1].x, Bounding[1].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[2].x, Bounding[2].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[3].x, Bounding[3].y, 10, ORANGE);
 
-		//TODO Create a Screen for player to start a new world or continue the old one (future: can add mulitple worlds to load)
-		if (isText) {
+		//handling of Before game text Addition of text 
+		if (isText && !isTextLong) {
 			int key = GetKeyPressed();
-			if (key >= 'A' && key <= 'Z') {
-				Text += KeyParser(key);
-				
+			if (Text.size() > 30) { 
+				isTextLong = true; 
 			}
-			if (key == 259) {
+			
+			if (key == KEY_SPACE) {
+				Text += " " ;
+			}
+
+			if (key >= KEY_KP_0 && key <= KEY_KP_9) {
+				Text += KeyParser(key);
+				std::cout << "Number: " << Text << key << std::endl;
+			}
+			if (key >= KEY_A && key <= KEY_Z) {
+				Text += KeyParser(key);
+				std::cout << "TEXT: " << Text << std::endl;
+			}
+			if (key == KEY_BACKSPACE) {
 				if(!Text.empty())
 					Text.pop_back();
+				
 			}
-			std::cout << "TEXT: " << Text << std::endl;
+			
 		}
-
+		
+		//handling of multiple screens / Menus before the game is loaded
 		if (!isWorldLoaded) {
 			CurrentScreen->DrawButtons();
 			if (IsMouseButtonPressed(0)) {
 				
 				int NextScreenOption = CurrentScreen->GetButtonInfo();
-				std::cout << "Childern's Size: " << CurrentScreen->Children.size() << std::endl;
 				if (NextScreenOption == -2) {
 					if (ParentScreen == nullptr) CurrentScreen = HomeScreen.get();
 					else CurrentScreen = ParentScreen;
 				}
 
 				if (NextScreenOption >= 0 ) {
+					//Change of Screens
 					if (!CurrentScreen->Children.empty()) {
 						CurrentScreen->targetScreen = CurrentScreen->Children[NextScreenOption].get();
 
@@ -142,33 +151,38 @@ void Game::run() {
 						ParentScreen = std::move(CurrentScreen);
 
 						CurrentScreen = nullptr;
-
 						CurrentScreen = tmp;
-						
 					}
 					else {
+						//Change for buttons
 						std::string type = CurrentScreen->GetButtonType();
 						if (type._Equal("_Start")) {
+							
+							LevelDesigner::WorldName = Text;
 							isWorldLoaded = true;
 						}
 						else if (type._Equal("_Textbox")) {
 							isText = true;
 						}
-
-
+						else {
+							p->isGameContinued = true;
+							LevelDesigner::WorldName = type;
+							isWorldLoaded = true;
+						}
 					}
-
-
 				}
 
 			}
 			
+			if (isText) {
+				CurrentScreen->SetText(Text);
+			}
 		}
 		
 		//Start this seq only if the world is loaded
 		if(isWorldLoaded){
 
-			rlPushMatrix();
+			rlPushMatrix(); // This locks the coords to local space only allowing objects to be transformed in the local space
 			rlScalef(1, -1, 1);
 			
 			rlEnableBackfaceCulling();
@@ -180,6 +194,7 @@ void Game::run() {
 			DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
 
 			if (isStarted == false) {
+				isText = false;
 				for (auto& obj : Objects) obj->Start();
 				isStarted = true;
 			}
@@ -193,6 +208,8 @@ void Game::run() {
 
 			for (auto& obj : Objects) obj->Render();
 
+
+
 			rlDisableBackfaceCulling();
 			rlPopMatrix();
 		}
@@ -202,9 +219,12 @@ void Game::run() {
 
 	}
 
-	p->Save();
-	for (auto& chunk : LevelDesigner::ChunksArray) {
-		chunk.save();
+
+	if (isWorldLoaded) {
+		p->Save();
+		for (auto& chunk : LevelDesigner::ChunksArray) {
+			chunk.save(LevelDesigner::WorldName);
+		}
 	}
 
 	CloseWindow();

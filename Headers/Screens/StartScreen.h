@@ -1,6 +1,6 @@
 #pragma once
 #include"Headers/Screens/Screen.h"
-class StartScreen : public Screen{
+class StartScreen : public Scree_Adapter{
 public:
 	static inline std::string WorldName ="";
 
@@ -13,6 +13,8 @@ public:
 	int GetButtonInfo() override;
 	std::string GetButtonType() override;
 	Screen* GetNextScreen() override;
+	void SetText(std::string text) override;
+
 
 	StartScreen() = default;
 	StartScreen(Camera2D& cam);

@@ -40,6 +40,9 @@ std::string StartScreen::GetButtonType() {
 	case 1: {
 		return "_Textbox";
 	}
+	case -2: {
+		return "_Back";
+	}
 	default:
 		break;
 	}
@@ -72,6 +75,13 @@ Screen* StartScreen::GetNextScreen()
 	targetScreen = nullptr;
 	return next;
 }
+
+void StartScreen::SetText(std::string text)
+{
+	if (text.empty()) return;
+	DrawTextEx(F, text.c_str(), { WorldNameTextBox.x - (WorldNameTextBox.width * 0.5f) + 20, WorldNameTextBox.y }, 20,1, BLACK);
+}
+
 
 StartScreen::StartScreen(Camera2D& cam)
 {

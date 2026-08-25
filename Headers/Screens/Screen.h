@@ -17,9 +17,31 @@ public:
 	virtual int GetButtonInfo() = 0;
 	virtual std::string GetButtonType() =0;
 	virtual Screen* GetNextScreen() = 0;
+	virtual void SetText(std::string text) = 0;
 
 	Screen(Camera2D& cam) : Cam(cam) {}
 	Screen() = default;
+
+
+
+	virtual ~Screen() = default;
+};
+
+
+class Scree_Adapter : public Screen {
+public:
+	void InitializeChildern() override {}
+	void InitializeButtons() override {}
+	void DrawButtons() override {}
+	int GetButtonInfo() override { return 0;  }
+	std::string GetButtonType() override { return ""; }
+	Screen* GetNextScreen() override { return nullptr; }
+	void SetText(std::string text) override {}
+
+	Scree_Adapter(Camera2D& cam): Screen(cam) {
+		Cam = cam;
+	}
+	Scree_Adapter() {}
 
 	bool CheckBoundingArea(const Point& pos, const Rectangle& rec, const Point& origin = { 0,0 }) {
 		float minX = rec.x - origin.x;
@@ -32,5 +54,5 @@ public:
 			(pos.y >= minY) && (pos.y <= maxY);
 	}
 
-	virtual ~Screen() = default;
+	 ~Scree_Adapter() = default;
 };

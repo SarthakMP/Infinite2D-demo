@@ -1,7 +1,7 @@
 #pragma once
 #include"Headers/Screens/Screen.h"
 
-class Options : public Screen {
+class Options : public Scree_Adapter {
 public:
 
 	static inline std::vector<Screen*> Children;

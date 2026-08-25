@@ -103,10 +103,9 @@ Chunk::~Chunk()
 }
 
 
-void Chunk::save()
+void Chunk::save(std::string& worldName)
 {
-	std::string baseChunksPath = std::string(WORLD_DIR)+"/Chunks/" + "chunk_" + std::to_string(chunk_id) + ".dat";
-
+	std::string baseChunksPath = std::string(WORLD_DIR) + "/" + worldName + "/Chunks/" + "chunk_" + std::to_string(chunk_id) + ".dat";
 
 	std::ofstream out(baseChunksPath, std::ios::binary);
 	if (out.is_open()) {
