@@ -9,8 +9,6 @@
 class Chunk {
 
 	int chunk_id;
-	uint16_t chunk_h, chunk_w;
-	int chunk_x, chunk_y;
 	Vector2 XY,WH;
 
 public:
@@ -23,6 +21,7 @@ public:
 
 public:
 
+	void load(std::string& worldName);
 	void save(std::string& worldName);
 	void SetXY(float in_x, float in_y);
 
@@ -32,7 +31,6 @@ public:
 	int Getid();
 
 	Chunk();
-	~Chunk();
 
 	Chunk(int c_x, int c_y, int c_w, int c_h, int c_i);
 

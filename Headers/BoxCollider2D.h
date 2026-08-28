@@ -15,7 +15,7 @@ public:
 	const Point GetHitBoxPos();
 	const Point GetHitBoxOrigin();
 
-
+	const bool isEmpty();
 	const Rectangle GetHitBox();
 
 	static bool CheckBoxCollision(BoxCollider2D HB_A, BoxCollider2D HB_B);

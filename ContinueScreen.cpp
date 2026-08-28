@@ -32,9 +32,6 @@ void ContinueScreen::DrawButtons()
 
 int ContinueScreen::GetButtonInfo()
 {
-	int Scr_W = GetScreenWidth(), Scr_H = GetScreenHeight();
-	Point MousePos = Point(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2));
-
 	for (auto& world : WorldList) {
 		if (CheckBoundingArea(MousePos, world.first)) {
 			LocWorldName = world.second;

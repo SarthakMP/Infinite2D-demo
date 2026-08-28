@@ -45,9 +45,6 @@ Screen* Home::GetNextScreen() {
 }
 
 int Home::GetButtonInfo() {
-	int Scr_W = GetScreenWidth(), Scr_H = GetScreenHeight();
-	Point MousePos = Point(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2));
-
 
 	if (CheckBoundingArea(MousePos, ContiuneButton)) {
 		return 0;

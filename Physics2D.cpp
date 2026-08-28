@@ -37,12 +37,12 @@ void  Physics2D::Update() {
 			
 			if (std::abs(dy) < CombinedHalfHeight && std::abs(dx) < CombinedHalfWidth) {
 				
-				DrawLine(playerBox.Origin.x, playerBox.Origin.y, surfaceBox.Origin.x, surfaceBox.Origin.y, RED);
+				//DrawLine(playerBox.Origin.x, playerBox.Origin.y, surfaceBox.Origin.x, surfaceBox.Origin.y, RED);
 				
 				if (BoxCollider2D::CheckBoxCollision(playerBox, surfaceBox)) {
 
 					float OverlapY = (CombinedHalfHeight - std::abs(dy)) - 0.01f;
-					float OverlapX = (CombinedHalfWidth - std::abs(dx));
+					float OverlapX = (CombinedHalfWidth - std::abs(dx)) - 0.01f;
 
 					if (OverlapY < OverlapX) {
 						playerBox.Origin.y += (dy>0)? OverlapY : -OverlapY;
@@ -67,5 +67,9 @@ void  Physics2D::Update() {
 
 #pragma endregion
 
-
+	Point Pos = Player::GetPlayerPos();
+	if (Pos.y < -2000) {
+		Pos.y = 0;
+		Player::SetPlayerPos(Pos); // Set Spawn Point TODO Add a dynamic Spawn point 
+	}
 }

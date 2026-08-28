@@ -11,6 +11,11 @@ void BoxCollider2D::DrawBox(Vector2 a, Vector2 b)
 
 }
 
+const bool BoxCollider2D::isEmpty()
+{
+	return Rec.width == 0 || Rec.height == 0 ? true :  false;
+}
+
 const Rectangle BoxCollider2D::GetHitBox() {
 	return Rec;
 }

@@ -72,7 +72,7 @@ void Game::run() {
 	AddObjects(std::make_unique<PlayerMovement>());
 	AddObjects(std::make_unique < LevelDesigner>(p));
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
-	AddObjects(std::make_unique < BlockModifier > ());
+	AddObjects(std::make_unique < BlockModifier > (WorldCam));
 
 	std::string Text = "";
 	bool isWorldLoaded = false;
@@ -80,8 +80,11 @@ void Game::run() {
 	bool isText = false;
 	bool isTextLong = false;
 
+	float Zoom = 1/ WorldCam.zoom;
+
 	while (!WindowShouldClose()) {
 
+		CurrentScreen->MousePos = Point(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2))* Zoom;
 		Behaviour_Adapter::deltatime = GetFrameTime();
 		
 		BeginDrawing();
@@ -219,7 +222,7 @@ void Game::run() {
 
 	}
 
-
+	//Some Issue here
 	if (isWorldLoaded) {
 		p->Save();
 		for (auto& chunk : LevelDesigner::ChunksArray) {

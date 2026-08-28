@@ -10,6 +10,8 @@ public:
 	std::vector<std::unique_ptr<Screen>> Children;
 	Screen* targetScreen = nullptr;
 	Screen* parentScreen = nullptr;
+
+	Point MousePos;
 public:
 	virtual void InitializeChildern() = 0;
 	virtual void InitializeButtons() = 0;

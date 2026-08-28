@@ -5,10 +5,7 @@ void CameraMovement::MoveCamera() {
 
 	Vector2 PlayerPos = Vector2(Player::GetPlayerPos().x, -Player::GetPlayerPos().y);
 	m_Camera->target = PlayerPos;
-
 }
-
-
 
 void CameraMovement::Update() {
 	MoveCamera();

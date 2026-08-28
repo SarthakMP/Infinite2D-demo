@@ -4,13 +4,10 @@
 void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&chunk_id), sizeof(chunk_id));
 
-	out.write(reinterpret_cast<const char*>(&chunk_h), sizeof(chunk_h));
-	out.write(reinterpret_cast<const char*>(&chunk_w), sizeof(chunk_w));
+	bool hasHitBox = (HitBox != nullptr);
+	out.write(reinterpret_cast<const char*>(&hasHitBox), sizeof(hasHitBox));
 
-	out.write(reinterpret_cast<const char*>(&chunk_x), sizeof(chunk_x));
-	out.write(reinterpret_cast<const char*>(&chunk_y), sizeof(chunk_y));
-
-	if (HitBox) {
+	if (hasHitBox) {
 		out.write(reinterpret_cast<const char*>(HitBox.get()), sizeof(BoxCollider2D));
 	}
 	
@@ -18,9 +15,9 @@ void Chunk::serialize(std::ofstream& out) {
 	out.write(reinterpret_cast<const char*>(&count), sizeof(count));
 
 	if (count > 0) {
-		for (auto i = Blocks->begin(); i != Blocks->end(); i++) {
-			BoxCollider2D& block = i->second;
-			out.write(reinterpret_cast<const char*>(&block),sizeof(BoxCollider2D));
+		for (const auto& [id, block] : *Blocks) {
+			out.write(reinterpret_cast<const char*>(&id), sizeof(id));
+			out.write(reinterpret_cast<const char*>(&block), sizeof(BoxCollider2D));
 		}
 	}
 	
@@ -31,30 +28,29 @@ void Chunk::deserialize(std::ifstream& in) {
 
 	in.read(reinterpret_cast<char*>(&chunk_id), sizeof(chunk_id));
 
-	in.read(reinterpret_cast<char*>(&chunk_h), sizeof(chunk_h));
-	in.read(reinterpret_cast<char*>(&chunk_w), sizeof(chunk_w));
-
-	in.read(reinterpret_cast<char*>(&chunk_x), sizeof(chunk_x));
-	in.read(reinterpret_cast<char*>(&chunk_y), sizeof(chunk_y));
-
-	if (HitBox) {
+	bool hasHitBox = false;
+	in.read(reinterpret_cast<char*>(&hasHitBox), sizeof(hasHitBox));
+	
+	if (hasHitBox) {
+		HitBox = std::make_shared<BoxCollider2D>();
 		in.read(reinterpret_cast<char*>(HitBox.get()), sizeof(BoxCollider2D));
+	}
+	else {
+		HitBox.reset();
 	}
 	
 
-	if (!Blocks) {
-		Blocks = std::make_shared<std::map<int,BoxCollider2D>>();
-	}
+	Blocks = std::make_shared<std::map<int,BoxCollider2D>>();
 
 	size_t count = 0;
 	in.read(reinterpret_cast<char*>(&count), sizeof(count));
-
 	for (size_t i = 0; i < count; ++i) {
+		int id=0;
 		BoxCollider2D block;
-
+		in.read(reinterpret_cast<char*>(&id), sizeof(id));
 		in.read(reinterpret_cast<char*>(&block), sizeof(BoxCollider2D));
 
-		Blocks->emplace(block.id, block);
+		Blocks->emplace(id, block);
 	}
 
 
@@ -63,18 +59,18 @@ void Chunk::deserialize(std::ifstream& in) {
 
 
 void Chunk::SetXY(float in_x, float in_y) {
-	chunk_x = in_x;
-	chunk_y = in_y;
+	HitBox->Rec.x = in_x;
+	HitBox->Rec.y = in_y;
 }
 
 Vector2& Chunk::GetXY() {
-	XY.x = chunk_x;
-	XY.y = chunk_y;
+	XY.x = HitBox->Rec.x;
+	XY.y = HitBox->Rec.y;
 	return XY;
 }
 Vector2& Chunk::GetWH() {
-	WH.x = chunk_w;
-	WH.y = chunk_h;
+	WH.x = HitBox->Rec.width;
+	WH.y = HitBox->Rec.height;
 	return WH;
 }
 int Chunk::Getid() {
@@ -83,25 +79,26 @@ int Chunk::Getid() {
 
 Chunk::Chunk() {
 	XY = { 0,0 };
-	chunk_y = 0;
-	chunk_x = 0;
-
 	WH = { 0,0 };
-	chunk_w = 0;
-	chunk_h = 0;
-
-
 	chunk_id = 0;
 
 	HitBox = std::make_shared<BoxCollider2D>();
 	Blocks = std::make_shared<std::map<int,BoxCollider2D>>();
 }
 
-Chunk::~Chunk()
+
+void Chunk::load(std::string& worldName)
 {
-
+	std::string baseChunksPath = std::string(WORLD_DIR) + "/" + worldName + "/Chunks/" + "chunk_" + std::to_string(chunk_id) + ".dat";
+	
+	if (std::filesystem::exists(baseChunksPath)) {
+		std::ofstream in(baseChunksPath, std::ios::binary);
+		if (in.is_open()) {
+			serialize(in);
+			in.close();
+		}
+	}
 }
-
 
 void Chunk::save(std::string& worldName)
 {
@@ -115,21 +112,20 @@ void Chunk::save(std::string& worldName)
 	
 }
 
-Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) :
-	chunk_x(c_x), chunk_y(c_y), chunk_w(c_w), chunk_h(c_h), chunk_id(c_i) {
+Chunk::Chunk(int c_x, int c_y, int c_w, int c_h, int c_i) : chunk_id(c_i) {
 	WH = { 0,0 };
 	XY = { 0,0 };
 
 	HitBox = std::make_shared<BoxCollider2D>();
 	Blocks = std::make_shared<std::map<int, BoxCollider2D>>();
 
-	HitBox->Rec.x = chunk_x;
-	HitBox->Rec.y = chunk_y;
+	HitBox->Rec.x = c_x;
+	HitBox->Rec.y = c_y;
 
-	HitBox->Rec.width = chunk_w;
-	HitBox->Rec.height = chunk_h;
+	HitBox->Rec.width = c_w;
+	HitBox->Rec.height = c_h;
 
-	HitBox->Origin.x = HitBox->Rec.x + chunk_w * 0.5f;
-	HitBox->Origin.y = HitBox->Rec.y + chunk_h * 0.5f;
+	HitBox->Origin.x = HitBox->Rec.x + c_w * 0.5f;
+	HitBox->Origin.y = HitBox->Rec.y + c_h * 0.5f;
 
 }

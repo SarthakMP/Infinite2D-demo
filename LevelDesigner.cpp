@@ -8,30 +8,17 @@ void LevelDesigner::AddChunk(Chunk& chunk) {
 
 	if (chunk.Getid() < ChunksArray[0].Getid()) {
 		if (ChunksArray[5].isDirty) {
-			std::string path = baseChunksPath + "chunk_" + std::to_string(ChunksArray[5].Getid()) + ".dat";
-			std::ofstream outFile(path, std::ios::binary);
-			
-			ChunksArray[5].serialize(outFile);
-			ChunksArray[5].isDirty = false;
-			
-			outFile.close();
+			ChunksArray[5].save(WorldName);
 		}
 
 		for (int i = 5; i > 0; i--) {
 			ChunksArray[i] = ChunksArray[i - 1];
 		}
-
 		ChunksArray[0] = chunk;
 	}
 	else if (chunk.Getid() > ChunksArray[5].Getid()) {
 		if (ChunksArray[0].isDirty) {
-			std::string path = baseChunksPath + "chunk_" + std::to_string(ChunksArray[0].Getid()) + ".dat";
-			std::ofstream outFile(path, std::ios::binary);
-			
-			ChunksArray[0].serialize(outFile);
-			ChunksArray[0].isDirty = false;
-			
-			outFile.close();
+			ChunksArray[0].save(WorldName);
 		}
 
 		for (int i = 0; i < 5; i++) {
@@ -44,57 +31,40 @@ Point PrevPos = Point(0, 0);
 void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
 
 	int delta = PlayerPos.x - PrevPos.x;
-	if (delta == 0) return;
 
 	int sign = m_sign(delta);
-
 	int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
 	int y = -ChunksHeight - 100;
-
 
 	int targetID = CurrentChunkId + (sign);
 
 	std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
-	Chunk chunk;
-
 	int x = targetID * ChunksWidth;
 
 	if (std::filesystem::exists(path)) {
-		std::ifstream in(path, std::ios::binary);
-		if (in.is_open()) {
-			chunk.deserialize(in);
-			in.close();
-			AddChunk(chunk);
-		}
+		Chunk chunk;
+		chunk.load(WorldName);
+		AddChunk(chunk);
 	}
 	else {
-		chunk = Chunk(x, y, ChunksWidth, ChunksHeight, targetID);
-		std::ofstream outFile(path, std::ios::binary);
-
-		if (outFile.is_open()) {
-			chunk.serialize(outFile);
-			outFile.close();
-		}
-
-		GenerateBlocks(chunk, x, y);
-		AddChunk(chunk);
-		
+		NewChunk(path, targetID, Point(x, y), 0, 0, 1);
 	}
-
+	
 	PrevPos = PlayerPos;
-
-
 }
 
 void LevelDesigner::DrawChunks() {
-	for (Chunk& chunk : ChunksArray) {
 
+	for (Chunk& chunk : ChunksArray) {
+		DrawRectangleLines(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
 		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
 			BoxCollider2D& blocks = it->second;
+			
 			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
 		}
 
 	}
+
 }
 float block_h = 100, block_w = 100;
 
@@ -112,15 +82,34 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 	}
 }
 
+void LevelDesigner::NewChunk(const std::string& Chunkpath,const int& chunk_id,const Point& XY, const int& i, const int& offset,int Add_Chunk) {
+
+	Chunk NewChunk(XY.x, XY.y, ChunksWidth, ChunksHeight, chunk_id);
+
+	GenerateBlocks(NewChunk, XY.x, XY.y);
+
+	if (Add_Chunk ==0)
+		ChunksArray[i + offset - chunk_id] = NewChunk;
+	else if (Add_Chunk == 1)
+		AddChunk(NewChunk);
+
+	NewChunk.save(WorldName);
+}
+
 void LevelDesigner::Start() {
 
-	p->SetWorldName(WorldName);
+	if (!std::filesystem::is_directory(baseWorldsPath)) {
+		std::filesystem::create_directory(baseWorldsPath);
+	}
 
+	p->SetWorldName(WorldName);
 	baseWorldsPath += WorldName + "/";
 
-	std::filesystem::path worldDir = std::filesystem::path(baseWorldsPath);
-	std::error_code ec;
-	std::filesystem::create_directories(worldDir, ec);
+	if (!std::filesystem::is_directory(baseWorldsPath)){
+		std::filesystem::path worldDir = std::filesystem::path(baseWorldsPath);
+		std::error_code ec;
+		std::filesystem::create_directories(worldDir, ec);
+	}
 
 	baseChunksPath = baseWorldsPath + "Chunks/";
 	if (!std::filesystem::is_directory(baseChunksPath)) {
@@ -134,46 +123,44 @@ void LevelDesigner::Start() {
 		p->deserialize(inFile);
 		inFile.close();
 	}
-	
 
 	if (!p->isGameContinued) {
 		Point PlayerPos = p->GetPlayerPos();
-		int ChunkId = static_cast<int>(std::floor(PlayerPos.x / ChunksWidth));
+		int ChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
 		int offset = 3;
 
 		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
 
-			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
 			int x = i * ChunksWidth;
 			int y = -ChunksHeight - 100;
 
-			Chunk NewChunk(x, y, ChunksWidth, ChunksHeight, i);
-
-			GenerateBlocks(NewChunk, x, y);
-
-			std::ofstream outfile(Chunkpath, std::ios::binary);
-			NewChunk.serialize(outfile);
-			ChunksArray[i + offset - ChunkId] = NewChunk;
-			outfile.close();
+			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
+			NewChunk(Chunkpath, ChunkId,Point(x,y), i, 3, 0);
 
 		}
 		p->isGameContinued = true;
 	}
 	else {
 		Point PlayerPos = p->GetPlayerPos();
-		int ChunkId = static_cast<int>(std::floor(PlayerPos.x / ChunksWidth));
+		int ChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
+		std::cout << ChunkId << std::endl;
 		int offset = 3;
 		
-		for (int i = -(offset - ChunkId); i < offset + ChunkId; i++) {
+		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
 			Chunk Chunk;
 			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
+			
 			if (std::filesystem::exists(Chunkpath)) {
+
 				std::ifstream in(Chunkpath, std::ios::binary);
-				if (in.is_open()) {
-					Chunk.deserialize(in);
-					in.close();
-					ChunksArray[i + offset - ChunkId] = Chunk;
-				}
+				Chunk.load(WorldName);
+				ChunksArray[i + offset - ChunkId] = Chunk;
+			}
+			else {
+				int x = i * ChunksWidth;
+				int y = -ChunksHeight - 100;
+				NewChunk(Chunkpath, ChunkId,Point(x,y), i, 3, 1);
+
 			}
 		}
 	}
