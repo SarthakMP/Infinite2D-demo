@@ -10,6 +10,7 @@ public:
 	virtual void Update() = 0;
 	virtual void Render() = 0;
 
+	virtual void OnMouse2Down() = 0;
 	virtual void OnMouseDown() = 0;
 	virtual void OnMouseUp() = 0;
 
@@ -23,6 +24,7 @@ public:
 	void Update() override {};
 	void Render() override {};
 
+	void OnMouse2Down() override {};
 	void OnMouseDown() override {};
 	void OnMouseUp() override {};
 

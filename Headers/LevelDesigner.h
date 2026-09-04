@@ -15,6 +15,7 @@ public:
 	inline static std::string baseChunksPath = "";
 	inline static std::string basePlayersPath = "";
 
+	inline static int block_h = 100, block_w = 100;
 	inline static int ChunksWidth = 400, ChunksHeight=800;
 
 	inline static void AddChunk(Chunk& chunk);

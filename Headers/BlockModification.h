@@ -10,6 +10,7 @@ public:
 	void Start();
 	void Update();
 	void OnMouseDown();
+	void OnMouse2Down();
 
 	BlockModifier(Camera2D& cam);
 };

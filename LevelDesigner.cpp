@@ -65,7 +65,7 @@ void LevelDesigner::DrawChunks() {
 		}
 	}
 }
-float block_h = 100, block_w = 100;
+
 
 void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 	int chunk_h = NewChunk.GetWH().y;

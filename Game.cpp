@@ -204,6 +204,9 @@ void Game::run() {
 
 			if (IsMouseButtonDown(0))
 				for (auto& obj : Objects) obj->OnMouseDown();
+			if (IsMouseButtonDown(1))
+				for (auto& obj : Objects) obj->OnMouse2Down();
+
 			if (IsMouseButtonUp(0))
 				for (auto& obj : Objects) obj->OnMouseUp();
 
