@@ -18,7 +18,7 @@ void LevelDesigner::AddChunk(Chunk& chunk) {
 	}
 	else if (chunk.Getid() > ChunksArray[5].Getid()) {
 		if (ChunksArray[0].isDirty) {
-			ChunksArray[0].save(WorldName);
+ 			ChunksArray[0].save(WorldName);
 		}
 
 		for (int i = 0; i < 5; i++) {
@@ -26,35 +26,36 @@ void LevelDesigner::AddChunk(Chunk& chunk) {
 		}
 		ChunksArray[5] = chunk;
 	}
+
 }
 Point PrevPos = Point(0, 0);
-void LevelDesigner::GenerateChunk(const Point& PlayerPos) {
+void LevelDesigner::GenerateChunk(const Point& PlayerPos,const float& deltaX) {
 
-	int delta = PlayerPos.x - PrevPos.x;
+	int sign = m_sign(deltaX);
 
-	int sign = m_sign(delta);
 	int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
-	int y = -ChunksHeight - 100;
 
 	int targetID = CurrentChunkId + (sign);
 
 	std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
-	int x = targetID * ChunksWidth;
-
+	std::cout << "Next Chunk: " << targetID << std::endl;
 	if (std::filesystem::exists(path)) {
+		
 		Chunk chunk;
-		chunk.load(WorldName);
+		chunk.load(WorldName,path);
 		AddChunk(chunk);
 	}
 	else {
-		NewChunk(path, targetID, Point(x, y), 0, 0, 1);
+		int x = targetID * ChunksWidth;
+		int y = -ChunksHeight - 100;
+
+		NewChunk(path, targetID, Point(x, y), targetID, 0, 1);
 	}
 	
-	PrevPos = PlayerPos;
+
 }
 
 void LevelDesigner::DrawChunks() {
-
 	for (Chunk& chunk : ChunksArray) {
 		DrawRectangleLines(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
 		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
@@ -62,9 +63,7 @@ void LevelDesigner::DrawChunks() {
 			
 			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
 		}
-
 	}
-
 }
 float block_h = 100, block_w = 100;
 
@@ -82,14 +81,14 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 	}
 }
 
-void LevelDesigner::NewChunk(const std::string& Chunkpath,const int& chunk_id,const Point& XY, const int& i, const int& offset,int Add_Chunk) {
+void LevelDesigner::NewChunk(const std::string& Chunkpath,const int& pivot_chunk_id,const Point& XY, const int& chunk_id_iterator, const int& offset,int Add_Chunk) {
 
-	Chunk NewChunk(XY.x, XY.y, ChunksWidth, ChunksHeight, chunk_id);
+	Chunk NewChunk(XY.x, XY.y, ChunksWidth, ChunksHeight, chunk_id_iterator);
 
 	GenerateBlocks(NewChunk, XY.x, XY.y);
 
 	if (Add_Chunk ==0)
-		ChunksArray[i + offset - chunk_id] = NewChunk;
+		ChunksArray[chunk_id_iterator + offset - pivot_chunk_id] = NewChunk;
 	else if (Add_Chunk == 1)
 		AddChunk(NewChunk);
 
@@ -124,10 +123,10 @@ void LevelDesigner::Start() {
 		inFile.close();
 	}
 
+	Point PlayerPos = p->GetPlayerPos();
+	int ChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
+	int offset = 3;
 	if (!p->isGameContinued) {
-		Point PlayerPos = p->GetPlayerPos();
-		int ChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
-		int offset = 3;
 
 		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
 
@@ -141,26 +140,19 @@ void LevelDesigner::Start() {
 		p->isGameContinued = true;
 	}
 	else {
-		Point PlayerPos = p->GetPlayerPos();
-		int ChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
-		std::cout << ChunkId << std::endl;
-		int offset = 3;
-		
+
 		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
 			Chunk Chunk;
 			std::string Chunkpath = baseChunksPath + "chunk_" + std::to_string(i) + ".dat";
 			
 			if (std::filesystem::exists(Chunkpath)) {
-
-				std::ifstream in(Chunkpath, std::ios::binary);
-				Chunk.load(WorldName);
+				Chunk.load(WorldName, Chunkpath);
 				ChunksArray[i + offset - ChunkId] = Chunk;
 			}
 			else {
 				int x = i * ChunksWidth;
 				int y = -ChunksHeight - 100;
-				NewChunk(Chunkpath, ChunkId,Point(x,y), i, 3, 1);
-
+				NewChunk(Chunkpath, ChunkId,Point(x,y), i, 3, 0);
 			}
 		}
 	}
@@ -169,7 +161,11 @@ void LevelDesigner::Start() {
 
 void LevelDesigner::Update() {
 	Point PlyPos = p->GetPlayerPos();
-	GenerateChunk(PlyPos);
+	float deltaX = PlyPos.x - PrevPos.x;
+	if (std::abs(deltaX) > 0.01f) {
+		GenerateChunk(PlyPos, deltaX);
+	}
+	PrevPos = PlyPos;
 }
 
 void LevelDesigner::Render() {

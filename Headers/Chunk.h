@@ -21,7 +21,7 @@ public:
 
 public:
 
-	void load(std::string& worldName);
+	void load(std::string& worldName, std::string& path);
 	void save(std::string& worldName);
 	void SetXY(float in_x, float in_y);
 

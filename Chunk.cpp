@@ -25,7 +25,6 @@ void Chunk::serialize(std::ofstream& out) {
 
 void Chunk::deserialize(std::ifstream& in) {
 
-
 	in.read(reinterpret_cast<char*>(&chunk_id), sizeof(chunk_id));
 
 	bool hasHitBox = false;
@@ -87,18 +86,17 @@ Chunk::Chunk() {
 }
 
 
-void Chunk::load(std::string& worldName)
+void Chunk::load(std::string& worldName, std::string& path)
 {
-	std::string baseChunksPath = std::string(WORLD_DIR) + "/" + worldName + "/Chunks/" + "chunk_" + std::to_string(chunk_id) + ".dat";
-	
-	if (std::filesystem::exists(baseChunksPath)) {
-		std::ofstream in(baseChunksPath, std::ios::binary);
+	if (std::filesystem::exists(path)) {
+		std::ifstream in(path, std::ios::binary);
 		if (in.is_open()) {
-			serialize(in);
-			in.close();
+			deserialize(in);
 		}
+		in.close();
 	}
 }
+
 
 void Chunk::save(std::string& worldName)
 {
