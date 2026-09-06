@@ -13,12 +13,12 @@ class Player : public Behaviour_Adapter {
 	inline static bool isGrounded;
 	inline static BoxCollider2D HitBox;
 	inline static Point Player_Vel = Point(0, 0);
-	inline static unsigned int Player_Speed = 5;
+	
 	inline static std::string LocWorldName = "";
 	inline static std::string basePlayersPath = std::string(WORLD_DIR) + "/";
 
 public:
-	
+	inline static unsigned int Player_Speed = 5;
 	inline static bool isGameContinued;
 	static void SetIsGrounded(bool val);
 	static bool GetIsGrounded();
@@ -28,6 +28,7 @@ public:
 
 	static void SetVelocity(const Point& vel);
 	static void SetVelocity(float x_in,float y_in);
+
 	static Point GetVelocity();
 
 	static void UpdateHitbox();

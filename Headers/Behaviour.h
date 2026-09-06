@@ -8,7 +8,9 @@ public:
 	static inline float deltatime=0;
 	virtual void Start() = 0;
 	virtual void Update() = 0;
+	virtual void UpdateGUI() = 0;
 	virtual void Render() = 0;
+	virtual void RenderGUI() = 0;
 
 	virtual void OnMouse2Down() = 0;
 	virtual void OnMouseDown() = 0;
@@ -22,7 +24,9 @@ class Behaviour_Adapter : public Behaviour {
 public:
 	void Start() override {};
 	void Update() override {};
+	void UpdateGUI() override {};
 	void Render() override {};
+	void RenderGUI() override {};
 
 	void OnMouse2Down() override {};
 	void OnMouseDown() override {};

@@ -11,14 +11,14 @@ void Game::AddObjects(std::unique_ptr<Behaviour> obj) {
 	Objects.push_back(std::move(obj));
 }
 
-void Game::InitialBoudningPoints(Point(&Points)[4]) {
+void Game::InitialBoudningPoints(std::shared_ptr<Point[4]>(&Points)) {
 	Points[0] = Point(0, 400);
 	Points[1] = Point(-400, 0);
 	Points[2] = Point(0, -400);
 	Points[3] = Point(400, 0);
 
 }
-void Game::SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos) {
+void Game::SetBoundingPoints(std::shared_ptr<Point[4]>(&Points), Point CameraPos) {
 	//TOP Clamp
 	Points[0].x = CameraPos.x;
 	Points[0].y = 400 - CameraPos.y;
@@ -66,6 +66,8 @@ void Game::run() {
 	Screen* CurrentScreen = HomeScreen.get();
 	Screen* ParentScreen = nullptr;
 
+	GUI BaseGUI(WorldCam,Bounding);
+	std::unique_ptr<PlayScreen> PlayScreenPtr = std::make_unique< PlayScreen>(WorldCam);
 	std::unique_ptr<Player> p = std::make_unique<Player>();
 
 	AddObjects(std::move(p));
@@ -79,6 +81,7 @@ void Game::run() {
 	bool isStarted = false;
 	bool isText = false;
 	bool isTextLong = false;
+	bool isScreenLoaded = false;
 
 	float Zoom = 1/ WorldCam.zoom;
 
@@ -101,10 +104,10 @@ void Game::run() {
 
 		 
 		//DEBUG ONLY
-		//DrawCircleLines(Bounding[0].x, Bounding[0].y, 10, ORANGE);
-		//DrawCircleLines(Bounding[1].x, Bounding[1].y, 10, ORANGE);
-		//DrawCircleLines(Bounding[2].x, Bounding[2].y, 10, ORANGE);
-		//DrawCircleLines(Bounding[3].x, Bounding[3].y, 10, ORANGE);
+		DrawCircleLines(Bounding[0].x, -Bounding[0].y, 10, ORANGE);
+		DrawCircleLines(Bounding[1].x, -Bounding[1].y, 10, ORANGE);
+		DrawCircleLines(Bounding[2].x, -Bounding[2].y, 10, ORANGE);
+		DrawCircleLines(Bounding[3].x, -Bounding[3].y, 10, ORANGE);
 
 		//handling of Before game text Addition of text 
 		if (isText && !isTextLong) {
@@ -185,12 +188,20 @@ void Game::run() {
 		//Start this seq only if the world is loaded
 		if(isWorldLoaded){
 
+			if (!isScreenLoaded) {
+				std::cout << "Loaded" << std::endl;
+				CurrentScreen = PlayScreenPtr.get();
+				isScreenLoaded = true;
+			}
+
 			rlPushMatrix(); // This locks the coords to local space only allowing objects to be transformed in the local space
 			rlScalef(1, -1, 1);
 			
 			rlEnableBackfaceCulling();
-			SetBoundingPoints(Bounding, WorldCam.target);
 
+
+
+			SetBoundingPoints(Bounding, CalculatePlayer(WorldCam.target));
 			//DEBUG Axis & Gizmos
 			DrawCircle(0, 0, 5, WHITE); //Origin
 			DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
@@ -211,10 +222,14 @@ void Game::run() {
 				for (auto& obj : Objects) obj->OnMouseUp();
 
 			for (auto& obj : Objects) obj->Update();
+			
+			BaseGUI.SetBoundingPoints(Bounding);
+
+			for (auto& Gui : CurrentScreen->GUIs) Gui->UpdateGUI();
 
 			for (auto& obj : Objects) obj->Render();
 
-
+			for (auto& Gui : CurrentScreen->GUIs) Gui->RenderGUI();
 
 			rlDisableBackfaceCulling();
 			rlPopMatrix();
@@ -234,6 +249,15 @@ void Game::run() {
 	}
 
 	CloseWindow();
+}
+
+
+Point prevPos = 0;
+Point Game::CalculatePlayer(const Point& inPos)
+{
+	Point delta = inPos - prevPos;
+	
+	return delta;
 }
 
 Game::Game() {

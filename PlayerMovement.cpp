@@ -16,7 +16,7 @@ void PlayerMovement::Move()
 
 
 	const float deAcc = 25.0f;
-	const float MaxSpeed = 5.0f;
+	const float MaxSpeed = 8.0f;
 	const float MaxSprintSpeed = 5.0f;
 	const float MaxFallingSpeed = 20.0f;
 	const float MaxJumpSpeed = 20.0f;
@@ -33,7 +33,6 @@ void PlayerMovement::Move()
 	else {
 		Vel.y = 0;
 	}
-
 
 	if (KeyHorizontalPressed != 0) {
 		if(SprintPressed != 1)
@@ -53,13 +52,11 @@ void PlayerMovement::Move()
 	}
 
 	
-	Vel.x = std::clamp(Vel.x, -(MaxSpeed + MaxSprintSpeed), (MaxSpeed + MaxSprintSpeed));
+	Vel.x = std::clamp(Vel.x, -(MaxSpeed ), (MaxSpeed));
 	Vel.y = std::clamp(Vel.y , -MaxFallingSpeed, MaxJumpSpeed);
 	
 	PlayerPos.x += Vel.x;
 	PlayerPos.y += Vel.y;
-
-
 
 	Player::SetVelocity(Vel);
 	Player::SetPlayerPos(PlayerPos);

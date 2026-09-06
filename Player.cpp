@@ -126,8 +126,6 @@ void Player::Save() {
 }
 
 
-
-
 Player::Player() {
 	hitbox_h = 100;
 	hitbox_w = 100;

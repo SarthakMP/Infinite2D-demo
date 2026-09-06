@@ -13,6 +13,8 @@
 #include"Headers/BlockModification.h"
 #include"Headers/Screens/HomeScreen.h"
 #include"Headers/Screens/Screen.h"
+#include"Headers/Screens/PlayScreen.h"
+#include"Headers/GUI/GUI.h"
 
 #include<iostream>
 #include<vector>
@@ -33,16 +35,17 @@ class Game {
 	static inline std::vector<std::unique_ptr<Behaviour>> Objects;
 
 	static inline float scl_top = 0, scl_left = 0, scl_bottom = 0, scl_right = 0;
-	static inline Point Bounding[4];
+	static inline std::shared_ptr<Point[4]> Bounding = std::make_shared<Point[4]>();
 	
 public:
 
 	void SetCamera(Camera2D& cam);
 	void AddObjects(std::unique_ptr<Behaviour> obj);
-	void InitialBoudningPoints(Point(&Points)[4]);
-	void SetBoundingPoints(Point(&Points)[4], Vector2 CameraPos);
+	void InitialBoudningPoints(std::shared_ptr<Point[4]>(&Points));
+	void SetBoundingPoints(std::shared_ptr<Point[4]>(&Points), Point CameraPos);
 	char KeyParser(int key);
 	void run();
+	Point CalculatePlayer(const Point& inPos); // Just calculate the Pos without the Vel factor;
 
 	Game();
 

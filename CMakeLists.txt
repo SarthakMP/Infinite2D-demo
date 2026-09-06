@@ -29,6 +29,17 @@ add_executable (Infinite2D-demo
 "Headers/Collision2D.h"  
 "Headers/Point.h" 
 "Headers/BlockModification.h"
+"Headers/Screens/Screen.h"  
+"Headers/Screens/HomeScreen.h" 
+"HomeScreen.cpp" 
+"Headers/Screens/ContinueScreen.h" 
+"Headers/Screens/OptionsScreen.h" 
+"Headers/Screens/StartScreen.h" 
+"Headers/Screens/PlayScreen.h" 
+"Headers/GUI/Toolbar.h" 
+"Headers/GUI/GUI.h"
+"Headers/GUI/Hotbar.h"
+
 
 "BlockModification.cpp"
 "Chunk.cpp" 
@@ -39,7 +50,13 @@ add_executable (Infinite2D-demo
 "CameraMovement.cpp" 
 "BoxCollider2D.cpp" 
 "Ray2D.cpp" 
-"PlayerMovement.cpp"  "Headers/Screens/Screen.h"  "Headers/Screens/HomeScreen.h" "HomeScreen.cpp" "Headers/Screens/ContinueScreen.h" "Headers/Screens/OptionsScreen.h" "Headers/Screens/StartScreen.h" "ContinueScreen.cpp" "OptionsScreen.cpp" "StartScreen.cpp")
+"PlayerMovement.cpp"  
+"ContinueScreen.cpp" 
+"OptionsScreen.cpp" 
+"StartScreen.cpp" 
+"Hotbar.cpp"
+"PlayScreen.cpp"
+)
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

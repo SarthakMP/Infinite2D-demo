@@ -38,7 +38,6 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos,const float& deltaX) {
 	int targetID = CurrentChunkId + (sign);
 
 	std::string path = baseChunksPath + "chunk_" + std::to_string(targetID) + ".dat";
-	std::cout << "Next Chunk: " << targetID << std::endl;
 	if (std::filesystem::exists(path)) {
 		
 		Chunk chunk;
