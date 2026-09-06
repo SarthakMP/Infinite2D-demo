@@ -36,7 +36,7 @@ add_executable (Infinite2D-demo
 "Headers/Screens/OptionsScreen.h" 
 "Headers/Screens/StartScreen.h" 
 "Headers/Screens/PlayScreen.h" 
-"Headers/GUI/Toolbar.h" 
+"Headers/GUI/SideToolbar.h" 
 "Headers/GUI/GUI.h"
 "Headers/GUI/Hotbar.h"
 
@@ -56,7 +56,7 @@ add_executable (Infinite2D-demo
 "StartScreen.cpp" 
 "Hotbar.cpp"
 "PlayScreen.cpp"
-)
+ "Headers/GUI/Inventory.h")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

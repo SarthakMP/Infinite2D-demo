@@ -49,7 +49,7 @@ void HotbarGUI::UpdateGUI() {
 
 		rec.y = pos.y;
 	
-		std::cout <<"id: "<<count <<":" << rec.x << "," << rec.y << std::endl;
+		//std::cout <<"id: "<<count <<":" << rec.x << "," << rec.y << std::endl;
 
 		count++;
 	}

@@ -199,7 +199,8 @@ void Game::run() {
 			
 			rlEnableBackfaceCulling();
 
-
+			
+			DrawRectangleLines(WorldCam.target.x - Scr_W * 0.5f + 50, (-WorldCam.target.y - Scr_H * 0.5f + 50), Scr_W - 100, Scr_H - 100, RED);
 
 			SetBoundingPoints(Bounding, CalculatePlayer(WorldCam.target));
 			//DEBUG Axis & Gizmos

@@ -11,8 +11,8 @@ void BlockModifier::Update() {
 void BlockModifier::OnMouseDown() {
 	Point PlayerPos = Player::GetPlayerPos();
 	Point MousePos = GetMousePosition();
-	bool isInside = (MousePos.x >= 0 && MousePos.x <= GetScreenWidth()) &&
-		(MousePos.y >= 0 && MousePos.y <= GetScreenHeight());
+	bool isInside = (MousePos.x >= 50 && MousePos.x <= (GetScreenWidth() - 50)) &&
+					(MousePos.y >= 50 && MousePos.y <= GetScreenHeight() - 50);
 
 	if (isInside) {
 		
@@ -32,9 +32,12 @@ void BlockModifier::OnMouseDown() {
 			float x = std::floor(std::abs(RelativeChunkDistance.x * 0.01f));
 			float y = std::floor(std::abs(RelativeChunkDistance.y * 0.01f));
 
-			if ((x < 0 || x>3) || (y < 0 || y>7)) return;
+			if ((x < 0 || x>3) // 0-3 chunks X space (index)
+				|| (y < 0 || y>64)) return; // 0-64 chunks Y space (index)
 
 			//BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
+
+			std::cout << x + 4 * y << std::endl;
 			chunk.Blocks->erase(x + 4 * y);
 			chunk.isDirty = true;
 		}
@@ -46,8 +49,8 @@ void BlockModifier::OnMouseDown() {
 void BlockModifier::OnMouse2Down() {
 	Point PlayerPos = Player::GetPlayerPos();
 	Point MousePos = GetMousePosition();
-	bool isInside = (MousePos.x >= 0 && MousePos.x <= GetScreenWidth()) &&
-		(MousePos.y >= 0 && MousePos.y <= GetScreenHeight());
+	bool isInside = (MousePos.x >= 50 && MousePos.x <= (GetScreenWidth() - 50)) &&
+					(MousePos.y >= 50 && MousePos.y <= GetScreenHeight() - 50);
 
 	if (isInside) {
 
@@ -72,7 +75,7 @@ void BlockModifier::OnMouse2Down() {
 				BoxCollider2D block(Rectangle(block_x, block_y, LevelDesigner::block_w, LevelDesigner::block_h), WHITE);
 				block.id = id;
 				(*chunk.Blocks)[block.id] = block;
-				std::cout <<"Current Player Pos: "<<PlayerPos<< " Block ADDED at: " << block_x << "," << block_y << std::endl;
+				//std::cout <<"Current Player Pos: "<<PlayerPos<< " Block ADDED at: " << block_x << "," << block_y << std::endl;
 			}
 
 		}
