@@ -13,7 +13,7 @@ public:
 	Screen* targetScreen = nullptr;
 	Screen* parentScreen = nullptr;
 
-	Point MousePos;
+	Vector2 MousePos;
 public:
 	virtual void InitializeChildern() = 0;
 	virtual void InitializeButtons() = 0;

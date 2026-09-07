@@ -56,7 +56,7 @@ add_executable (Infinite2D-demo
 "StartScreen.cpp" 
 "Hotbar.cpp"
 "PlayScreen.cpp"
- "Headers/GUI/Inventory.h")
+ "Headers/GUI/Inventory.h" "Headers/GUI/GUIHandler.h")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

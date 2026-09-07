@@ -46,7 +46,7 @@ public:
 };
 
 static inline std::ostream& operator<<(std::ostream& os, const Point& p) {
-	os << "(" << p.x << "," << p.y << ")" << "\n";
+	os << "(" << p.x << "," << p.y << ") ";
 	return os;
 }
 

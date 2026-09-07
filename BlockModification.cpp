@@ -37,7 +37,7 @@ void BlockModifier::OnMouseDown() {
 
 			//BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
 
-			std::cout << x + 4 * y << std::endl;
+			//std::cout << x + 4 * y << std::endl;
 			chunk.Blocks->erase(x + 4 * y);
 			chunk.isDirty = true;
 		}

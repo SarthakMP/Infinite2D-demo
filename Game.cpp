@@ -87,7 +87,7 @@ void Game::run() {
 
 	while (!WindowShouldClose()) {
 
-		CurrentScreen->MousePos = Point(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2))* Zoom;
+		CurrentScreen->MousePos = Vector2(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2))* Zoom;
 		Behaviour_Adapter::deltatime = GetFrameTime();
 		
 		BeginDrawing();
@@ -189,7 +189,6 @@ void Game::run() {
 		if(isWorldLoaded){
 
 			if (!isScreenLoaded) {
-				std::cout << "Loaded" << std::endl;
 				CurrentScreen = PlayScreenPtr.get();
 				isScreenLoaded = true;
 			}
@@ -199,8 +198,9 @@ void Game::run() {
 			
 			rlEnableBackfaceCulling();
 
-			
-			DrawRectangleLines(WorldCam.target.x - Scr_W * 0.5f + 50, (-WorldCam.target.y - Scr_H * 0.5f + 50), Scr_W - 100, Scr_H - 100, RED);
+			float PlayableScreenX = WorldCam.target.x - Scr_W * 0.5f + 50;
+			float PlayableScreenY = -(-WorldCam.target.y - Scr_H * 0.5f + 50);
+			DrawRectangleLines(PlayableScreenX, PlayableScreenY, Scr_W - 100, Scr_H - 100, RED);
 
 			SetBoundingPoints(Bounding, CalculatePlayer(WorldCam.target));
 			//DEBUG Axis & Gizmos
@@ -214,8 +214,10 @@ void Game::run() {
 				isStarted = true;
 			}
 
+			//Main Game Updates 
 			if (IsMouseButtonDown(0))
 				for (auto& obj : Objects) obj->OnMouseDown();
+			
 			if (IsMouseButtonDown(1))
 				for (auto& obj : Objects) obj->OnMouse2Down();
 
@@ -223,18 +225,28 @@ void Game::run() {
 				for (auto& obj : Objects) obj->OnMouseUp();
 
 			for (auto& obj : Objects) obj->Update();
-			
-			BaseGUI.SetBoundingPoints(Bounding);
-
-			for (auto& Gui : CurrentScreen->GUIs) Gui->UpdateGUI();
-
 			for (auto& obj : Objects) obj->Render();
 
-			for (auto& Gui : CurrentScreen->GUIs) Gui->RenderGUI();
+
+			// GUI updates
+			BaseGUI.SetBoundingPoints(Bounding);
 
 			rlDisableBackfaceCulling();
 			rlPopMatrix();
+
+			//Maybe do update after doing game updates
+			for (auto& gui : CurrentScreen->GUIs) {
+
+				if (IsMouseButtonDown(0))
+					gui->OnMouseDownGUI(CurrentScreen->MousePos);
+
+				gui->UpdateGUI();
+				gui->RenderGUI();
+			}
+
 		}
+
+
 
 		EndMode2D();
 		EndDrawing();
