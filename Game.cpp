@@ -199,7 +199,7 @@ void Game::run() {
 			rlEnableBackfaceCulling();
 
 			float PlayableScreenX = WorldCam.target.x - Scr_W * 0.5f + 50;
-			float PlayableScreenY = -(-WorldCam.target.y - Scr_H * 0.5f + 50);
+			float PlayableScreenY = (-WorldCam.target.y - Scr_H * 0.5f + 50);
 			DrawRectangleLines(PlayableScreenX, PlayableScreenY, Scr_W - 100, Scr_H - 100, RED);
 
 			SetBoundingPoints(Bounding, CalculatePlayer(WorldCam.target));
@@ -237,8 +237,9 @@ void Game::run() {
 			//Maybe do update after doing game updates
 			for (auto& gui : CurrentScreen->GUIs) {
 
-				if (IsMouseButtonDown(0))
+				if (IsMouseButtonDown(0)) {
 					gui->OnMouseDownGUI(CurrentScreen->MousePos);
+				}
 
 				gui->UpdateGUI();
 				gui->RenderGUI();

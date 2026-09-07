@@ -58,18 +58,10 @@ public:
 		Point top = BoundingPointsPtr[0], left = BoundingPointsPtr[1];
 
 		ScrCenter = { left.x + Scr_W * 0.5f ,top.y - Scr_H * 0.5f };
+
 	}
 
-	bool CheckBoundingArea(const Point& pos, const Rectangle& rec, const Point& origin = { 0,0 }) {
-		float minX = rec.x - origin.x;
-		float minY = rec.y - origin.y;
 
-		float maxX = minX + rec.width;
-		float maxY = minY + rec.height;
-
-		return  (pos.x >= minX) && (pos.x <= maxX) &&
-			(pos.y >= minY) && (pos.y <= maxY);
-	}
 
 	GUI() = default;
 

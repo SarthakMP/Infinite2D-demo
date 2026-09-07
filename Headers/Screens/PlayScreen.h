@@ -1,7 +1,7 @@
 #pragma once
 #include"Headers/Screens/Screen.h"
 #include"Headers/GUI/Hotbar.h"
-
+#include"Headers/GUI/SideToolbar.h"
 class PlayScreen : public Scree_Adapter
 {
 public:

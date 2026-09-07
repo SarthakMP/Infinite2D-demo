@@ -5,20 +5,22 @@
 class HotbarGUI : public GUI {
 
 	int Block_H = 50, Block_W = 50;
-public:
+	float PaddingX = 20, PaddingY = 20;
+	Rectangle ClickableArea;
 
+public:
+	
 	void InitializeSlots();
 	
-
 	void RenderGUI();
-	//int  GetButtonInfo(const Rectangle& rec, const Point& Pos, const int id);
-
 	void UpdateGUI();
+
 	void OnMouseDownGUI(Vector2 MousePos);
 
 	std::tuple<Rectangle, CLITERAL(Color)> HotbarSlots[6] = {};
 	Point BasePos[6];
 	HotbarGUI(Camera2D& cam): GUI(cam){
+
 		InitializeSlots();
 	}
 };
