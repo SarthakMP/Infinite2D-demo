@@ -8,7 +8,7 @@ public:
 	Rectangle Rec;
 	Point Origin;
 	Color clr;
-
+	Texture2D text;
 	int id;
 
 	void SetHitBox(Point Org, Point WH, Color clr);
@@ -24,6 +24,5 @@ public:
 	BoxCollider2D();
 	BoxCollider2D(Rectangle rec);
 	BoxCollider2D(Rectangle rec,Color clr);
-
 	static void DrawBox(Vector2 a, Vector2 b);
 };

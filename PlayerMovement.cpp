@@ -21,24 +21,24 @@ void PlayerMovement::Move()
 	const float MaxFallingSpeed = 20.0f;
 	const float MaxJumpSpeed = 20.0f;
 
-	Point Acc = Point(KeyHorizontalPressed * PlayerSpeed * deltatime, Physics2D::Gravity.y * deltatime);
+	Point Acc = Point(KeyHorizontalPressed * PlayerSpeed , Physics2D::Gravity.y );
 	
 	if (!Player::GetIsGrounded()) {
-		Vel.y += Acc.y;
+		Vel.y += Acc.y * deltatime; //Add gravity
 
 	}
 	else if(JumpPressed == 1 && Player::GetIsGrounded()) {
-		Vel.y += std::abs(Acc.y)* MaxJumpSpeed ;
+		Vel.y += std::abs(Acc.y)* MaxJumpSpeed * deltatime; // Add jump 
 	}
 	else {
-		Vel.y = 0;
+		Vel.y = std::lerp(Vel.y,0,0.5f); // make it zero if off the ground
 	}
 
 	if (KeyHorizontalPressed != 0) {
 		if(SprintPressed != 1)
-			Vel.x += Acc.x;
+			Vel.x += Acc.x * deltatime;
 		else
-			Vel.x += Acc.x * MaxSprintSpeed;
+			Vel.x += Acc.x * MaxSprintSpeed * deltatime;
 	}
 	else {
 		if (Vel.x > 0) {

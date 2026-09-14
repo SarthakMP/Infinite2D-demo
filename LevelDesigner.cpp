@@ -4,6 +4,29 @@ static int m_sign(int Pos) {
 	return (Pos > 0) - (Pos < 0);
 }
 
+void LevelDesigner::LoadTexture()
+{
+	int count = 0;
+	std::string path = std::string(SOURCE_DIR) + "Textures/";
+	if (std::filesystem::exists(path) && std::filesystem::is_directory(path)) {
+
+		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+			std::string path_holder = entry.path().string();
+			size_t underscore_pos = path_holder.find_last_of('_');
+			
+			if (underscore_pos != std::string::npos) {
+				count = path_holder[underscore_pos + 1] - '0';
+
+				
+			}
+
+			const char* png_path = path_holder.c_str();
+			TexturesMap[count] = LoadTextureFromImage(LoadImage(png_path));
+		}
+	}
+	
+}
+
 void LevelDesigner::AddChunk(Chunk& chunk) {
 
 	if (chunk.Getid() < ChunksArray[0].Getid()) {
@@ -54,16 +77,6 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos,const float& deltaX) {
 
 }
 
-void LevelDesigner::DrawChunks() {
-	for (Chunk& chunk : ChunksArray) {
-		DrawRectangleLines(chunk.HitBox->Rec.x, chunk.HitBox->Rec.y, chunk.HitBox->Rec.width, chunk.HitBox->Rec.height, RED);
-		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
-			BoxCollider2D& blocks = it->second;
-			
-			DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
-		}
-	}
-}
 
 
 void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
@@ -74,7 +87,15 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 			int block_x = x + c * block_w ;
 			int block_y = y + r * block_h ;
 			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
+
 			block.id = c + 4 * r;
+
+			if (block.id < 20) block.text = TexturesMap[2]; // Stone
+			else if (block.id >= 20 && block.id < 28) {
+				block.text = TexturesMap[1]; 
+			}//Dirt
+			else block.text = TexturesMap[0]; //Grass
+
 			(*NewChunk.Blocks)[block.id] = block;
 		}
 	}
@@ -114,6 +135,7 @@ void LevelDesigner::Start() {
 		std::filesystem::create_directory(baseChunksPath);
 	}
 
+	LoadTexture();
 	std::string path = baseWorldsPath + "Player/" + "Player_Info.dat";
 	std::ifstream inFile(path, std::ios::binary);
 
@@ -125,6 +147,7 @@ void LevelDesigner::Start() {
 	Point PlayerPos = p->GetPlayerPos();
 	int ChunkId = static_cast<int>(std::floor(static_cast<double>(PlayerPos.x) / ChunksWidth));
 	int offset = 3;
+
 	if (!p->isGameContinued) {
 
 		for (int i = -offset + ChunkId; i < offset + ChunkId; i++) {
@@ -165,6 +188,32 @@ void LevelDesigner::Update() {
 		GenerateChunk(PlyPos, deltaX);
 	}
 	PrevPos = PlyPos;
+}
+
+
+void LevelDesigner::DrawChunks() {
+	for (Chunk& chunk : ChunksArray) {
+		for (auto it = chunk.Blocks->begin(); it != chunk.Blocks->end(); it++) {
+			BoxCollider2D& blocks = it->second;
+
+			Rectangle src = Rectangle(0, 0, 32, 32);
+			Rectangle dest = blocks.Rec;
+
+			int Above_block = it->first + 4;
+
+			auto above = chunk.Blocks->find(Above_block);
+
+			if (above == chunk.Blocks->end() && it->second.text.id == 0)
+				DrawTexturePro(TexturesMap[1], src, dest, { 0,0 }, 0, WHITE);
+			else {
+
+				DrawTexturePro(it->second.text, src, dest, { 0,0 }, 0, WHITE);
+			}
+
+			//DrawTexture(TexturesMap[0], blocks.Rec.x, blocks.Rec.y, WHITE);
+			//DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
+		}
+	}
 }
 
 void LevelDesigner::Render() {

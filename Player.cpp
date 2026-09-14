@@ -54,9 +54,9 @@ void Player::SetWorldName(std::string& WorldName)
 void Player::DrawPlayer() {
 	//DEBUG ONLY
 	//DrawCircle(Player::GetHitBox().Origin.x, Player::GetHitBox().Origin.y, 10, RED);
-	DrawRectangleLines(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, GREEN);
+	DrawRectangleLines(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.width, Player::GetHitBox().Rec.height, GREEN);
 
-	DrawRectangle(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.height, Player::GetHitBox().Rec.width, WHITE);
+	DrawRectangle(Player::GetHitBox().Rec.x, Player::GetHitBox().Rec.y, Player::GetHitBox().Rec.width, Player::GetHitBox().Rec.height, WHITE);
 
 }
 

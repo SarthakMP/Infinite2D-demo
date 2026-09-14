@@ -52,6 +52,7 @@ BoxCollider2D::BoxCollider2D(Rectangle rec) {
 	Origin = Point(Rec.x + Rec.width / 2, Rec.y + Rec.height / 2);
 	clr = Color();
 	id = 0;
+	text = Texture2D();
 }
 
 BoxCollider2D::BoxCollider2D(Rectangle rec, Color in_clr)
@@ -60,6 +61,7 @@ BoxCollider2D::BoxCollider2D(Rectangle rec, Color in_clr)
 	Origin = Point(Rec.x + Rec.width / 2, Rec.y + Rec.height / 2);
 	clr = in_clr;
 	id = 0;
+	text = Texture2D();
 	
 }
 
@@ -74,6 +76,7 @@ void BoxCollider2D::SetHitBox(Point Org, Point WH, Color in_clr) {
 
 	Origin = Org;
 	clr = in_clr;
+	text = Texture2D();
 }
 
 const Point BoxCollider2D::GetHitBoxPos()

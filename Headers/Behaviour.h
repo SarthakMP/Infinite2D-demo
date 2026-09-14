@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 #include "raymath.h"
+#include<unordered_map>
 
 class Behaviour {
 public:
@@ -31,12 +32,12 @@ public:
 	void OnMouse2Down() override {};
 	void OnMouseDown() override {};
 	
-
-
 	void OnMouseUp() override {};
 
 	void OnMousePressed() override {};
 	void OnMouseReleased() override {};
+
+	static inline std::unordered_map<int, Texture2D> TexturesMap;
 
 };
 

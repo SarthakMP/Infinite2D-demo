@@ -5,10 +5,13 @@
 #include <filesystem>
 #include<math.h>
 
+#include<iostream>
 class LevelDesigner : public Behaviour_Adapter{
 	inline static Player* p;
-	
+	void LoadTexture();
+
 public:
+
 	inline static Chunk ChunksArray[6];
 	inline static std::string WorldName = "";
 	inline static std::string baseWorldsPath = std::string(WORLD_DIR) +"/";
