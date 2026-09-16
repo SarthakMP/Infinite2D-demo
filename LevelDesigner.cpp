@@ -4,28 +4,7 @@ static int m_sign(int Pos) {
 	return (Pos > 0) - (Pos < 0);
 }
 
-void LevelDesigner::LoadTexture()
-{
-	int count = 0;
-	std::string path = std::string(SOURCE_DIR) + "Textures/";
-	if (std::filesystem::exists(path) && std::filesystem::is_directory(path)) {
 
-		for (const auto& entry : std::filesystem::directory_iterator(path)) {
-			std::string path_holder = entry.path().string();
-			size_t underscore_pos = path_holder.find_last_of('_');
-			
-			if (underscore_pos != std::string::npos) {
-				count = path_holder[underscore_pos + 1] - '0';
-
-				
-			}
-
-			const char* png_path = path_holder.c_str();
-			TexturesMap[count] = LoadTextureFromImage(LoadImage(png_path));
-		}
-	}
-	
-}
 
 void LevelDesigner::AddChunk(Chunk& chunk) {
 
@@ -134,8 +113,6 @@ void LevelDesigner::Start() {
 	if (!std::filesystem::is_directory(baseChunksPath)) {
 		std::filesystem::create_directory(baseChunksPath);
 	}
-
-	LoadTexture();
 	std::string path = baseWorldsPath + "Player/" + "Player_Info.dat";
 	std::ifstream inFile(path, std::ios::binary);
 

@@ -36,7 +36,7 @@ void  Physics2D::Update() {
 			float dis = Point::Magnitude(surfaceBox.Origin, playerBox.Origin);
 
 			if (dis > (playerBox.GetHitBox().height + surfaceBox.GetHitBox().height * 0.5f)) continue;
-			DrawLine(playerBox.Origin.x, playerBox.Origin.y, surfaceBox.Origin.x, surfaceBox.Origin.y, RED);
+			//DrawLine(playerBox.Origin.x, playerBox.Origin.y, surfaceBox.Origin.x, surfaceBox.Origin.y, RED);
 			
 			float dx = playerBox.Origin.x - surfaceBox.Origin.x;
 			float dy = playerBox.Origin.y - surfaceBox.Origin.y;
@@ -85,7 +85,7 @@ void  Physics2D::Update() {
 
 		}
 
-		std::cout << "PlayerPos: " << Player::GetPlayerPos() << std::endl;
+		
 
 	}
 

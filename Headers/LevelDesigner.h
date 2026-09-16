@@ -8,7 +8,7 @@
 #include<iostream>
 class LevelDesigner : public Behaviour_Adapter{
 	inline static Player* p;
-	void LoadTexture();
+	
 
 public:
 

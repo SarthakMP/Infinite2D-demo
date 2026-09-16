@@ -29,7 +29,6 @@
 
 class Game {
 
-
 	static inline int Scr_W = 800, Scr_H = 800;
 	static inline Camera2D WorldCam;
 	static inline std::vector<std::unique_ptr<Behaviour>> Objects;

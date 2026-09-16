@@ -18,6 +18,10 @@ void Game::InitialBoudningPoints(std::shared_ptr<Point[4]>(&Points)) {
 	Points[3] = Point(400, 0);
 
 }
+
+
+
+
 void Game::SetBoundingPoints(std::shared_ptr<Point[4]>(&Points), Point CameraPos) {
 	//TOP Clamp
 	Points[0].x = CameraPos.x;
@@ -55,9 +59,14 @@ char Game::KeyParser(int key)
 
 void Game::run() {
 
+
+
 	InitWindow(Scr_W, Scr_H, "worldSpace");
 	SetCamera(WorldCam);
 	SetTargetFPS(60);
+
+	Behaviour_Adapter BhAdapt;
+	BhAdapt.m_LoadTexture();
 
 	InitialBoudningPoints(Bounding);
 
@@ -69,6 +78,9 @@ void Game::run() {
 	GUI BaseGUI(WorldCam,Bounding);
 	std::unique_ptr<PlayScreen> PlayScreenPtr = std::make_unique< PlayScreen>(WorldCam);
 	std::unique_ptr<Player> p = std::make_unique<Player>();
+	
+
+	
 
 	AddObjects(std::move(p));
 	AddObjects(std::make_unique<PlayerMovement>());

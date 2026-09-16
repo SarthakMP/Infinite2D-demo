@@ -1,7 +1,8 @@
 #pragma once
 #include"Headers/GUI/GUI.h"
 #include"Headers/GUI/GUIHandler.h"
-
+#include <iostream>
+#include <tuple>
 class HotbarGUI : public GUI {
 
 	int Block_H = 50, Block_W = 50;
@@ -17,7 +18,7 @@ public:
 
 	void OnMouseDownGUI(Vector2 MousePos);
 
-	std::tuple<Rectangle, CLITERAL(Color)> HotbarSlots[6] = {};
+	static inline  std::tuple<Rectangle, std::pair<int,Texture2D>> HotbarSlots[6] = {};
 	Point BasePos[6];
 	HotbarGUI(Camera2D& cam): GUI(cam){
 

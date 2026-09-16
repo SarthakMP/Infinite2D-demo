@@ -14,7 +14,8 @@ void HotbarGUI::InitializeSlots()
 		int y = ScrCenter.y - Scr_H - Block_H;
 
 		Rectangle slot = Rectangle(x, y, w, h);
-		HotbarSlots[i + offset] = { slot,WHITE};
+		HotbarSlots[i + offset] = { slot,{0,Texture2D()}};
+
 		BasePos[i + offset] = Point(slot.x, slot.y);
 	}
 
@@ -24,6 +25,15 @@ void HotbarGUI::InitializeSlots()
 	int Y = -ScrCenter.y;
 
 	ClickableArea = Rectangle(X,Y ,W ,H );
+
+	std::get<1>(HotbarSlots[0]).first = 0;
+	std::get<1>(HotbarSlots[0]).second = TexturesMap[0];
+
+	std::get<1>(HotbarSlots[1]).first = 1;
+	std::get<1>(HotbarSlots[1]).second = TexturesMap[1];
+
+	std::get<1>(HotbarSlots[2]).first = 2;
+	std::get<1>(HotbarSlots[2]).second = TexturesMap[2];
 }
 
 
@@ -33,12 +43,13 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 
 	int count = 0;
 	//Convert screen coords to worldCoords wrt to LocCam pos
-	for (auto& [rec, color] : HotbarSlots) {
+	for (auto& [rec, pair] : HotbarSlots) {
 
 		if (GUIHandler::CheckBoundingArea(WorldMousePos, rec)) {
-			std::cout << "Clicked on: " << count << " Slot" << std::endl;
+			SelectedBlock = count;
+			std::cout << SelectedBlock << std::endl;
 		}
-
+		
 		count++;
 	}
 	
@@ -72,14 +83,17 @@ void HotbarGUI::UpdateGUI() {
 	}
 	
 }
-
+static inline Rectangle src = Rectangle(0, 0, 32, 32);
 void HotbarGUI::RenderGUI() {
 	Point pos = GUI::BoundingPointsPtr[2];
 
 	DrawRectangleLines(ClickableArea.x, ClickableArea.y, ClickableArea.width, ClickableArea.height, GREEN);
 
-	for (auto& [rec, color] : HotbarSlots) {
-		DrawRectangle(rec.x, rec.y, rec.width, rec.height, color);
+	for (auto& [rec, pair] : HotbarSlots) {
+
+		DrawRectangle(rec.x - 2, rec.y - 2, rec.width + 4, rec.height + 4, WHITE);
+		DrawTexturePro(pair.second, src, rec, {0,0}, 0, WHITE);
+		
 	}
 
 }
