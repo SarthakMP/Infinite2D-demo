@@ -44,9 +44,12 @@ bool isCapitalized = false;
 int count = 0;
 char Game::KeyParser(int key)
 {
+	if (key >= KEY_ZERO && key <= KEY_NINE) {
+		return char(key) - KEY_ZERO + '0';
+	}
 
 	if (key >= KEY_KP_0 && key <= KEY_KP_9) {
-		return char(key) - 320 + '0';
+		return char(key) - KEY_KP_0 + '0';
 	}
 	if (key >= KEY_A && key <= KEY_Z) {
 		return char(key);
@@ -98,6 +101,8 @@ void Game::run() {
 	float Zoom = 1/ WorldCam.zoom;
 
 	while (!WindowShouldClose()) {
+
+		//Check for keyboard input for hotbar
 
 		CurrentScreen->MousePos = Vector2(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2))* Zoom;
 		Behaviour_Adapter::deltatime = GetFrameTime();
@@ -252,9 +257,17 @@ void Game::run() {
 				if (IsMouseButtonDown(0)) {
 					gui->OnMouseDownGUI(CurrentScreen->MousePos);
 				}
+				if (gui) {
+					gui->UpdateGUI();
+					gui->RenderGUI();
+				}
+			}
 
-				gui->UpdateGUI();
-				gui->RenderGUI();
+			if (!CurrentScreen->PendingGUIs.empty()) {
+				for (auto& pending : CurrentScreen->PendingGUIs) {
+					CurrentScreen->GUIs.push_back(std::move(pending));
+				}
+				CurrentScreen->PendingGUIs.clear();
 			}
 
 		}

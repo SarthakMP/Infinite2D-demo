@@ -10,6 +10,7 @@ public:
 	std::vector<Rectangle> Buttons;
 	std::vector<std::unique_ptr<Screen>> Children;
 	std::vector<std::unique_ptr<GUI>> GUIs;
+	std::vector<std::unique_ptr<GUI>> PendingGUIs;
 	Screen* targetScreen = nullptr;
 	Screen* parentScreen = nullptr;
 
@@ -23,6 +24,8 @@ public:
 	virtual Screen* GetNextScreen() = 0;
 	virtual void SetText(std::string text) = 0;
 	virtual void UpdateCam(const Point& pos) = 0;
+
+	virtual void AddGUI(std::unique_ptr<GUI> gui) = 0;
 
 	Screen(Camera2D& cam) : Cam(cam) {}
 	Screen() = default;
@@ -43,6 +46,10 @@ public:
 	Screen* GetNextScreen() override { return nullptr; }
 	void SetText(std::string text) override {}
 	void UpdateCam(const Point& pos) override {};
+
+	inline void AddGUI(std::unique_ptr<GUI> gui) override {
+		PendingGUIs.push_back(std::move(gui));
+	}
 
 	Scree_Adapter(Camera2D& cam): Screen(cam) {
 		Cam = cam;

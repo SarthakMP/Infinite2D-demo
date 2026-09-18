@@ -75,7 +75,7 @@ void BlockModifier::OnMouse2Down() {
 				int block_y = chunk.GetXY().y + y * LevelDesigner::block_h;
 				BoxCollider2D block(Rectangle(block_x, block_y, LevelDesigner::block_w, LevelDesigner::block_h), WHITE);
 				block.id = id;
-				std::cout << "Selected Block: " << SelectedBlock << std::endl;
+
 				block.text = std::get<1>(HotbarGUI::HotbarSlots[SelectedBlock]).second;
 				(*chunk.Blocks)[block.id] = block;
 				//std::cout <<"Current Player Pos: "<<PlayerPos<< " Block ADDED at: " << block_x << "," << block_y << std::endl;

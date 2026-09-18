@@ -47,7 +47,6 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 
 		if (GUIHandler::CheckBoundingArea(WorldMousePos, rec)) {
 			SelectedBlock = count;
-			std::cout << SelectedBlock << std::endl;
 		}
 		
 		count++;
@@ -59,6 +58,11 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 void HotbarGUI::UpdateGUI() {
 	// update the position of GUI wrt to Camera
 	
+	int key = GetKeyPressed();
+	if (key >= KEY_ZERO && key <= KEY_SIX) {
+		SelectedBlock = (key - KEY_ZERO) - 1;
+	}
+
 	int count = 0;
 	for (auto& [rec,color] : HotbarSlots) {
 
