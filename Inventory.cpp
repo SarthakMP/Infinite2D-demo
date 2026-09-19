@@ -3,8 +3,6 @@
 void InventoryGUI::IntializeInventoryGUI()
 {
 
-
-
 	InventoryScreenGUI.width = Block_W;
 	InventoryScreenGUI.height = Block_H;
 

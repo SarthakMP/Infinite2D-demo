@@ -71,17 +71,15 @@ void SideToolbarGUI::UpdateGUI() {
 
 }
 
-Point TempPrev = 0;
+
 void SideToolbarGUI::RenderGUI() {
 	
 	for (auto& [rec, color] : SideToolGUISlots) {
-		Point delta = Point(rec.x, rec.y) - TempPrev;
 
-		if(delta.x !=0 && delta.Dot !=0)
-		std::cout << "Delta: " << delta << std::endl;
+
 
 		DrawRectangle(rec.x, rec.y, rec.width, rec.height, color);
-		TempPrev = Point(rec.x, rec.y);
+
 	}
 
 	DrawRectangleLines(ClickableArea.x, ClickableArea.y, ClickableArea.width, ClickableArea.height,GREEN);

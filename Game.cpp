@@ -119,10 +119,10 @@ void Game::run() {
 
 		 
 		//DEBUG ONLY
-		DrawCircleLines(Bounding[0].x, -Bounding[0].y, 10, ORANGE);
-		DrawCircleLines(Bounding[1].x, -Bounding[1].y, 10, ORANGE);
-		DrawCircleLines(Bounding[2].x, -Bounding[2].y, 10, ORANGE);
-		DrawCircleLines(Bounding[3].x, -Bounding[3].y, 10, ORANGE);
+		//DrawCircleLines(Bounding[0].x, -Bounding[0].y, 10, ORANGE);
+		//DrawCircleLines(Bounding[1].x, -Bounding[1].y, 10, ORANGE);
+		//DrawCircleLines(Bounding[2].x, -Bounding[2].y, 10, ORANGE);
+		//DrawCircleLines(Bounding[3].x, -Bounding[3].y, 10, ORANGE);
 
 		//handling of Before game text Addition of text 
 		if (isText && !isTextLong) {
@@ -219,9 +219,9 @@ void Game::run() {
 
 			SetBoundingPoints(Bounding, CalculatePlayer(WorldCam.target));
 			//DEBUG Axis & Gizmos
-			DrawCircle(0, 0, 5, WHITE); //Origin
-			DrawLine(0, scl_bottom, 0, scl_top, RED ); // Y AXIS
-			DrawLine(scl_left, 0, scl_right, 0, GREEN ); // X AXIS
+			//DrawCircle(0, 0, 5, WHITE); //Origin
+			//DrawLine(0, scl_bottom, 0, scl_top, RED ); // Y AXIS
+			//DrawLine(scl_left, 0, scl_right, 0, GREEN ); // X AXIS
 
 			if (isStarted == false) {
 				isText = false;

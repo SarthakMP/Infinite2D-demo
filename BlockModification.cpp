@@ -64,13 +64,19 @@ void BlockModifier::OnMouse2Down() {
 
 			// This Relative distance should be taken from the Curr chunk
 			Point RelativeChunkDistance = Point(RelativeDistance.x - chunk.GetXY().x, RelativeDistance.y - chunk.GetXY().y);
+			Point RelativePlayerDistance = Point(PlayerPos.x - chunk.GetXY().x, PlayerPos.y - chunk.GetXY().y);
 
 			float x = std::floor(std::abs(RelativeChunkDistance.x * 0.01f));
 			float y = std::floor(std::abs(RelativeChunkDistance.y * 0.01f));
 
 			int id = x + 4 * y;
 
-			if (chunk.Blocks->find(id) == chunk.Blocks->end()) {
+			float player_X = std::floor(std::abs(RelativePlayerDistance.x * 0.01f));
+			float player_Y = std::floor(std::abs(RelativePlayerDistance.y * 0.01f));
+			int player_id = player_X + 4 * player_Y;
+
+			
+			if (chunk.Blocks->find(id) == chunk.Blocks->end() && id != player_id) {
 				int block_x = chunk.GetXY().x + x * LevelDesigner::block_w;
 				int block_y = chunk.GetXY().y + y * LevelDesigner::block_h;
 				BoxCollider2D block(Rectangle(block_x, block_y, LevelDesigner::block_w, LevelDesigner::block_h), WHITE);
