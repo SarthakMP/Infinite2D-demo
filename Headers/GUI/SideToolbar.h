@@ -23,7 +23,7 @@ public:
 	void UpdateGUI();
 	void RenderGUI();
 
-
+	SideToolbarGUI(Camera2D& cam) : GUI(cam) { InitializeSlots(); }
 	SideToolbarGUI(Camera2D& cam,Screen* screen) : GUI(cam),Ptr(screen) {
 		InitializeSlots();
 		

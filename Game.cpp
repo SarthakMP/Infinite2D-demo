@@ -19,9 +19,6 @@ void Game::InitialBoudningPoints(std::shared_ptr<Point[4]>(&Points)) {
 
 }
 
-
-
-
 void Game::SetBoundingPoints(std::shared_ptr<Point[4]>(&Points), Point CameraPos) {
 	//TOP Clamp
 	Points[0].x = CameraPos.x;
@@ -42,6 +39,7 @@ void Game::SetBoundingPoints(std::shared_ptr<Point[4]>(&Points), Point CameraPos
 
 bool isCapitalized = false;
 int count = 0;
+
 char Game::KeyParser(int key)
 {
 	if (key >= KEY_ZERO && key <= KEY_NINE) {
@@ -104,7 +102,7 @@ void Game::run() {
 
 		//Check for keyboard input for hotbar
 
-		CurrentScreen->MousePos = Vector2(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2))* Zoom;
+		CurrentScreen->MousePos = Vector2(GetMousePosition().x - Scr_W / 2, (GetMousePosition().y - Scr_H / 2));
 		Behaviour_Adapter::deltatime = GetFrameTime();
 		
 		BeginDrawing();
@@ -217,13 +215,13 @@ void Game::run() {
 
 			float PlayableScreenX = WorldCam.target.x - Scr_W * 0.5f + 50;
 			float PlayableScreenY = (-WorldCam.target.y - Scr_H * 0.5f + 50);
-			DrawRectangleLines(PlayableScreenX, PlayableScreenY, Scr_W - 100, Scr_H - 100, RED);
+			//DrawRectangleLines(PlayableScreenX, PlayableScreenY, Scr_W - 100, Scr_H - 100, RED);
 
 			SetBoundingPoints(Bounding, CalculatePlayer(WorldCam.target));
 			//DEBUG Axis & Gizmos
 			DrawCircle(0, 0, 5, WHITE); //Origin
-			DrawLine(0, scl_bottom, 0, scl_top, RED * COL_OPACITY); // Y AXIS
-			DrawLine(scl_left, 0, scl_right, 0, GREEN * COL_OPACITY); // X AXIS
+			DrawLine(0, scl_bottom, 0, scl_top, RED ); // Y AXIS
+			DrawLine(scl_left, 0, scl_right, 0, GREEN ); // X AXIS
 
 			if (isStarted == false) {
 				isText = false;
@@ -263,12 +261,12 @@ void Game::run() {
 				}
 			}
 
-			if (!CurrentScreen->PendingGUIs.empty()) {
-				for (auto& pending : CurrentScreen->PendingGUIs) {
-					CurrentScreen->GUIs.push_back(std::move(pending));
-				}
-				CurrentScreen->PendingGUIs.clear();
-			}
+			//if (!CurrentScreen->PendingGUIs.empty()) {
+			//	for (auto& pending : CurrentScreen->PendingGUIs) {
+			//		CurrentScreen->GUIs.push_back(std::move(pending));
+			//	}
+			//	CurrentScreen->PendingGUIs.clear();
+			//}
 
 		}
 

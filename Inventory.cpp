@@ -3,11 +3,13 @@
 void InventoryGUI::IntializeInventoryGUI()
 {
 
-	InventoryScreenGUI.x = ScrCenter.x;
-	InventoryScreenGUI.y = ScrCenter.y;
+
 
 	InventoryScreenGUI.width = Block_W;
 	InventoryScreenGUI.height = Block_H;
+
+	InventoryScreenGUI.x = ScrCenter.x - (Scr_W + Block_W) * 0.5f;
+	InventoryScreenGUI.y = ScrCenter.y - Block_H*0.5f;
 
 	ClickableArea.x = InventoryScreenGUI.x;
 	ClickableArea.y = InventoryScreenGUI.y;
@@ -36,7 +38,7 @@ void InventoryGUI::UpdateGUI() {
 		InventoryScreenGUI.x = ScrCenter.x + static_cast<int>(BasePoint.x);
 	}
 
-	InventoryScreenGUI.y = -ScrCenter.y - Block_H + Scr_H * 0.5f;
+	InventoryScreenGUI.y = -ScrCenter.y - Block_H * 0.5f;
 
 	ClickableArea.x = ScrCenter.x - ClickableArea.width * 0.5f;
 	ClickableArea.y = -ScrCenter.y + (Scr_H) * 0.5f - ClickableArea.height + PaddingY;

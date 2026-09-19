@@ -6,7 +6,7 @@ void BoxCollider2D::DrawBox(Vector2 a, Vector2 b)
 	Vector2 c = Vector2(a.x, b.y);
 	Vector2 d = Vector2(b.x, a.y);
 
-	const std::array<Vector2, 4> points = { a,c,d,b };
+	std::array<Vector2, 4> points = { a,c,d,b };
 	DrawTriangleStrip(points.data(), 4, WHITE);
 
 }

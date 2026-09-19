@@ -35,8 +35,8 @@ void SideToolbarGUI::OnMouseDownGUI(Vector2 MousePos)
 
 		if (GUIHandler::CheckBoundingArea(WorldMousePos, rec)) {
 			if (count == 1) {
-				if (Ptr)
-				Ptr->AddGUI(std::make_unique<InventoryGUI>(LocCam));
+
+				
 			}
 		}
 

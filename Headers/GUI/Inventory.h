@@ -3,7 +3,7 @@
 
 class InventoryGUI : public GUI {
 
-	int Block_H = 100, Block_W = 100;
+	int Block_H = 400, Block_W = 400;
 	float PaddingX = 20, PaddingY = 20;
 	Rectangle ClickableArea = {0,0,0,0};
 
