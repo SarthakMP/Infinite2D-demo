@@ -37,7 +37,12 @@ void HotbarGUI::InitializeSlots()
 }
 
 
+int HotbarGUI::GetGuiId() {
+	return id_Gui;
+}
+
 void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
+
 	Point WorldMousePos = { MousePos.x + ScrCenter.x ,-(-MousePos.y + ScrCenter.y) };
 	if (GUIHandler::CheckBoundingArea(WorldMousePos, ClickableArea) == false)return;
 
@@ -73,12 +78,10 @@ void HotbarGUI::UpdateGUI() {
 		if (dis > 0.0001f) {
 			rec.x = static_cast<int>(std::lerp(static_cast<float>(rec.x), static_cast<float>(ScrCenter.x + BasePos[count].x), 0.4f));
 			
-			//ClickableArea.x = static_cast<int>(std::lerp(static_cast<float>(ClickableArea.x), static_cast<float>(ScrCenter.x - ClickableArea.width * 0.5f - PaddingX), 0.4f));
 		}
 		else {
 			rec.x = ScrCenter.x + static_cast<int>(BasePos[count].x);
 		}
-
 		rec.y = -ScrCenter.y - Block_H + Scr_H*0.5f ;
 
 		ClickableArea.x = ScrCenter.x - ClickableArea.width * 0.5f;

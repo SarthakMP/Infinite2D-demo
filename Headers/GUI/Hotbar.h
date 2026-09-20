@@ -5,14 +5,15 @@
 #include <tuple>
 class HotbarGUI : public GUI {
 
-	int Block_H = 50, Block_W = 50;
-	float PaddingX = 20, PaddingY = 20;
+	const int id_Gui = 0;
+	const int Block_H = 50, Block_W = 50;
+	const float PaddingX = 20, PaddingY = 20;
 	Rectangle ClickableArea;
 
 public:
 	
 	void InitializeSlots();
-	
+	int GetGuiId();
 	void RenderGUI();
 	void UpdateGUI();
 

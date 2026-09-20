@@ -201,7 +201,7 @@ void Game::run() {
 		}
 		
 		//Start this seq only if the world is loaded
-		if(isWorldLoaded){
+		if(isWorldLoaded ){
 
 			if (!isScreenLoaded) {
 				CurrentScreen = PlayScreenPtr.get();
@@ -245,31 +245,45 @@ void Game::run() {
 
 			// GUI updates
 			BaseGUI.SetBoundingPoints(Bounding);
-
+			BaseGUI.UpdateCamPos(WorldCam.target);
 			rlDisableBackfaceCulling();
 			rlPopMatrix();
 
-			//Maybe do update after doing game updates
-			for (auto& gui : CurrentScreen->GUIs) {
-
-				if (IsMouseButtonDown(0)) {
-					gui->OnMouseDownGUI(CurrentScreen->MousePos);
+			//Remove the GUI which where dynamically removed
+			if (!CurrentScreen->ToDequeueGUIs.empty()) {
+				for (auto dq : CurrentScreen->ToDequeueGUIs) {
+					if (dq == CurrentScreen->GUIs.back()->GetGuiId()) {
+						CurrentScreen->GUIs.pop_back();
+						BhAdapt.isMenuAnyOpened = false;
+					}
 				}
-				if (gui) {
-					gui->UpdateGUI();
-					gui->RenderGUI();
-				}
+				CurrentScreen->ToDequeueGUIs.clear();
 			}
 
-			//if (!CurrentScreen->PendingGUIs.empty()) {
-			//	for (auto& pending : CurrentScreen->PendingGUIs) {
-			//		CurrentScreen->GUIs.push_back(std::move(pending));
-			//	}
-			//	CurrentScreen->PendingGUIs.clear();
-			//}
+			//GUI Checks
+			for (auto& gui : CurrentScreen->GUIs) {
+				if (!gui) { continue; }
+
+				gui->OnMouseHoverGUI(CurrentScreen->MousePos);
+
+				if (IsMouseButtonDown(0))  {
+					gui->OnMouseDownGUI(CurrentScreen->MousePos);
+				}
+
+				gui->UpdateGUI();
+				gui->RenderGUI();
+				
+			}
+
+			// Add Gui which are dynamically added
+			if (!CurrentScreen->ToEnqueueGUIs.empty()) {
+				for (auto& pending : CurrentScreen->ToEnqueueGUIs) {
+					CurrentScreen->GUIs.push_back(std::move(pending));
+				}
+				CurrentScreen->ToEnqueueGUIs.clear();
+			}
 
 		}
-
 
 
 		EndMode2D();

@@ -9,6 +9,7 @@ void BlockModifier::Update() {
 }
 
 void BlockModifier::OnMouseDown() {
+	if (isMenuAnyOpened) return;
 	Point PlayerPos = Player::GetPlayerPos();
 	Point MousePos = GetMousePosition();
 	bool isInside = (MousePos.x >= 50 && MousePos.x <= (GetScreenWidth() - 50)) &&
@@ -37,7 +38,6 @@ void BlockModifier::OnMouseDown() {
 
 			//BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
 
-			//std::cout << x + 4 * y << std::endl;
 
 			chunk.Blocks->erase(x + 4 * y);
 			chunk.isDirty = true;
@@ -48,6 +48,7 @@ void BlockModifier::OnMouseDown() {
 }
 
 void BlockModifier::OnMouse2Down() {
+	if (isMenuAnyOpened) return;
 	Point PlayerPos = Player::GetPlayerPos();
 	Point MousePos = GetMousePosition();
 	bool isInside = (MousePos.x >= 50 && MousePos.x <= (GetScreenWidth() - 50)) &&
@@ -84,7 +85,7 @@ void BlockModifier::OnMouse2Down() {
 
 				block.text = std::get<1>(HotbarGUI::HotbarSlots[SelectedBlock]).second;
 				(*chunk.Blocks)[block.id] = block;
-				//std::cout <<"Current Player Pos: "<<PlayerPos<< " Block ADDED at: " << block_x << "," << block_y << std::endl;
+				
 			}
 
 		}

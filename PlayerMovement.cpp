@@ -66,10 +66,10 @@ void PlayerMovement::Move()
 
 void  PlayerMovement::Update() {
 
-	Move();
-
+	if (!isMenuAnyOpened) {
+		Move();
+	}
 	Physics2D::Update();
-
 }
 
 void PlayerMovement::OnMouseDown() {

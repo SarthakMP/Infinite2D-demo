@@ -67,7 +67,7 @@ add_executable (Infinite2D-demo
     "Headers/GUI/Inventory.h" 
     "Headers/GUI/GUIHandler.h" 
     "Inventory.cpp"
-)
+ "Headers/Rectangle.h")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

@@ -7,20 +7,21 @@ protected:
 	int Scr_W = 0;
 	int Scr_H = 0;
 public:
-	Camera2D& LocCam;
+	static inline Camera2D LocCam;
 
 	Point MousePos;
 public:
 
 	
-	GUIBase(Camera2D& Cam) : LocCam(Cam) {}
+	GUIBase(Camera2D& Cam) { LocCam = Cam; }
 
 	GUIBase() = default;
-
+	virtual int GetGuiId() = 0;
 	virtual void RenderGUI() = 0;
 	virtual void UpdateGUI() = 0;
 	virtual int GetButtonInfo() = 0;	
 	virtual void OnMouseDownGUI(Vector2 in_MousePos) = 0;
+	virtual void OnMouseHoverGUI(Vector2 in_MousePos) = 0;
 
 	virtual	~GUIBase() = default;
 };
@@ -30,13 +31,16 @@ class GUI : public GUIBase {
 protected:
 	static inline std::shared_ptr<Point[4]> BoundingPointsPtr;
 	static inline Point ScrCenter = 0;
-public:
-
-	void RenderGUI() override {}
-	void UpdateGUI() override {};
-	int GetButtonInfo() override { return 0; }
-	void OnMouseDownGUI(Vector2 in_MousePos) override {};
 	
+public:
+	int id_Gui = -1;
+	int GetGuiId() override { return id_Gui;}
+	void RenderGUI() override {}
+	void UpdateGUI() override {}
+	int GetButtonInfo() override { return 0; }
+	void OnMouseDownGUI(Vector2 in_MousePos) override {}
+	void OnMouseHoverGUI(Vector2 in_MousePos) override {}
+
 	GUI(Camera2D& Cam) :GUIBase(Cam) {
 
 		Scr_W = GetScreenWidth();
@@ -52,6 +56,12 @@ public:
 		ScrCenter = { Scr_W * 0.5f,Scr_H * 0.5f };
 	}
 
+	void UpdateCamPos(const Point& pos) {
+		LocCam.target.x = pos.x;
+		LocCam.target.y = pos.y;
+
+	}
+
 	void SetBoundingPoints(std::shared_ptr<Point[4]>& UpdatedPoints) {
 		BoundingPointsPtr = UpdatedPoints;
 
@@ -61,11 +71,9 @@ public:
 
 	}
 
-
-
 	GUI() = default;
 
 	~GUI() {
 		//delete BoundingPointsPtr;
-	};
+	}
 };

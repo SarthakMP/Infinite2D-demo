@@ -10,7 +10,8 @@ public:
 	std::vector<Rectangle> Buttons;
 	std::vector<std::unique_ptr<Screen>> Children;
 	std::vector<std::unique_ptr<GUI>> GUIs;
-	std::vector<std::unique_ptr<GUI>> PendingGUIs;
+	std::vector<std::unique_ptr<GUI>> ToEnqueueGUIs;
+	std::vector<int> ToDequeueGUIs;
 	Screen* targetScreen = nullptr;
 	Screen* parentScreen = nullptr;
 
@@ -48,7 +49,7 @@ public:
 	void UpdateCam(const Point& pos) override {};
 
 	inline void AddGUI(std::unique_ptr<GUI> gui) override {
-		PendingGUIs.push_back(std::move(gui));
+		ToEnqueueGUIs.push_back(std::move(gui));
 	}
 
 	Scree_Adapter(Camera2D& cam): Screen(cam) {

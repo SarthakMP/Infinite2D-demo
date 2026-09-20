@@ -4,11 +4,13 @@
 #include"Headers/GUI/SideToolbar.h"
 class PlayScreen : public Scree_Adapter
 {
+
+
 public:
 	void InitializeGUIs();
-
+	PlayScreen() {}
 	PlayScreen(Camera2D& in_cam) : Scree_Adapter(in_cam){
-		
+
 		InitializeGUIs();
 
 	}

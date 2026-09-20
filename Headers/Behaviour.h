@@ -42,8 +42,10 @@ public:
 	void OnMouseReleased() override {};
 
 	static inline int SelectedBlock = 0;
+	static inline bool isMenuAnyOpened = 0;
 	static inline std::unordered_map<int, Texture2D> TexturesMap;
 	static inline void m_LoadTexture();
+
 };
 
 
