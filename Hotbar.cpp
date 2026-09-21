@@ -41,6 +41,7 @@ int HotbarGUI::GetGuiId() {
 	return id_Gui;
 }
 
+static Rectangle SelectedBlockRec = { 0,0,0,0 };
 void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 
 	Point WorldMousePos = { MousePos.x + ScrCenter.x ,-(-MousePos.y + ScrCenter.y) };
@@ -51,7 +52,10 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 	for (auto& [rec, pair] : HotbarSlots) {
 
 		if (GUIHandler::CheckBoundingArea(WorldMousePos, rec)) {
-			SelectedBlock = count;
+			if (!isMenuAnyOpened) { 
+				SelectedBlock = count; 
+				SelectedBlockRec = std::get<0>(HotbarSlots[SelectedBlock]);
+			}
 		}
 		
 		count++;
@@ -62,30 +66,41 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 
 void HotbarGUI::UpdateGUI() {
 	// update the position of GUI wrt to Camera
-	
-	int key = GetKeyPressed();
-	if (key >= KEY_ZERO && key <= KEY_SIX) {
-		SelectedBlock = (key - KEY_ZERO) - 1;
+	if (!isMenuAnyOpened) {
+		int key = GetKeyPressed();
+
+		if (key >= KEY_ZERO && key <= KEY_SIX) {
+			SelectedBlock = (key - KEY_ZERO) - 1;
+			
+			SelectedBlockRec = std::get<0>(HotbarSlots[SelectedBlock]);
+		}
 	}
 
 	int count = 0;
-	for (auto& [rec,color] : HotbarSlots) {
+	for (auto& [rec, color] : HotbarSlots) {
 
 		int dx = ScrCenter.x - rec.x;
 		int dy = -ScrCenter.y + rec.y;
 
-		float dis = Point::Magnitude(ScrCenter,Point(rec.x,rec.y));
+		float dis = Point::Magnitude(ScrCenter, Point(rec.x, rec.y));
 		if (dis > 0.0001f) {
 			rec.x = static_cast<int>(std::lerp(static_cast<float>(rec.x), static_cast<float>(ScrCenter.x + BasePos[count].x), 0.4f));
-			
 		}
 		else {
 			rec.x = ScrCenter.x + static_cast<int>(BasePos[count].x);
+
 		}
-		rec.y = -ScrCenter.y - Block_H + Scr_H*0.5f ;
+		rec.y = -ScrCenter.y - Block_H + Scr_H * 0.5f;
+		if (count == SelectedBlock) {
+			SelectedBlockRec.x = rec.x;
+			SelectedBlockRec.y = rec.y;
+		}
 
 		ClickableArea.x = ScrCenter.x - ClickableArea.width * 0.5f;
 		ClickableArea.y = -ScrCenter.y  + ( Scr_H) * 0.5f - ClickableArea.height +PaddingY;
+
+
+
 		count++;
 	}
 	
@@ -100,7 +115,10 @@ void HotbarGUI::RenderGUI() {
 
 		DrawRectangle(rec.x - 2, rec.y - 2, rec.width + 4, rec.height + 4, WHITE);
 		DrawTexturePro(pair.second, src, rec, {0,0}, 0, WHITE);
-		
+
+		//std::cout << SelectedBlockRec.x << "," << SelectedBlockRec.y << std::endl;
+		DrawRectangleLinesEx(SelectedBlockRec, 1, YELLOW);
+		//DrawRectangleLines(SelectedBlockRec.x, SelectedBlockRec.y, SelectedBlockRec.width, SelectedBlockRec.height,YELLOW);
 	}
 
 }

@@ -12,7 +12,7 @@ class InventoryGUI : public GUI {
 	const float BlockPaddingX = 10, BlockPaddingY = 10;
 	const float PaddingX = 100, PaddingY = 100;
 	Rectangle ClickableArea = {0,0,0,0};
-	std::vector<std::vector<std::pair<int,TexturedRectangle>>> InventoryBlocks;
+	static inline std::vector<std::vector<std::pair<int,TexturedRectangle>>> InventoryBlocks;
 
 	Point BasePoints[4][10];
 	Point BasePoint = 0;

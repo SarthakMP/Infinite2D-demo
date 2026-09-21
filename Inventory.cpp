@@ -23,17 +23,18 @@ void InventoryGUI::IntializeInventoryGUI()
 	float x = InventoryScreenGUI.x;
 	float y = InventoryScreenGUI.y;
 	
-	TexturedRectangle Grass(x , y, InventoryBlockW, InventoryBlockH);
+	TexturedRectangle Grass(x , y, InventoryBlockW, InventoryBlockH, TexturesMap[0]);
 	BasePoints[0][0] = Point(Grass.rec.x, Grass.rec.y);
 	
-	TexturedRectangle Dirt(x + InventoryBlockW + BlockPaddingX*0.5f, y , InventoryBlockW, InventoryBlockH);
+	TexturedRectangle Dirt(x + InventoryBlockW + BlockPaddingX*0.5f, y , InventoryBlockW, InventoryBlockH,TexturesMap[1]);
 	BasePoints[0][1] = Point(Dirt.rec.x, Dirt.rec.y);
-	TexturedRectangle Stone(x + 2 * (InventoryBlockW + BlockPaddingX * 0.5f), y, InventoryBlockW, InventoryBlockH);
+
+	TexturedRectangle Stone(x + 2 * (InventoryBlockW + BlockPaddingX * 0.5f), y, InventoryBlockW, InventoryBlockH, TexturesMap[2]);
 	BasePoints[0][2] = Point(Stone.rec.x, Stone.rec.y);
 	
 	InventoryBlocks[0][0] = { 0,Grass};
-	InventoryBlocks[0][1] = { 1,Grass};
-	InventoryBlocks[0][2] = { 2,Grass};
+	InventoryBlocks[0][1] = { 1,Dirt };
+	InventoryBlocks[0][2] = { 2,Stone };
 
 }
 
@@ -52,8 +53,7 @@ void InventoryGUI::OnMouseDownGUI(Vector2 in_MousePos) {
 	if (GUIHandler::CheckBoundingArea(WorldMousePos, InventoryScreenGUI)) {
 		//TODO Add the ability to click on the inventory icons and add them to the hotbar
 		//Either by right clicking -> which find a firt empty slot in the hotbar
-		//Or by pressing the key_one -> key_six ( which add block to the respective slot
-		// Added the ability to drag & drop the block here
+
 
 
 
@@ -73,9 +73,16 @@ void InventoryGUI::OnMouseHoverGUI(Vector2 in_MousePos) {
 
 			if (GUIHandler::CheckBoundingArea(WorldMousePos, block.second.rec)) {
 				int key = GetKeyPressed();
-				if (key >= KEY_ONE && key <= KEY_FIVE) {
-					std::get<1>(HotbarGUI::HotbarSlots[key]).second = InventoryBlocks[row_count][block.first].second.texture;
+				if (key > KEY_ZERO && key < KEY_SIX) {
+					key = key - KEY_ONE;
+					std::cout << "pressed: " << key << std::endl;
+					Texture2D text = InventoryBlocks[row_count][block.first].second.texture;
+					
+					std::get<1>(HotbarGUI::HotbarSlots[key]).second = text;
+					
+
 				}
+
 			}
 
 		}
@@ -114,7 +121,7 @@ void InventoryGUI::RenderGUI() {
 
 	for (auto& row : InventoryBlocks) {
 		for (auto& [id,Textrec] : row) {
-			DrawTexturePro(TexturesMap[id], Rectangle(0, 0, 32, 32), Textrec.rec, { 0,0 }, 0, WHITE);
+			DrawTexturePro(Textrec.texture, Rectangle(0, 0, 32, 32), Textrec.rec, { 0,0 }, 0, WHITE);
 		}
 	}
 
