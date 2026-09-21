@@ -8,7 +8,7 @@
 class SideToolbarGUI : public GUI {
 
 
-	const int id_Gui = 1;
+	const int id_Gui = SIDETOOLBAR_ID;
 	const int PaddingX = 20, PaddingY = 20;
 	const int Block_H = 50, Block_W = 50;
 	const int CloseGui_H = 50, CloseGui_W = 50;

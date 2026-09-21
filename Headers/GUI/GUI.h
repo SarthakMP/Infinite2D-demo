@@ -1,6 +1,12 @@
 #pragma once
 #include"Headers/Point.h"
 #include"Headers/Player.h"
+
+#define HOTBAR_ID 0
+#define SIDETOOLBAR_ID 1
+#define INVENTORY_ID 2
+
+
 class GUIBase : public Behaviour_Adapter {
 
 protected:
@@ -20,7 +26,8 @@ public:
 	virtual void RenderGUI() = 0;
 	virtual void UpdateGUI() = 0;
 	virtual int GetButtonInfo() = 0;	
-	virtual void OnMouseDownGUI(Vector2 in_MousePos) = 0;
+	virtual void OnMouseDownGUI(Vector2 in_MousePos) = 0;//Left Mouse Click Down Trigger
+	virtual void OnMousePressedGUI(Vector2 in_MousePos) = 0; //Right Mouse Click Press Trigger
 	virtual void OnMouseHoverGUI(Vector2 in_MousePos) = 0;
 
 	virtual	~GUIBase() = default;
@@ -39,6 +46,7 @@ public:
 	void UpdateGUI() override {}
 	int GetButtonInfo() override { return 0; }
 	void OnMouseDownGUI(Vector2 in_MousePos) override {}
+	void OnMousePressedGUI(Vector2 in_MousePos) override {}
 	void OnMouseHoverGUI(Vector2 in_MousePos) override {}
 
 	GUI(Camera2D& Cam) :GUIBase(Cam) {

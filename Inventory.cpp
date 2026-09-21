@@ -1,5 +1,5 @@
 #include"Headers/GUI/Inventory.h"
-#include <iostream>
+
 void InventoryGUI::IntializeInventoryGUI()
 {
 
@@ -43,7 +43,7 @@ int InventoryGUI::GetGuiId() {
 	return id_Gui;
 }
 
-void InventoryGUI::OnMouseDownGUI(Vector2 in_MousePos) {
+void InventoryGUI::OnMousePressedGUI(Vector2 in_MousePos) {
 
 
 	Point WorldMousePos = { in_MousePos.x + ScrCenter.x ,-(-in_MousePos.y + ScrCenter.y) };
@@ -53,8 +53,36 @@ void InventoryGUI::OnMouseDownGUI(Vector2 in_MousePos) {
 	if (GUIHandler::CheckBoundingArea(WorldMousePos, InventoryScreenGUI)) {
 		//TODO Add the ability to click on the inventory icons and add them to the hotbar
 		//Either by right clicking -> which find a firt empty slot in the hotbar
+		
+		/*TODO Add an efficient way to find the blocks in the inventory*/
+		std::pair<int, TexturedRectangle> InvBlock;
+		int row_count = 0;
+		bool BlockFound = 0;
+		for (auto& row : InventoryBlocks) {
+			for (auto& block : row) {
+				if (block.second.rec.height == 0) break;
 
+				if (GUIHandler::CheckBoundingArea(WorldMousePos, block.second.rec)) {
+					InvBlock = block;
+					BlockFound = 1;
+					break; 
+				}
+				
+			}
+			if (BlockFound) { break; }
+			row_count++;
+		}
 
+		int index = 0;
+		for (auto& [rec, pair] : HotbarGUI::HotbarSlots) {
+			if (pair.second.id == 0) {
+				pair.first = index;
+				Texture2D text = InvBlock.second.texture;
+				std::get<1>(HotbarGUI::HotbarSlots[pair.first]).second = text;
+				break;
+			}
+			index++;
+		}
 
 
 
@@ -63,6 +91,7 @@ void InventoryGUI::OnMouseDownGUI(Vector2 in_MousePos) {
 
 	
 }
+
 void InventoryGUI::OnMouseHoverGUI(Vector2 in_MousePos) {
 
 	Point WorldMousePos = { in_MousePos.x + ScrCenter.x ,-(-in_MousePos.y + ScrCenter.y) };
@@ -121,6 +150,7 @@ void InventoryGUI::RenderGUI() {
 
 	for (auto& row : InventoryBlocks) {
 		for (auto& [id,Textrec] : row) {
+			if (Textrec.texture.id == 0) return;
 			DrawTexturePro(Textrec.texture, Rectangle(0, 0, 32, 32), Textrec.rec, { 0,0 }, 0, WHITE);
 		}
 	}

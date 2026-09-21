@@ -230,6 +230,7 @@ void Game::run() {
 			}
 
 			//Main Game Updates 
+
 			if (IsMouseButtonDown(0))
 				for (auto& obj : Objects) obj->OnMouseDown();
 			
@@ -265,7 +266,9 @@ void Game::run() {
 				if (!gui) { continue; }
 
 				gui->OnMouseHoverGUI(CurrentScreen->MousePos);
-
+				if (IsMouseButtonPressed(1)) {
+					gui->OnMousePressedGUI(CurrentScreen->MousePos);
+				}
 				if (IsMouseButtonDown(0))  {
 					gui->OnMouseDownGUI(CurrentScreen->MousePos);
 				}

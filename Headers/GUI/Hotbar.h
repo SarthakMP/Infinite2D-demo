@@ -5,7 +5,7 @@
 #include <tuple>
 class HotbarGUI : public GUI {
 
-	const int id_Gui = 0;
+	const int id_Gui = HOTBAR_ID;
 	const int Block_H = 50, Block_W = 50;
 	const float PaddingX = 20, PaddingY = 20;
 	Rectangle ClickableArea;
@@ -18,8 +18,9 @@ public:
 	void UpdateGUI();
 
 	void OnMouseDownGUI(Vector2 MousePos);
+	void OnMousePressedGUI(Vector2 MousePos);
 
-	static inline  std::tuple<Rectangle, std::pair<int,Texture2D>> HotbarSlots[6] = {};
+	static inline  std::tuple<Rectangle, std::pair<int,Texture2D>> HotbarSlots[6] = {}; // Convert to TexturedRectangle Pair
 	Point BasePos[6];
 	HotbarGUI(Camera2D& cam): GUI(cam){
 

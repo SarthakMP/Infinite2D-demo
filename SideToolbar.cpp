@@ -34,7 +34,7 @@ void SideToolbarGUI::OnMouseDownGUI(Vector2 MousePos)
 	Point WorldMousePos = { MousePos.x + ScrCenter.x ,-(-MousePos.y + ScrCenter.y) };
 
 	if (isMenuAnyOpened && GUIHandler::CheckBoundingArea(WorldMousePos, CloseButton)) {
-		Ptr->ToDequeueGUIs.push_back(2);
+		Ptr->ToDequeueGUIs.push_back(INVENTORY_ID); // 2 is The Id of InventoryGUI
 	}
 	if (!GUIHandler::CheckBoundingArea(WorldMousePos, ClickableArea)) return;
 
@@ -106,7 +106,6 @@ void SideToolbarGUI::RenderGUI() {
 
 	}
 
-	DrawRectangleLines(ClickableArea.x, ClickableArea.y, ClickableArea.width, ClickableArea.height,GREEN);
 	if (isMenuAnyOpened) {
 		DrawRectangle(CloseButton.x, CloseButton.y, CloseGui_W, CloseGui_H, RED);
 	}

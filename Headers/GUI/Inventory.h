@@ -6,7 +6,7 @@
 
 class InventoryGUI : public GUI {
 
-	const int id_Gui = 2;
+	const int id_Gui = INVENTORY_ID;
 	const int Inventory_H = 400, Inventory_W = 400;
 	const int InventoryBlockH = 50, InventoryBlockW = 50;
 	const float BlockPaddingX = 10, BlockPaddingY = 10;
@@ -25,7 +25,8 @@ public:
 
 	int GetGuiId();
 	void OnMouseHoverGUI(Vector2 in_MousePos);
-	void OnMouseDownGUI(Vector2 in_MousePos);
+	void OnMousePressedGUI(Vector2 in_MousePos);
+	//void OnMouseDownGUI(Vector2 in_MousePos);
 	void UpdateGUI();
 	void RenderGUI();
 };

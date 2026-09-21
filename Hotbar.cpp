@@ -14,7 +14,7 @@ void HotbarGUI::InitializeSlots()
 		int y = ScrCenter.y - Scr_H - Block_H;
 
 		Rectangle slot = Rectangle(x, y, w, h);
-		HotbarSlots[i + offset] = { slot,{0,Texture2D()}};
+		HotbarSlots[i + offset] = { slot,{-1,Texture2D()}};
 
 		BasePos[i + offset] = Point(slot.x, slot.y);
 	}
@@ -55,6 +55,7 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 			if (!isMenuAnyOpened) { 
 				SelectedBlock = count; 
 				SelectedBlockRec = std::get<0>(HotbarSlots[SelectedBlock]);
+				break;
 			}
 		}
 		
@@ -63,7 +64,20 @@ void HotbarGUI::OnMouseDownGUI(Vector2 MousePos) {
 	
 }
 
+void HotbarGUI::OnMousePressedGUI(Vector2 MousePos) { 
 
+	Point WorldMousePos = { MousePos.x + ScrCenter.x ,-(-MousePos.y + ScrCenter.y) };
+	if (GUIHandler::CheckBoundingArea(WorldMousePos, ClickableArea) == false) return;
+
+	for (auto& [rec, pair] : HotbarSlots) {
+		if (GUIHandler::CheckBoundingArea(WorldMousePos, rec)) {
+			if (pair.second.id > 0) {
+				std::get<1>(HotbarSlots[pair.first]).second = Texture2D();
+				break;
+			}
+		}
+	}
+}
 void HotbarGUI::UpdateGUI() {
 	// update the position of GUI wrt to Camera
 	if (!isMenuAnyOpened) {
@@ -109,16 +123,12 @@ static inline Rectangle src = Rectangle(0, 0, 32, 32);
 void HotbarGUI::RenderGUI() {
 	Point pos = GUI::BoundingPointsPtr[2];
 
-	DrawRectangleLines(ClickableArea.x, ClickableArea.y, ClickableArea.width, ClickableArea.height, GREEN);
-
 	for (auto& [rec, pair] : HotbarSlots) {
 
 		DrawRectangle(rec.x - 2, rec.y - 2, rec.width + 4, rec.height + 4, WHITE);
 		DrawTexturePro(pair.second, src, rec, {0,0}, 0, WHITE);
-
-		//std::cout << SelectedBlockRec.x << "," << SelectedBlockRec.y << std::endl;
 		DrawRectangleLinesEx(SelectedBlockRec, 1, YELLOW);
-		//DrawRectangleLines(SelectedBlockRec.x, SelectedBlockRec.y, SelectedBlockRec.width, SelectedBlockRec.height,YELLOW);
+
 	}
 
 }
