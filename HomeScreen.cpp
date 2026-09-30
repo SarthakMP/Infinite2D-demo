@@ -24,7 +24,7 @@ void Home::InitializeButtons() {
 }
 
 Font f;
-void Home::DrawButtons()
+void Home::Render()
 {
 	DrawRectangle(ContiuneButton.x, ContiuneButton.y, ContiuneButton.width, ContiuneButton.height, WHITE);
 	DrawTextPro(f, "Continue", { ContiuneButton.x + 110, ContiuneButton.y + 25 }, { 0,0 }, 0, 80, 1, RED);
@@ -47,18 +47,18 @@ Screen* Home::GetNextScreen() {
 int Home::GetButtonInfo() {
 
 	if (CheckBoundingArea(MousePos, ContiuneButton)) {
-		return 0;
+		return START_BUTTON_ID;
 	}
 
 	if (CheckBoundingArea(MousePos, StartNewButton)) {
-		return 1;
+		return CONTINUE_BUTTON_ID;
 	}
 
 	if (CheckBoundingArea(MousePos, OptionsButton)) {
-		return 2;
+		return BACK_BUTTON_ID;
 	}
 
-	return -1;
+	return -11;
 }
 
 std::string Home::GetButtonType()

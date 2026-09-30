@@ -3,6 +3,10 @@
 #include"Headers/GUI/GUI.h"
 #include<memory>
 #include<vector>
+#define START_BUTTON_ID 0
+#define CONTINUE_BUTTON_ID 1
+#define SCROLLBAR_ID -1
+#define BACK_BUTTON_ID -10
 class Screen : public Behaviour_Adapter {
 
 public:
@@ -19,7 +23,7 @@ public:
 public:
 	virtual void InitializeChildern() = 0;
 	virtual void InitializeButtons() = 0;
-	virtual void DrawButtons() = 0;
+	virtual void Render() = 0;
 	virtual int GetButtonInfo() = 0;
 	virtual std::string GetButtonType() =0;
 	virtual Screen* GetNextScreen() = 0;
@@ -41,7 +45,7 @@ class Scree_Adapter : public Screen {
 public:
 	void InitializeChildern() override {}
 	void InitializeButtons() override {}
-	void DrawButtons() override {}
+	void Render() override {}
 	int GetButtonInfo() override { return 0;  }
 	std::string GetButtonType() override { return ""; }
 	Screen* GetNextScreen() override { return nullptr; }

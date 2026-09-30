@@ -41,11 +41,15 @@ add_executable (Infinite2D-demo
     "Headers/BlockModification.h"
     "Headers/Screens/Screen.h"  
     "Headers/Screens/HomeScreen.h" 
-    "HomeScreen.cpp" 
+    "Headers/GUI/Inventory.h" 
+    "Headers/GUI/GUIHandler.h" 
     "Headers/Screens/ContinueScreen.h" 
     "Headers/Screens/OptionsScreen.h" 
     "Headers/Screens/StartScreen.h" 
     "Headers/Screens/PlayScreen.h" 
+    "Headers/Rectangle.h" 
+    "Headers/ScrollBar.h"
+
     "SideToolbar.cpp" 
     "Headers/GUI/GUI.h"
     "Headers/GUI/Hotbar.h"
@@ -64,10 +68,9 @@ add_executable (Infinite2D-demo
     "StartScreen.cpp" 
     "Hotbar.cpp"
     "PlayScreen.cpp"
-    "Headers/GUI/Inventory.h" 
-    "Headers/GUI/GUIHandler.h" 
     "Inventory.cpp"
- "Headers/Rectangle.h")
+    "HomeScreen.cpp" 
+    "ScrollBar.cpp")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

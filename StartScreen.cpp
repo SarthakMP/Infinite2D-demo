@@ -16,7 +16,7 @@ void StartScreen::InitializeButtons()
 	
 }
 Font F;
-void StartScreen::DrawButtons()
+void StartScreen::Render()
 {
 	DrawRectanglePro(StartNewButton, { StartNewButton.width*0.5f,StartNewButton.height * 0.5f },0, WHITE);
 	DrawText("Start", StartNewButton.x - 20, StartNewButton.y, 20, BLACK);
@@ -52,18 +52,18 @@ int StartScreen::GetButtonInfo()
 {
 
 	if (CheckBoundingArea(MousePos, StartNewButton, { StartNewButton.width * 0.5f,StartNewButton.height * 0.5f })) {
-		return 0;
+		return START_BUTTON_ID;
 	}
 
 	if (CheckBoundingArea(MousePos, WorldNameTextBox, { WorldNameTextBox.width * 0.5f,WorldNameTextBox.height * 0.5f })) {
-		return 1;
+		return CONTINUE_BUTTON_ID;
 	}
 
 	if (CheckBoundingArea(MousePos, BackButton, { BackButton.width * 0.5f,BackButton.height * 0.5f })) {
-		return -2;
+		return BACK_BUTTON_ID;
 	}
 
-	return -1;
+	return -11;
 }
 
 Screen* StartScreen::GetNextScreen()

@@ -10,7 +10,7 @@ void Options::InitializeButtons()
 
 }
 
-void Options::DrawButtons()
+void Options::Render()
 {
 	DrawRectangle(BackButton.x, BackButton.y, BackButton.width, BackButton.height, WHITE);
 	DrawText("<--", BackButton.x, BackButton.y, 50, BLACK);
@@ -24,10 +24,10 @@ int Options::GetButtonInfo()
 
 
 	if (CheckBoundingArea(MousePos, BackButton)) {
-		return -2;
+		return BACK_BUTTON_ID;
 	}
 
-	return -1;
+	return -11;
 }
 std::string Options::GetButtonType()
 {

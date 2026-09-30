@@ -82,10 +82,12 @@ void BlockModifier::OnMouse2Down() {
 				int block_y = chunk.GetXY().y + y * LevelDesigner::block_h;
 				BoxCollider2D block(Rectangle(block_x, block_y, LevelDesigner::block_w, LevelDesigner::block_h), WHITE);
 				block.id = id;
+				Texture2D text = std::get<1>(HotbarGUI::HotbarSlots[SelectedBlock]).second;
+				if (text.id != 0) {
+					block.text = text;
+					(*chunk.Blocks)[block.id] = block;
+				}
 
-				block.text = std::get<1>(HotbarGUI::HotbarSlots[SelectedBlock]).second;
-				(*chunk.Blocks)[block.id] = block;
-				
 			}
 
 		}

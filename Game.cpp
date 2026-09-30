@@ -81,8 +81,6 @@ void Game::run() {
 	std::unique_ptr<Player> p = std::make_unique<Player>();
 	
 
-	
-
 	AddObjects(std::move(p));
 	AddObjects(std::make_unique<PlayerMovement>());
 	AddObjects(std::make_unique < LevelDesigner>(p));
@@ -131,33 +129,48 @@ void Game::run() {
 				isTextLong = true; 
 			}
 			
+			
 			if (key == KEY_SPACE) {
 				Text += " " ;
+			}
+			if (key >= KEY_ZERO && key <= KEY_NINE) {
+				Text += KeyParser(key);
 			}
 
 			if (key >= KEY_KP_0 && key <= KEY_KP_9) {
 				Text += KeyParser(key);
-				std::cout << "Number: " << Text << key << std::endl;
+
 			}
 			if (key >= KEY_A && key <= KEY_Z) {
 				Text += KeyParser(key);
-				std::cout << "TEXT: " << Text << std::endl;
 			}
+
 			if (key == KEY_BACKSPACE) {
 				if(!Text.empty())
 					Text.pop_back();
 				
+			}
+			if (key == KEY_ENTER) {
+				LevelDesigner::WorldName = Text;
+				isWorldLoaded = true;
 			}
 			
 		}
 		
 		//handling of multiple screens / Menus before the game is loaded
 		if (!isWorldLoaded) {
-			CurrentScreen->DrawButtons();
+			CurrentScreen->Update();
+			CurrentScreen->Render();
+
+			if (IsMouseButtonDown(0))
+				CurrentScreen->OnMouseDown();
+			else
+				CurrentScreen->OnMouseUp();
+
 			if (IsMouseButtonPressed(0)) {
 				
 				int NextScreenOption = CurrentScreen->GetButtonInfo();
-				if (NextScreenOption == -2) {
+				if (NextScreenOption == BACK_BUTTON_ID) {
 					if (ParentScreen == nullptr) CurrentScreen = HomeScreen.get();
 					else CurrentScreen = ParentScreen;
 				}

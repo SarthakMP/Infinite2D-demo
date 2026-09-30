@@ -9,7 +9,7 @@ public:
 public:
 	void InitializeChildern() override;
 	void InitializeButtons() override;
-	void DrawButtons() override;
+	void Render() override;
 	int GetButtonInfo() override;
 	std::string GetButtonType() override;
 	Screen* GetNextScreen() override;
