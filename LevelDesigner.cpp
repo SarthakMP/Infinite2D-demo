@@ -63,6 +63,11 @@ void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
 	int chunk_w = NewChunk.GetWH().x;
 	for (size_t r = 0; r < static_cast<int>(std::floor(chunk_h / 100)); r++) {
 		for (size_t c = 0; c < static_cast<int>(std::floor(chunk_w / 100)); c++) {
+
+			//TODO Calculate Perlin Height where inputs are he position (x,y) 
+
+
+
 			int block_x = x + c * block_w ;
 			int block_y = y + r * block_h ;
 			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
@@ -175,20 +180,7 @@ void LevelDesigner::DrawChunks() {
 
 			Rectangle src = Rectangle(0, 0, 32, 32);
 			Rectangle dest = blocks.Rec;
-
-			int Above_block = it->first + 4;
-
-			auto above = chunk.Blocks->find(Above_block);
-
-			if (above == chunk.Blocks->end() && it->second.text.id == 0)
-				DrawTexturePro(TexturesMap[1], src, dest, { 0,0 }, 0, WHITE);
-			else {
-
-				DrawTexturePro(it->second.text, src, dest, { 0,0 }, 0, WHITE);
-			}
-
-			//DrawTexture(TexturesMap[0], blocks.Rec.x, blocks.Rec.y, WHITE);
-			//DrawRectangle(blocks.Rec.x, blocks.Rec.y, blocks.Rec.width, blocks.Rec.height, blocks.color);
+			DrawTexturePro(it->second.text, src, dest, { 0,0 }, 0, WHITE);
 		}
 	}
 }

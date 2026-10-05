@@ -49,6 +49,8 @@ add_executable (Infinite2D-demo
     "Headers/Screens/PlayScreen.h" 
     "Headers/Rectangle.h" 
     "Headers/ScrollBar.h"
+    "Headers/Telemetry.h"
+    "Headers/TreeGeneration.h"
 
     "SideToolbar.cpp" 
     "Headers/GUI/GUI.h"
@@ -70,7 +72,9 @@ add_executable (Infinite2D-demo
     "PlayScreen.cpp"
     "Inventory.cpp"
     "HomeScreen.cpp" 
-    "ScrollBar.cpp")
+    "ScrollBar.cpp"
+    "Telemetry.cpp"
+    "TreeGeneration.cpp")
 
 target_include_directories(Infinite2D-demo PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}

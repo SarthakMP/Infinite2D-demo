@@ -71,7 +71,7 @@ void Game::run() {
 
 	InitialBoudningPoints(Bounding);
 
-
+	std::unique_ptr<Telemetry> TelemetryPtr = std::make_unique<Telemetry>(WorldCam);
 	std::unique_ptr < Home> HomeScreen = std::make_unique<Home>(WorldCam);
 	Screen* CurrentScreen = HomeScreen.get();
 	Screen* ParentScreen = nullptr;
@@ -93,7 +93,9 @@ void Game::run() {
 	bool isText = false;
 	bool isTextLong = false;
 	bool isScreenLoaded = false;
+	bool isTelemetryEnabled = false;
 
+	int TelemetryCount = 0;
 	float Zoom = 1/ WorldCam.zoom;
 
 	while (!WindowShouldClose()) {
@@ -299,6 +301,21 @@ void Game::run() {
 				CurrentScreen->ToEnqueueGUIs.clear();
 			}
 
+		}
+
+		if (IsKeyPressed(KEY_F3)) {
+			isTelemetryEnabled = true;
+			if (TelemetryCount % 2 == 0)
+				std::cout << "Telemetry Enabled" << std::endl;
+			else
+				std::cout << "Telemetry Disabled" << std::endl;
+
+			TelemetryCount++;
+		}
+
+		if (isTelemetryEnabled && TelemetryCount % 2 != 0) {
+			TelemetryPtr->TelemetryUpdate();
+			TelemetryPtr->TelemetryRender();
 		}
 
 

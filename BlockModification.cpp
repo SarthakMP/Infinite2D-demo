@@ -8,7 +8,7 @@ void BlockModifier::Update() {
 
 }
 
-void BlockModifier::OnMouseDown() {
+void BlockModifier::OnMouseDown() { // To Destroy Blocks
 	if (isMenuAnyOpened) return;
 	Point PlayerPos = Player::GetPlayerPos();
 	Point MousePos = GetMousePosition();
@@ -33,8 +33,10 @@ void BlockModifier::OnMouseDown() {
 			float x = std::floor(std::abs(RelativeChunkDistance.x * 0.01f));
 			float y = std::floor(std::abs(RelativeChunkDistance.y * 0.01f));
 
+			int id = x + 4 * y;
 			if ((x < 0 || x>3) // 0-3 chunks X space (index)
-				|| (y < 0 || y>64)) return; // 0-64 chunks Y space (index)
+				|| (y < 0 || y>64)) return; // 0 - 64 Y Space (index)
+
 
 			//BoxCollider2D& block = chunk.Blocks->at(x + 4*y);
 
@@ -47,7 +49,7 @@ void BlockModifier::OnMouseDown() {
 
 }
 
-void BlockModifier::OnMouse2Down() {
+void BlockModifier::OnMouse2Down() { // To Place Blocks
 	if (isMenuAnyOpened) return;
 	Point PlayerPos = Player::GetPlayerPos();
 	Point MousePos = GetMousePosition();

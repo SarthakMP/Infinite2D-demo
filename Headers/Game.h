@@ -15,6 +15,7 @@
 #include"Headers/Screens/Screen.h"
 #include"Headers/Screens/PlayScreen.h"
 #include"Headers/GUI/GUI.h"
+#include"Headers/Telemetry.h"
 
 #include<iostream>
 #include<vector>
