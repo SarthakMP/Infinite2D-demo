@@ -58,6 +58,39 @@ char Game::KeyParser(int key)
 }
 
 
+void Game::KeyInput(std::string& Text, int key, std::vector<bool> boolList) {
+	if (boolList.empty()) return;
+	if (Text.size() > 30) {
+		boolList[1] = true;
+	}
+
+
+	if (key == KEY_SPACE) {
+		Text += " ";
+	}
+	if (key >= KEY_ZERO && key <= KEY_NINE) {
+		Text += KeyParser(key);
+	}
+
+	if (key >= KEY_KP_0 && key <= KEY_KP_9) {
+		Text += KeyParser(key);
+
+	}
+	if (key >= KEY_A && key <= KEY_Z) {
+		Text += KeyParser(key);
+	}
+
+	if (key == KEY_BACKSPACE) {
+		if (!Text.empty())
+			Text.pop_back();
+
+	}
+	if (key == KEY_ENTER) {
+		LevelDesigner::WorldName = Text;
+		boolList[0] = true;
+	}
+}
+
 void Game::run() {
 
 
@@ -87,10 +120,12 @@ void Game::run() {
 	AddObjects(std::make_unique < CameraMovement>(WorldCam));
 	AddObjects(std::make_unique < BlockModifier > (WorldCam));
 
-	std::string Text = "";
+	std::string WorldName = "";
+	std::string Seed = "";
 	bool isWorldLoaded = false;
 	bool isStarted = false;
-	bool isText = false;
+	bool isWorldNameTextbox = false;
+	bool isSeedTextbox = false;
 	bool isTextLong = false;
 	bool isScreenLoaded = false;
 	bool isTelemetryEnabled = false;
@@ -124,9 +159,15 @@ void Game::run() {
 		//DrawCircleLines(Bounding[2].x, -Bounding[2].y, 10, ORANGE);
 		//DrawCircleLines(Bounding[3].x, -Bounding[3].y, 10, ORANGE);
 
-		//handling of Before game text Addition of text 
-		if (isText && !isTextLong) {
+		//handling of Text Input Before game text Addition of text 
+		if (!isTextLong) { // Current only one text box is checked for long text
 			int key = GetKeyPressed();
+			if(isWorldNameTextbox)
+				KeyInput(WorldName, key, { isWorldLoaded,isTextLong });
+			if(isSeedTextbox)
+				KeyInput(Seed, key, { isSeedTextbox,isTextLong });
+
+			/*
 			if (Text.size() > 30) { 
 				isTextLong = true; 
 			}
@@ -156,7 +197,7 @@ void Game::run() {
 				LevelDesigner::WorldName = Text;
 				isWorldLoaded = true;
 			}
-			
+			*/
 		}
 		
 		//handling of multiple screens / Menus before the game is loaded
@@ -194,15 +235,22 @@ void Game::run() {
 						std::string type = CurrentScreen->GetButtonType();
 						if (type._Equal("_Start")) {
 							
-							LevelDesigner::WorldName = Text;
+							LevelDesigner::WorldName = WorldName;
+							LevelDesigner::Seed = Seed;
 							isWorldLoaded = true;
 						}
-						else if (type._Equal("_Textbox")) {
-							isText = true;
+						else if (type._Equal("_WorldNameTextbox")) {
+							isWorldNameTextbox = true;
+							isSeedTextbox = false;
+						}
+						else if (type._Equal("_SeedTextbox")) {
+							isWorldNameTextbox = false;
+							isSeedTextbox = true;
 						}
 						else {
 							p->isGameContinued = true;
 							LevelDesigner::WorldName = type;
+							LevelDesigner::Seed = Seed;
 							isWorldLoaded = true;
 						}
 					}
@@ -210,8 +258,11 @@ void Game::run() {
 
 			}
 			
-			if (isText) {
-				CurrentScreen->SetText(Text);
+			if (isWorldNameTextbox) {
+				CurrentScreen->SetText(WorldName,"_World");
+			}
+			if (isSeedTextbox) {
+				CurrentScreen->SetText(Seed,"_Seed");
 			}
 		}
 		
@@ -239,7 +290,8 @@ void Game::run() {
 			//DrawLine(scl_left, 0, scl_right, 0, GREEN ); // X AXIS
 
 			if (isStarted == false) {
-				isText = false;
+				isWorldNameTextbox = false;
+				isSeedTextbox = false;
 				for (auto& obj : Objects) obj->Start();
 				isStarted = true;
 			}

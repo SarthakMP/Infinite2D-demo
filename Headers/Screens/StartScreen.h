@@ -3,8 +3,11 @@
 class StartScreen : public Scree_Adapter{
 public:
 	static inline std::string WorldName ="";
+	static inline std::string Seed = "";
 
-	static inline Rectangle WorldNameTextBox, StartNewButton, OptionsButton,BackButton;
+	static inline bool TextboxList[2] = { false,false };
+
+	static inline Rectangle WorldNameTextBox, SeedTextBox, StartNewButton, OptionsButton,BackButton;
 
 public:
 	void InitializeChildern() override;
@@ -13,7 +16,7 @@ public:
 	int GetButtonInfo() override;
 	std::string GetButtonType() override;
 	Screen* GetNextScreen() override;
-	void SetText(std::string text) override;
+	void SetText(const std::string& text, const std::string& Type) override;
 
 
 	StartScreen() = default;

@@ -91,13 +91,13 @@ void Player::Render() {
 void Player::serialize(std::ofstream& out) {
 
 	out.write(reinterpret_cast<const char*>(&Player_Pos), sizeof(Player_Pos));
-
+	out.write(reinterpret_cast<const char*>(&hash_id), sizeof(hash_id));
 }
 
 void Player::deserialize(std::ifstream& in) {
 
 	in.read(reinterpret_cast<char*>(&Player_Pos), sizeof(Player_Pos));
-
+	in.read(reinterpret_cast<char*>(&hash_id), sizeof(hash_id));
 }
 
 void Player::Save() {

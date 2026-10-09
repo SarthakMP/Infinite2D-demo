@@ -5,6 +5,11 @@
 #include<vector>
 #define START_BUTTON_ID 0
 #define CONTINUE_BUTTON_ID 1
+
+#define WORLDNAMETEXTBOX_BUTTON_ID 1
+#define SEEDTEXTBOX_BUTTON_ID 2
+
+
 #define SCROLLBAR_ID -1
 #define BACK_BUTTON_ID -10
 class Screen : public Behaviour_Adapter {
@@ -27,7 +32,7 @@ public:
 	virtual int GetButtonInfo() = 0;
 	virtual std::string GetButtonType() =0;
 	virtual Screen* GetNextScreen() = 0;
-	virtual void SetText(std::string text) = 0;
+	virtual void SetText(const std::string& text, const std::string& Type) = 0;
 	virtual void UpdateCam(const Point& pos) = 0;
 
 	virtual void AddGUI(std::unique_ptr<GUI> gui) = 0;
@@ -49,7 +54,7 @@ public:
 	int GetButtonInfo() override { return 0;  }
 	std::string GetButtonType() override { return ""; }
 	Screen* GetNextScreen() override { return nullptr; }
-	void SetText(std::string text) override {}
+	void SetText(const std::string& text, const std::string& Type) override {}
 	void UpdateCam(const Point& pos) override {};
 
 	inline void AddGUI(std::unique_ptr<GUI> gui) override {

@@ -12,6 +12,8 @@ class LevelDesigner : public Behaviour_Adapter{
 
 public:
 
+	inline static std::string Seed;
+
 	inline static Chunk ChunksArray[6];
 	inline static std::string WorldName = "";
 	inline static std::string baseWorldsPath = std::string(WORLD_DIR) +"/";
@@ -26,8 +28,8 @@ public:
 	inline static void DrawChunks();
 	inline static void GenerateBlocks(Chunk& NewChunk, int x, int y);
 	inline static void NewChunk(const std::string& Chunkpath, const int& pivot_chunk_id,const Point& XY, const int& chunk_id_iterator, const int& offset, int AddChunk);
+	inline static int GenerateHeightMap(int pos_x);
 	
-
 	void Start();
 	
 	void Update();

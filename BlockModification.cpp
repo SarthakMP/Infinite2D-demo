@@ -19,7 +19,7 @@ void BlockModifier::OnMouseDown() { // To Destroy Blocks
 		
 		Point RelativeDistance = Point(MousePos.x - GetScreenWidth() * 0.5f, -(MousePos.y - GetScreenHeight() *0.5f)) + PlayerPos;
 		
-		
+		DrawCircle(RelativeDistance.x, RelativeDistance.y, 10, RED);
 		int CurrentChunkId = static_cast<int>(std::floor(static_cast<double>(RelativeDistance.x) / LevelDesigner::ChunksWidth));
 		
 		for (auto& chunk : LevelDesigner::ChunksArray) {
@@ -33,9 +33,12 @@ void BlockModifier::OnMouseDown() { // To Destroy Blocks
 			float x = std::floor(std::abs(RelativeChunkDistance.x * 0.01f));
 			float y = std::floor(std::abs(RelativeChunkDistance.y * 0.01f));
 
+
+
 			int id = x + 4 * y;
+
 			if ((x < 0 || x>3) // 0-3 chunks X space (index)
-				|| (y < 0 || y>64)) return; // 0 - 64 Y Space (index)
+				|| (y < 0 || y>256)) return; // 0 - 256 Y Space (index)
 
 
 			//BoxCollider2D& block = chunk.Blocks->at(x + 4*y);

@@ -39,6 +39,7 @@ class Game {
 	
 public:
 
+	void KeyInput(std::string& Text, int key, std::vector<bool> boolList);
 	void SetCamera(Camera2D& cam);
 	void AddObjects(std::unique_ptr<Behaviour> obj);
 	void InitialBoudningPoints(std::shared_ptr<Point[4]>(&Points));

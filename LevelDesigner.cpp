@@ -56,23 +56,38 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos,const float& deltaX) {
 
 }
 
+static unsigned long hash(const char* str)
+{
+	unsigned long hash = 5381;
+	int c;
 
+	while (c = *str++)
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+	return hash;
+}
 
 void LevelDesigner::GenerateBlocks(Chunk& NewChunk,int x,int y) {
+
+
+
 	int chunk_h = NewChunk.GetWH().y;
 	int chunk_w = NewChunk.GetWH().x;
-	for (size_t r = 0; r < static_cast<int>(std::floor(chunk_h / 100)); r++) {
-		for (size_t c = 0; c < static_cast<int>(std::floor(chunk_w / 100)); c++) {
+	for (int r = static_cast<int>(std::floor(chunk_h * 0.01)) - 1; r >=0; r--) {
+		for (int c = 0; c < static_cast<int>(std::floor(chunk_w * 0.01)); c++) {
 
 			//TODO Calculate Perlin Height where inputs are he position (x,y) 
-
-
-
-			int block_x = x + c * block_w ;
-			int block_y = y + r * block_h ;
+			int block_x = x + c * block_w;
+			// applies for all the block and results in cramping of blocks on the topmost coord
+			int block_y = y + (r + GenerateHeightMap(block_x)) * block_h;
 			BoxCollider2D block( Rectangle(block_x, block_y, block_w, block_h),WHITE);
 
-			block.id = c + 4 * r;
+			Point RelativeChunkDistance = Point(block_x - NewChunk.GetXY().x, block_y - NewChunk.GetXY().y);
+
+			float x = std::floor(std::abs(RelativeChunkDistance.x * 0.01f));
+			float y = std::floor(std::abs(RelativeChunkDistance.y * 0.01f));
+
+			block.id = x + 4 * y;
 
 			if (block.id < 20) block.text = TexturesMap[2]; // Stone
 			else if (block.id >= 20 && block.id < 28) {
@@ -97,6 +112,24 @@ void LevelDesigner::NewChunk(const std::string& Chunkpath,const int& pivot_chunk
 		AddChunk(NewChunk);
 
 	NewChunk.save(WorldName);
+}
+
+
+int LevelDesigner::GenerateHeightMap(int pos_X)
+{	
+	
+ 	float sin_val = std::sin(p->hash_id * pos_X);
+	float cos_val = std::cos(p->hash_id * pos_X);
+
+	float sin_2_val = sin_val * sin_val;
+
+	float sin2x_val = 2 * sin_val * cos_val;
+	float cos2x_val = 1 - 2 * sin_2_val;
+
+	float sin4x_val = 2 * sin2x_val * cos2x_val;
+
+	return 2 * sin_val + sin2x_val + sin4x_val* sin4x_val;
+
 }
 
 void LevelDesigner::Start() {
@@ -124,6 +157,10 @@ void LevelDesigner::Start() {
 	if (p->isGameContinued && inFile.is_open()) {
 		p->deserialize(inFile);
 		inFile.close();
+	}
+
+	if (p->hash_id == -1) {
+		p->hash_id = hash(Seed.c_str());
 	}
 
 	Point PlayerPos = p->GetPlayerPos();
@@ -191,4 +228,6 @@ void LevelDesigner::Render() {
 
 LevelDesigner::LevelDesigner(std::unique_ptr<Player>& ply) {
 	p = ply.get();
+
+	
 }
