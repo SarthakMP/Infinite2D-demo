@@ -56,7 +56,41 @@ void LevelDesigner::GenerateChunk(const Point& PlayerPos,const float& deltaX) {
 
 }
 
-static unsigned long hash(const char* str)
+uint32_t crc32b(const uint8_t* str) {
+	// Source: https://stackoverflow.com/a/21001712
+	unsigned int byte, crc, mask;
+	int i = 0, j;
+	crc = 0xFFFFFFFF;
+	while (str[i] != 0) {
+		byte = str[i];
+		crc = crc ^ byte;
+		for (j = 7; j >= 0; j--) {
+			mask = -(crc & 1);
+			crc = (crc >> 1) ^ (0xEDB88320 & mask);
+		}
+		i = i + 1;
+	}
+	return ~crc;
+}
+
+static std::string RandStr(const int len) {
+	// Source: https://stackoverflow.com/a/440240
+	static const char alphanum[] =
+		"0123456789"
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz";
+	std::string tmp_s;
+	tmp_s.reserve(len);
+	srand(time(0));
+	for (int i = 0; i < len; ++i) {
+		tmp_s += alphanum[rand() % (sizeof(alphanum) - 1)];
+	}
+
+	return tmp_s;
+}
+
+
+static long hash(const char* str)
 {
 	unsigned long hash = 5381;
 	int c;
@@ -118,8 +152,8 @@ void LevelDesigner::NewChunk(const std::string& Chunkpath,const int& pivot_chunk
 int LevelDesigner::GenerateHeightMap(int pos_X)
 {	
 	
- 	float sin_val = std::sin(p->hash_id * pos_X);
-	float cos_val = std::cos(p->hash_id * pos_X);
+ 	float sin_val = std::sin(p->hash_id + pos_X);
+	float cos_val = std::cos(p->hash_id + pos_X);
 
 	float sin_2_val = sin_val * sin_val;
 
@@ -160,7 +194,11 @@ void LevelDesigner::Start() {
 	}
 
 	if (p->hash_id == -1) {
+		if (Seed.empty()) {
+			Seed = RandStr(10);
+		}
 		p->hash_id = hash(Seed.c_str());
+		std::cout << "Hash Generated: " << p->hash_id << std::endl;
 	}
 
 	Point PlayerPos = p->GetPlayerPos();
